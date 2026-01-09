@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Cosméticos femininos de alta qualidade - Perfumes, cremes, sabonetes e mais">
+    <title>Cosmético Feminino - Presentes Especiais</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>Presentes Especiais</h1>
+                </div>
+                
+                <nav class="nav-menu" id="navMenu">
+                    <ul class="nav-list">
+                        <li><a href="index.html" class="nav-link">Início</a></li>
+                        <li><a href="cosmetico-feminino.html" class="nav-link active">Cosmético Feminino</a></li>
+                        <li><a href="cosmetico-masculino.html" class="nav-link">Cosmético Masculino</a></li>
+                        <li><a href="ofertas.html" class="nav-link">Ofertas</a></li>
+                        <li><a href="contato.html" class="nav-link">Contato</a></li>
+                    </ul>
+                </nav>
+
+                <div class="header-actions">
+                    <div class="search-box">
+                        <input type="text" placeholder="Buscar produtos..." class="search-input" id="searchInput">
+                        <button class="search-btn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.35-4.35"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <button class="cart-btn" id="cartBtn">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="9" cy="21" r="1"></circle>
+                            <circle cx="20" cy="21" r="1"></circle>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                        </svg>
+                        <span class="cart-count" id="cartCount">0</span>
+                    </button>
+
+                    <button class="mobile-menu-btn" id="mobileMenuBtn">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">Cosmético Feminino</h1>
+            <p class="page-subtitle">Produtos de beleza e cuidados pessoais para você</p>
+        </div>
+    </section>
+
+    <!-- Subcategory Filters -->
+    <section class="filters-section">
+        <div class="container">
+            <div class="filter-buttons">
+                <button class="filter-btn active" onclick="filterBySubcategory('Todas')">Todas</button>
+                <button class="filter-btn" onclick="filterBySubcategory('Perfumes')">Perfumes</button>
+                <button class="filter-btn" onclick="filterBySubcategory('Cremes')">Cremes</button>
+                <button class="filter-btn" onclick="filterBySubcategory('Sabonetes')">Sabonetes</button>
+                <button class="filter-btn" onclick="filterBySubcategory('Body Splash')">Body Splash</button>
+                <button class="filter-btn" onclick="filterBySubcategory('Esfoliantes')">Esfoliantes</button>
+                <button class="filter-btn" onclick="filterBySubcategory('Outros Cuidados')">Outros Cuidados</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Grid -->
+    <section class="products-section">
+        <div class="container">
+            <div class="products-grid" id="productsGrid">
+                <!-- Products will be loaded here by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Presentes Especiais</h3>
+                    <p>Carinho e qualidade em cada detalhe dos nossos produtos.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Links Rápidos</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Início</a></li>
+                        <li><a href="cosmetico-feminino.html">Cosmético Feminino</a></li>
+                        <li><a href="cosmetico-masculino.html">Cosmético Masculino</a></li>
+                        <li><a href="contato.html">Contato</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Contato</h4>
+                    <ul class="footer-links">
+                        <li>contato@presentesespeciais.com.br</li>
+                        <li>(11) 98765-4321</li>
+                        <li>Seg-Sex: 9h às 18h</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2026 Presentes Especiais. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Modal -->
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-modal-content">
+            <div class="cart-modal-header">
+                <h2>Meu Carrinho</h2>
+                <button class="close-cart" id="closeCart">&times;</button>
+            </div>
+            
+            <div class="cart-items" id="cartItems">
+                <p class="empty-cart">Seu carrinho está vazio</p>
+            </div>
+            
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <span>Total:</span>
+                    <span class="total-price" id="totalPrice">R$ 0,00</span>
+                </div>
+                <a href="checkout.html" class="btn btn-primary btn-block">Finalizar Compra</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Sync products first
+        syncProductsFromStorage();
+        
+        // Current subcategory filter
+        let currentSubcategoryFilter = 'Todas';
+
+        // Filter products by subcategory
+        function filterBySubcategory(subcategory) {
+            currentSubcategoryFilter = subcategory;
+            
+            // Update active button
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => {
+                if (btn.textContent === subcategory) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            // Display filtered products
+            displayCategoryProducts();
+        }
+
+        // Display products for Cosmético Feminino category
+        function displayCategoryProducts() {
+            syncProductsFromStorage();
+            const container = document.getElementById('productsGrid');
+            
+            // Filter by main category
+            let filteredProducts = products.filter(p => p.category === 'Cosmético Feminino');
+            
+            // Filter by subcategory if not "Todas"
+            if (currentSubcategoryFilter !== 'Todas') {
+                filteredProducts = filteredProducts.filter(p => p.subcategory === currentSubcategoryFilter);
+            }
+            
+            if (filteredProducts.length === 0) {
+                container.innerHTML = '<p class="no-products">Nenhum produto encontrado nesta subcategoria.</p>';
+                return;
+            }
+            
+            container.innerHTML = filteredProducts.map(product => `
+                <a href="produto.html?id=${product.id}" class="product-card" style="text-decoration: none; color: inherit;">
+                    <div class="product-image">
+                        ${product.image 
+                            ? `<img src="${product.image}" alt="${product.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                               <div class="product-placeholder" style="display: none;">
+                                   <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#ffbdbd" stroke-width="1.5">
+                                       <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                                       <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                       <path d="m21 15-5-5L5 21"></path>
+                                   </svg>
+                               </div>`
+                            : `<div class="product-placeholder">
+                                   <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#ffbdbd" stroke-width="1.5">
+                                       <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                                       <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                       <path d="m21 15-5-5L5 21"></path>
+                                   </svg>
+                               </div>`
+                        }
+                        ${product.oldPrice ? `<span class="product-badge">-${Math.round((1 - product.price / product.oldPrice) * 100)}%</span>` : ''}
+                    </div>
+                    <div class="product-info">
+                        <span class="product-category">${product.subcategory || product.category}</span>
+                        <h3 class="product-name">${product.name}</h3>
+                        <p class="product-description">${product.description}</p>
+                        <div class="product-price">
+                            ${product.oldPrice ? `<span class="old-price">R$ ${product.oldPrice.toFixed(2)}</span>` : ''}
+                            <span class="price">R$ ${product.price.toFixed(2)}</span>
+                        </div>
+                        <button class="btn btn-primary btn-add-cart" onclick="event.preventDefault(); event.stopPropagation(); addToCart(${product.id})">
+                            Adicionar ao Carrinho
+                        </button>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            displayCategoryProducts();
+        });
+    </script>
+</body>
+</html>

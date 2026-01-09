@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testar Painel Admin - Presentes Especiais</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffe5e5 0%, #fff 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(255, 189, 189, 0.3);
+        }
+
+        h1 {
+            color: #ffbdbd;
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #ffbdbd;
+        }
+
+        .section h2 {
+            color: #333;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+
+        .section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #ffbdbd;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            background: #ff9999;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 189, 189, 0.4);
+        }
+
+        .btn-secondary {
+            background: #666;
+        }
+
+        .btn-secondary:hover {
+            background: #555;
+        }
+
+        .btn-success {
+            background: #4caf50;
+        }
+
+        .btn-success:hover {
+            background: #45a049;
+        }
+
+        .info-box {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-box strong {
+            color: #856404;
+        }
+
+        .code-box {
+            background: #f4f4f4;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin: 10px 0;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        ul {
+            margin-left: 20px;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎁 Teste do Painel Administrativo</h1>
+        <p class="subtitle">Ferramentas para testar todas as funcionalidades do painel</p>
+
+        <div class="info-box">
+            <strong>📌 Credenciais de Acesso:</strong><br>
+            <div class="code-box">
+                <strong>Usuário:</strong> admin<br>
+                <strong>Senha:</strong> admin123
+            </div>
+        </div>
+
+        <!-- Section 1: Access Admin -->
+        <div class="section">
+            <h2>1️⃣ Acessar Painel Admin</h2>
+            <p>Clique no botão abaixo para abrir o painel administrativo. Use as credenciais acima para fazer login.</p>
+            <div class="actions">
+                <a href="admin.html" class="btn" target="_blank">🔐 Abrir Painel Admin</a>
+            </div>
+        </div>
+
+        <!-- Section 2: Sample Data -->
+        <div class="section">
+            <h2>2️⃣ Gerar Dados de Teste</h2>
+            <p>Adicione produtos e pedidos de exemplo para testar o painel com dados reais.</p>
+            
+            <div class="actions">
+                <button class="btn btn-success" onclick="addSampleProducts()">
+                    ➕ Adicionar Produtos de Exemplo
+                </button>
+                <button class="btn btn-success" onclick="addSampleOrders()">
+                    🛍️ Adicionar Pedidos de Exemplo
+                </button>
+            </div>
+
+            <p id="sampleDataStatus" style="margin-top: 15px; color: #4caf50; font-weight: 600;"></p>
+        </div>
+
+        <!-- Section 3: View Data -->
+        <div class="section">
+            <h2>3️⃣ Visualizar Dados do LocalStorage</h2>
+            <p>Veja o que está armazenado no navegador (produtos, pedidos, login).</p>
+            
+            <div class="actions">
+                <button class="btn btn-secondary" onclick="showStorageData()">
+                    📊 Mostrar Dados
+                </button>
+            </div>
+
+            <div id="storageDataDisplay" style="margin-top: 15px;"></div>
+        </div>
+
+        <!-- Section 4: Clear Data -->
+        <div class="section">
+            <h2>4️⃣ Limpar Dados</h2>
+            <p>Remova todos os dados do localStorage para começar do zero.</p>
+            
+            <div class="actions">
+                <button class="btn btn-secondary" onclick="clearProducts()">
+                    🗑️ Limpar Produtos
+                </button>
+                <button class="btn btn-secondary" onclick="clearOrders()">
+                    🗑️ Limpar Pedidos
+                </button>
+                <button class="btn btn-secondary" onclick="clearAll()">
+                    ⚠️ Limpar Tudo
+                </button>
+            </div>
+        </div>
+
+        <!-- Section 5: Test Site -->
+        <div class="section">
+            <h2>5️⃣ Testar Site Principal</h2>
+            <p>Navegue pelo site e teste a integração com o painel admin.</p>
+            
+            <div class="actions">
+                <a href="index.html" class="btn" target="_blank">🏠 Página Inicial</a>
+                <a href="produtos.html" class="btn" target="_blank">🛍️ Produtos</a>
+                <a href="checkout.html" class="btn" target="_blank">🛒 Checkout</a>
+            </div>
+        </div>
+
+        <!-- Section 6: Instructions -->
+        <div class="section">
+            <h2>📖 Instruções de Teste</h2>
+            <ul>
+                <li>Adicione produtos de exemplo usando o botão acima</li>
+                <li>Acesse o painel admin e faça login</li>
+                <li>Veja os produtos listados no Dashboard e em "Produtos"</li>
+                <li>Adicione ou edite produtos pelo painel</li>
+                <li>Adicione pedidos de exemplo para testar relatórios</li>
+                <li>Navegue pelas seções: Dashboard, Produtos, Vendas, Pedidos</li>
+                <li>Teste os filtros de período nas vendas</li>
+                <li>Abra o site principal e veja se os produtos aparecem</li>
+                <li>Faça uma compra no site e veja o pedido no admin</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Add Sample Products
+        function addSampleProducts() {
+            const sampleProducts = [
+                {
+                    id: Date.now() + 1,
+                    name: "Perfume Elegance Feminino",
+                    category: "Cosmético Feminino",
+                    subcategory: "Perfumes",
+                    price: 189.90,
+                    oldPrice: 249.90,
+                    description: "Fragrância sofisticada e duradoura para momentos especiais",
+                    image: null
+                },
+                {
+                    id: Date.now() + 2,
+                    name: "Creme Hidratante Premium",
+                    category: "Cosmético Feminino",
+                    subcategory: "Cremes",
+                    price: 89.90,
+                    oldPrice: 109.90,
+                    description: "Hidratação profunda e anti-idade para pele radiante",
+                    image: null
+                },
+                {
+                    id: Date.now() + 3,
+                    name: "Sabonete Artesanal Lavanda",
+                    category: "Cosmético Feminino",
+                    subcategory: "Sabonetes",
+                    price: 29.90,
+                    oldPrice: null,
+                    description: "Sabonete natural com aroma suave de lavanda",
+                    image: null
+                },
+                {
+                    id: Date.now() + 4,
+                    name: "Perfume Intense Masculino",
+                    category: "Cosmético Masculino",
+                    subcategory: "Perfumes",
+                    price: 199.90,
+                    oldPrice: 259.90,
+                    description: "Fragrância marcante e viril para homens modernos",
+                    image: null
+                },
+                {
+                    id: Date.now() + 5,
+                    name: "Body Splash Fresh",
+                    category: "Cosmético Feminino",
+                    subcategory: "Body Splash",
+                    price: 49.90,
+                    oldPrice: null,
+                    description: "Sensação refrescante para o dia a dia",
+                    image: null
+                }
+            ];
+
+            localStorage.setItem('products', JSON.stringify(sampleProducts));
+            localStorage.setItem('adminProducts', JSON.stringify(sampleProducts));
+            
+            document.getElementById('sampleDataStatus').textContent = '✅ ' + sampleProducts.length + ' produtos adicionados com sucesso!';
+            setTimeout(() => {
+                document.getElementById('sampleDataStatus').textContent = '';
+            }, 3000);
+        }
+
+        // Add Sample Orders
+        function addSampleOrders() {
+            const now = new Date();
+            const thisMonth = now.getMonth();
+            const thisYear = now.getFullYear();
+
+            const sampleOrders = [
+                {
+                    id: Date.now() + 1,
+                    date: new Date(thisYear, thisMonth, 5, 14, 30).toISOString(),
+                    customer: {
+                        name: "Maria Silva",
+                        phone: "(11) 98765-4321",
+                        email: "maria@example.com"
+                    },
+                    address: {
+                        street: "Rua das Flores",
+                        number: "123",
+                        complement: "Apto 45",
+                        neighborhood: "Centro",
+                        city: "São Paulo"
+                    },
+                    items: [
+                        {
+                            id: 1,
+                            name: "Perfume Elegance Feminino",
+                            price: 189.90,
+                            quantity: 1,
+                            category: "Cosmético Feminino"
+                        },
+                        {
+                            id: 2,
+                            name: "Creme Hidratante Premium",
+                            price: 89.90,
+                            quantity: 2,
+                            category: "Cosmético Feminino"
+                        }
+                    ],
+                    total: 369.70
+                },
+                {
+                    id: Date.now() + 2,
+                    date: new Date(thisYear, thisMonth, 8, 10, 15).toISOString(),
+                    customer: {
+                        name: "João Santos",
+                        phone: "(11) 91234-5678"
+                    },
+                    address: {
+                        street: "Av. Paulista",
+                        number: "1000",
+                        complement: "",
+                        neighborhood: "Bela Vista",
+                        city: "São Paulo"
+                    },
+                    items: [
+                        {
+                            id: 4,
+                            name: "Perfume Intense Masculino",
+                            price: 199.90,
+                            quantity: 1,
+                            category: "Cosmético Masculino"
+                        }
+                    ],
+                    total: 199.90
+                },
+                {
+                    id: Date.now() + 3,
+                    date: new Date(thisYear, thisMonth, 9, 16, 45).toISOString(),
+                    customer: {
+                        name: "Ana Paula",
+                        phone: "(11) 97777-8888"
+                    },
+                    address: {
+                        street: "Rua Augusta",
+                        number: "500",
+                        complement: "Casa",
+                        neighborhood: "Jardins",
+                        city: "São Paulo"
+                    },
+                    items: [
+                        {
+                            id: 3,
+                            name: "Sabonete Artesanal Lavanda",
+                            price: 29.90,
+                            quantity: 5,
+                            category: "Cosmético Feminino"
+                        },
+                        {
+                            id: 5,
+                            name: "Body Splash Fresh",
+                            price: 49.90,
+                            quantity: 2,
+                            category: "Cosmético Feminino"
+                        }
+                    ],
+                    total: 249.30
+                }
+            ];
+
+            localStorage.setItem('orders', JSON.stringify(sampleOrders));
+            
+            document.getElementById('sampleDataStatus').textContent = '✅ ' + sampleOrders.length + ' pedidos adicionados com sucesso!';
+            setTimeout(() => {
+                document.getElementById('sampleDataStatus').textContent = '';
+            }, 3000);
+        }
+
+        // Show Storage Data
+        function showStorageData() {
+            const products = JSON.parse(localStorage.getItem('products')) || [];
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
+
+            const display = document.getElementById('storageDataDisplay');
+            display.innerHTML = `
+                <div style="background: white; padding: 20px; border-radius: 8px; margin-top: 15px; border: 1px solid #ddd;">
+                    <h3 style="color: #333; margin-bottom: 15px;">📊 Dados Armazenados</h3>
+                    <p><strong>Produtos:</strong> <span class="status status-info">${products.length} itens</span></p>
+                    <p><strong>Pedidos:</strong> <span class="status status-info">${orders.length} itens</span></p>
+                    <p><strong>Status Admin:</strong> <span class="status ${isLoggedIn ? 'status-success' : 'status-info'}">${isLoggedIn ? '✅ Logado' : '❌ Não logado'}</span></p>
+                </div>
+            `;
+        }
+
+        // Clear Functions
+        function clearProducts() {
+            if (confirm('Tem certeza que deseja remover todos os produtos?')) {
+                localStorage.removeItem('products');
+                localStorage.removeItem('adminProducts');
+                alert('✅ Produtos removidos!');
+            }
+        }
+
+        function clearOrders() {
+            if (confirm('Tem certeza que deseja remover todos os pedidos?')) {
+                localStorage.removeItem('orders');
+                alert('✅ Pedidos removidos!');
+            }
+        }
+
+        function clearAll() {
+            if (confirm('⚠️ ATENÇÃO: Isso vai remover TODOS os dados (produtos, pedidos, login). Confirmar?')) {
+                localStorage.clear();
+                alert('✅ Todos os dados foram removidos!');
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
