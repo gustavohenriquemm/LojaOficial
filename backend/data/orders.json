@@ -1,0 +1,898 @@
+{
+  "orders": [
+    {
+      "id": "1768000565716",
+      "preferenceId": "410909653-e24d1fbb-1b26-44b4-82ba-442981473358",
+      "items": [
+        {
+          "title": "Perfume Floral Elegance Feminino",
+          "description": "Perfume Floral Elegance Feminino",
+          "unit_price": 189.9,
+          "quantity": 1
+        }
+      ],
+      "payer": {
+        "name": "Gustavao",
+        "email": "cliente@email.com",
+        "phone": {
+          "area_code": "11",
+          "number": "943593778"
+        }
+      },
+      "total": 189.9,
+      "status": "pending",
+      "paymentStatus": "pending",
+      "metadata": {
+        "orderId": "order_1768000564623",
+        "customerName": "Gustavao",
+        "customerEmail": "cliente@email.com",
+        "customerPhone": "11943593778",
+        "shippingAddress": {
+          "street": "Floida",
+          "number": "292",
+          "neighborhood": "magali",
+          "city": "embu",
+          "complement": ""
+        }
+      },
+      "createdAt": "2026-01-09T23:16:05.716Z",
+      "updatedAt": "2026-01-09T23:16:05.716Z"
+    },
+    {
+      "id": "1768000577088",
+      "preferenceId": "410909653-b954b89b-65c9-470f-bdb8-b469b67b0098",
+      "items": [
+        {
+          "title": "Perfume Floral Elegance Feminino",
+          "description": "Perfume Floral Elegance Feminino",
+          "unit_price": 189.9,
+          "quantity": 1
+        }
+      ],
+      "payer": {
+        "name": "Gustavao",
+        "email": "cliente@email.com",
+        "phone": {
+          "area_code": "11",
+          "number": "943593778"
+        }
+      },
+      "total": 189.9,
+      "status": "pending",
+      "paymentStatus": "pending",
+      "metadata": {
+        "orderId": "order_1768000576501",
+        "customerName": "Gustavao",
+        "customerEmail": "cliente@email.com",
+        "customerPhone": "11943593778",
+        "shippingAddress": {
+          "street": "Floida",
+          "number": "292",
+          "neighborhood": "magali",
+          "city": "embu",
+          "complement": ""
+        }
+      },
+      "createdAt": "2026-01-09T23:16:17.088Z",
+      "updatedAt": "2026-01-09T23:16:17.088Z"
+    },
+    {
+      "id": "1768000642302",
+      "preferenceId": "410909653-67d4634c-33bb-4d0b-b00b-72f3bafc348e",
+      "items": [
+        {
+          "title": "Perfume Fresh Masculino",
+          "description": "Perfume Fresh Masculino",
+          "unit_price": 139.9,
+          "quantity": 1
+        }
+      ],
+      "payer": {
+        "name": "Gustavao",
+        "email": "cliente@email.com",
+        "phone": {
+          "area_code": "11",
+          "number": "943593778"
+        }
+      },
+      "total": 139.9,
+      "status": "pending",
+      "paymentStatus": "pending",
+      "metadata": {
+        "orderId": "order_1768000641590",
+        "customerName": "Gustavao",
+        "customerEmail": "cliente@email.com",
+        "customerPhone": "11943593778",
+        "shippingAddress": {
+          "street": "Floida",
+          "number": "292",
+          "neighborhood": "magali",
+          "city": "embu",
+          "complement": ""
+        }
+      },
+      "createdAt": "2026-01-09T23:17:22.302Z",
+      "updatedAt": "2026-01-09T23:17:22.302Z"
+    },
+    {
+      "id": "1768000739444",
+      "preferenceId": "410909653-e23d09c7-331b-4cf4-a9ee-95a7398f3929",
+      "items": [
+        {
+          "title": "Perfume Fresh Masculino",
+          "description": "Perfume Fresh Masculino",
+          "unit_price": 139.9,
+          "quantity": 1
+        }
+      ],
+      "payer": {
+        "name": "Gustavao",
+        "email": "cliente@email.com",
+        "phone": {
+          "area_code": "11",
+          "number": "943593778"
+        }
+      },
+      "total": 139.9,
+      "status": "pending",
+      "paymentStatus": "pending",
+      "metadata": {
+        "orderId": "order_1768000738686",
+        "customerName": "Gustavao",
+        "customerEmail": "cliente@email.com",
+        "customerPhone": "11943593778",
+        "shippingAddress": {
+          "street": "Floida",
+          "number": "292",
+          "neighborhood": "magali",
+          "city": "embu",
+          "complement": ""
+        }
+      },
+      "createdAt": "2026-01-09T23:18:59.444Z",
+      "updatedAt": "2026-01-09T23:18:59.444Z"
+    },
+    {
+      "id": "1768000752537",
+      "preferenceId": "410909653-6fd332b0-f90d-431e-b40d-2c7fe75065b2",
+      "items": [
+        {
+          "title": "Perfume Fresh Masculino",
+          "description": "Perfume Fresh Masculino",
+          "unit_price": 139.9,
+          "quantity": 1
+        }
+      ],
+      "payer": {
+        "name": "Gustavao",
+        "email": "cliente@email.com",
+        "phone": {
+          "area_code": "11",
+          "number": "943593778"
+        }
+      },
+      "total": 139.9,
+      "status": "pending",
+      "paymentStatus": "pending",
+      "metadata": {
+        "orderId": "order_1768000751901",
+        "customerName": "Gustavao",
+        "customerEmail": "cliente@email.com",
+        "customerPhone": "11943593778",
+        "shippingAddress": {
+          "street": "Floida",
+          "number": "292",
+          "neighborhood": "magali",
+          "city": "embu",
+          "complement": ""
+        }
+      },
+      "createdAt": "2026-01-09T23:19:12.537Z",
+      "updatedAt": "2026-01-09T23:19:12.537Z"
+    },
+    {
+      "id": "1768000770144",
+      "preferenceId": "410909653-9e31b50b-768c-472b-913a-9ec0779c12c2",
+      "items": [
+        {
+          "title": "Perfume Fresh Masculino",
+          "description": "Perfume Fresh Masculino",
+          "unit_price": 139.9,
+          "quantity": 1
+        }
+      ],
+      "payer": {
+        "name": "Gustavao",
+        "email": "cliente@email.com",
+        "phone": {
+          "area_code": "11",
+          "number": "943593778"
+        }
+      },
+      "total": 139.9,
+      "status": "pending",
+      "paymentStatus": "pending",
+      "metadata": {
+        "orderId": "order_1768000769468",
+        "customerName": "Gustavao",
+        "customerEmail": "cliente@email.com",
+        "customerPhone": "11943593778",
+        "shippingAddress": {
+          "street": "Floida",
+          "number": "292",
+          "neighborhood": "magali",
+          "city": "embu",
+          "complement": ""
+        }
+      },
+      "createdAt": "2026-01-09T23:19:30.144Z",
+      "updatedAt": "2026-01-09T23:19:30.144Z"
+    },
+    {
+      "id": "1768000820760",
+      "preferenceId": "410909653-cff9a1dc-899b-4f05-9a3c-6a7d6195cb01",
+      "items": [
+        {
+          "title": "Perfume Fresh Masculino",
+          "description": "Perfume Fresh Masculino",
+          "unit_price": 139.9,
+          "quantity": 1
+        }
+      ],
+      "payer": {
+        "name": "Gustavao",
+        "email": "cliente@email.com",
+        "phone": {
+          "area_code": "11",
+          "number": "943593778"
+        }
+      },
+      "total": 139.9,
+      "status": "pending",
+      "paymentStatus": "pending",
+      "metadata": {
+        "orderId": "order_1768000819965",
+        "customerName": "Gustavao",
+        "customerEmail": "cliente@email.com",
+        "customerPhone": "11943593778",
+        "shippingAddress": {
+          "street": "Floida",
+          "number": "292",
+          "neighborhood": "magali",
+          "city": "embu",
+          "complement": ""
+        }
+      },
+      "createdAt": "2026-01-09T23:20:20.760Z",
+      "updatedAt": "2026-01-09T23:20:20.760Z"
+    },
+    {
+      "id": "1768001066289",
+      "preferenceId": "410909653-b4bfdfb3-8ed0-4774-9e90-9502533f0a6c",
+      "items": [
+        {
+          "title": "Perfume Fresh Masculino",
+          "description": "Perfume Fresh Masculino",
+          "unit_price": 139.9,
+          "quantity": 1
+        }
+      ],
+      "payer": {
+        "name": "Gustavao",
+        "email": "cliente@email.com",
+        "phone": {
+          "area_code": "11",
+          "number": "943593778"
+        }
+      },
+      "total": 139.9,
+      "status": "pending",
+      "paymentStatus": "pending",
+      "metadata": {
+        "orderId": "order_1768001065422",
+        "customerName": "Gustavao",
+        "customerEmail": "cliente@email.com",
+        "customerPhone": "11943593778",
+        "shippingAddress": {
+          "street": "Floida",
+          "number": "292",
+          "neighborhood": "magali",
+          "city": "embu",
+          "complement": ""
+        }
+      },
+      "createdAt": "2026-01-09T23:24:26.289Z",
+      "updatedAt": "2026-01-09T23:24:26.289Z"
+    },
+    {
+      "id": "1768001381299",
+      "preferenceId": "410909653-3e3b53ba-87e7-41a8-bf42-c60a3b48e377",
+      "items": [
+        {
+          "title": "Perfume Fresh Masculino",
+          "description": "Perfume Fresh Masculino",
+          "unit_price": 139.9,
+          "quantity": 1
+        }
+      ],
+      "payer": {
+        "name": "Gustavao",
+        "email": "cliente@email.com",
+        "phone": {
+          "area_code": "11",
+          "number": "943593778"
+        }
+      },
+      "total": 139.9,
+      "status": "pending",
+      "paymentStatus": "pending",
+      "metadata": {
+        "orderId": "order_1768001380523",
+        "customerName": "Gustavao",
+        "customerEmail": "cliente@email.com",
+        "customerPhone": "11943593778",
+        "shippingAddress": {
+          "street": "Floida",
+          "number": "292",
+          "neighborhood": "magali",
+          "city": "embu",
+          "complement": ""
+        }
+      },
+      "createdAt": "2026-01-09T23:29:41.299Z",
+      "updatedAt": "2026-01-09T23:29:41.299Z"
+    },
+    {
+      "id": "1768002078628",
+      "preferenceId": "410909653-0d482045-3a74-4e62-994b-3960455d6a13",
+      "items": [
+        {
+          "title": "Gel de Barbear Premium",
+          "description": "Gel de Barbear Premium",
+          "unit_price": 39.9,
+          "quantity": 1
+        }
+      ],
+      "payer": {
+        "name": "Gustavao",
+        "email": "cliente@email.com",
+        "phone": {
+          "area_code": "11",
+          "number": "943593778"
+        }
+      },
+      "total": 39.9,
+      "status": "pending",
+      "paymentStatus": "pending",
+      "metadata": {
+        "orderId": "order_1768002077739",
+        "customerName": "Gustavao",
+        "customerEmail": "cliente@email.com",
+        "customerPhone": "11943593778",
+        "shippingAddress": {
+          "street": "Floida",
+          "number": "292",
+          "neighborhood": "magali",
+          "city": "embu",
+          "complement": ""
+        }
+      },
+      "createdAt": "2026-01-09T23:41:18.628Z",
+      "updatedAt": "2026-01-09T23:41:18.628Z"
+    },
+    {
+      "id": "1768002155089",
+      "preferenceId": "410909653-1c176b71-12f9-480c-89a6-0f4174126629",
+      "items": [
+        {
+          "title": "Gel de Barbear Premium",
+          "description": "Gel de Barbear Premium",
+          "unit_price": 39.9,
+          "quantity": 1
+        }
+      ],
+      "payer": {
+        "name": "Gustavao",
+        "email": "cliente@email.com",
+        "phone": {
+          "area_code": "11",
+          "number": "943593778"
+        }
+      },
+      "total": 39.9,
+      "status": "pending",
+      "paymentStatus": "pending",
+      "metadata": {
+        "orderId": "order_1768002154397",
+        "customerName": "Gustavao",
+        "customerEmail": "cliente@email.com",
+        "customerPhone": "11943593778",
+        "shippingAddress": {
+          "street": "Floida",
+          "number": "292",
+          "neighborhood": "magali",
+          "city": "embu",
+          "complement": ""
+        }
+      },
+      "createdAt": "2026-01-09T23:42:35.089Z",
+      "updatedAt": "2026-01-09T23:42:35.089Z"
+    },
+    {
+      "id": "1768002507412",
+      "preferenceId": "410909653-7493f2c4-3010-43bb-9fd4-e4f3c8307cea",
+      "items": [
+        {
+          "title": "1",
+          "description": "1",
+          "unit_price": 1,
+          "quantity": 1
+        }
+      ],
+      "payer": {
+        "name": "Gustavao",
+        "email": "cliente@email.com",
+        "phone": {
+          "area_code": "11",
+          "number": "943593778"
+        }
+      },
+      "total": 1,
+      "status": "pending",
+      "paymentStatus": "pending",
+      "metadata": {
+        "orderId": "order_1768002506652",
+        "customerName": "Gustavao",
+        "customerEmail": "cliente@email.com",
+        "customerPhone": "11943593778",
+        "shippingAddress": {
+          "street": "Floida",
+          "number": "292",
+          "neighborhood": "magali",
+          "city": "embu",
+          "complement": ""
+        }
+      },
+      "createdAt": "2026-01-09T23:48:27.412Z",
+      "updatedAt": "2026-01-09T23:48:27.412Z"
+    },
+    {
+      "id": "1768002553651",
+      "preferenceId": "410909653-7aad1509-f77d-4541-a120-5a80de3cf8bc",
+      "items": [
+        {
+          "title": "1",
+          "description": "1",
+          "unit_price": 1,
+          "quantity": 1
+        }
+      ],
+      "payer": {
+        "name": "Gustavao",
+        "email": "cliente@email.com",
+        "phone": {
+          "area_code": "11",
+          "number": "943593778"
+        }
+      },
+      "total": 1,
+      "status": "pending",
+      "paymentStatus": "pending",
+      "metadata": {
+        "orderId": "order_1768002553090",
+        "customerName": "Gustavao",
+        "customerEmail": "cliente@email.com",
+        "customerPhone": "11943593778",
+        "shippingAddress": {
+          "street": "Floida",
+          "number": "292",
+          "neighborhood": "magali",
+          "city": "embu",
+          "complement": ""
+        }
+      },
+      "createdAt": "2026-01-09T23:49:13.651Z",
+      "updatedAt": "2026-01-09T23:49:13.651Z"
+    },
+    {
+      "id": "1768002708623",
+      "preferenceId": "410909653-a171e4d7-9af7-4996-9be7-0b7d672b381d",
+      "items": [
+        {
+          "title": "1",
+          "description": "1",
+          "unit_price": 1,
+          "quantity": 1
+        }
+      ],
+      "payer": {
+        "name": "Gustavao",
+        "email": "cliente@email.com",
+        "phone": {
+          "area_code": "11",
+          "number": "943593778"
+        }
+      },
+      "total": 1,
+      "status": "pending",
+      "paymentStatus": "pending",
+      "metadata": {
+        "orderId": "order_1768002707990",
+        "customerName": "Gustavao",
+        "customerEmail": "cliente@email.com",
+        "customerPhone": "11943593778",
+        "shippingAddress": {
+          "street": "Floida",
+          "number": "292",
+          "neighborhood": "magali",
+          "city": "embu",
+          "complement": ""
+        }
+      },
+      "createdAt": "2026-01-09T23:51:48.623Z",
+      "updatedAt": "2026-01-09T23:51:48.623Z"
+    },
+    {
+      "id": "1768003424900",
+      "preferenceId": "410909653-75c7d420-81b6-4a63-aa01-7f39325e761b",
+      "items": [
+        {
+          "title": "1",
+          "description": "1",
+          "unit_price": 1,
+          "quantity": 2
+        }
+      ],
+      "payer": {
+        "name": "Gustavao",
+        "email": "cliente@email.com",
+        "phone": {
+          "area_code": "11",
+          "number": "943593778"
+        }
+      },
+      "total": 2,
+      "status": "pending",
+      "paymentStatus": "pending",
+      "metadata": {
+        "orderId": "order_1768003424145",
+        "customerName": "Gustavao",
+        "customerEmail": "cliente@email.com",
+        "customerPhone": "11943593778",
+        "shippingAddress": {
+          "street": "Floida",
+          "number": "292",
+          "neighborhood": "magali",
+          "city": "embu",
+          "complement": ""
+        }
+      },
+      "createdAt": "2026-01-10T00:03:44.900Z",
+      "updatedAt": "2026-01-10T00:03:44.900Z"
+    },
+    {
+      "id": "1768003621984",
+      "preferenceId": "410909653-864b25a7-918a-44b2-9380-1f292b0e7d83",
+      "items": [
+        {
+          "title": "1",
+          "description": "1",
+          "unit_price": 1,
+          "quantity": 1
+        }
+      ],
+      "payer": {
+        "name": "Gustavao",
+        "email": "cliente@email.com",
+        "phone": {
+          "area_code": "11",
+          "number": "943593778"
+        }
+      },
+      "total": 1,
+      "status": "pending",
+      "paymentStatus": "pending",
+      "metadata": {
+        "orderId": "order_1768003621121",
+        "customerName": "Gustavao",
+        "customerEmail": "cliente@email.com",
+        "customerPhone": "11943593778",
+        "shippingAddress": {
+          "street": "Floida",
+          "number": "292",
+          "neighborhood": "magali",
+          "city": "embu",
+          "complement": ""
+        }
+      },
+      "createdAt": "2026-01-10T00:07:01.985Z",
+      "updatedAt": "2026-01-10T00:07:01.985Z"
+    },
+    {
+      "id": "1768004364120",
+      "preferenceId": "410909653-0fb7fc3a-42c1-47ae-980a-172b34350f5e",
+      "items": [
+        {
+          "title": "1",
+          "description": "1",
+          "unit_price": 1,
+          "quantity": 1
+        }
+      ],
+      "payer": {
+        "name": "Gustavao",
+        "email": "cliente@email.com",
+        "phone": {
+          "area_code": "11",
+          "number": "943593778"
+        }
+      },
+      "total": 1,
+      "status": "pending",
+      "paymentStatus": "pending",
+      "metadata": {
+        "orderId": "order_1768004363368",
+        "customerName": "Gustavao",
+        "customerEmail": "cliente@email.com",
+        "customerPhone": "11943593778",
+        "shippingAddress": {
+          "street": "Floida",
+          "number": "292",
+          "neighborhood": "magali",
+          "city": "embu",
+          "complement": ""
+        }
+      },
+      "createdAt": "2026-01-10T00:19:24.120Z",
+      "updatedAt": "2026-01-10T00:19:24.120Z"
+    },
+    {
+      "id": "1768004653792",
+      "preferenceId": "410909653-477ba961-5bf8-4eb9-93bf-f4e4ffcecac2",
+      "items": [
+        {
+          "title": "1",
+          "description": "1",
+          "unit_price": 1,
+          "quantity": 1
+        }
+      ],
+      "payer": {
+        "name": "Gustavao",
+        "email": "cliente@email.com",
+        "phone": {
+          "area_code": "11",
+          "number": "943593778"
+        }
+      },
+      "total": 1,
+      "status": "pending",
+      "paymentStatus": "pending",
+      "metadata": {
+        "orderId": "order_1768004652999",
+        "customerName": "Gustavao",
+        "customerEmail": "cliente@email.com",
+        "customerPhone": "11943593778",
+        "shippingAddress": {
+          "street": "Floida",
+          "number": "292",
+          "neighborhood": "magali",
+          "city": "embu",
+          "complement": ""
+        }
+      },
+      "createdAt": "2026-01-10T00:24:13.792Z",
+      "updatedAt": "2026-01-10T00:24:13.792Z"
+    },
+    {
+      "id": "1768005264076",
+      "preferenceId": "410909653-3c0d9469-400e-4d90-947c-bf66791dd338",
+      "items": [
+        {
+          "title": "1",
+          "description": "1",
+          "unit_price": 1,
+          "quantity": 1
+        }
+      ],
+      "payer": {
+        "name": "Gustavao",
+        "email": "cliente@email.com",
+        "phone": {
+          "area_code": "11",
+          "number": "943593778"
+        }
+      },
+      "total": 1,
+      "status": "pending",
+      "paymentStatus": "pending",
+      "metadata": {
+        "orderId": "order_1768005263327",
+        "customerName": "Gustavao",
+        "customerEmail": "cliente@email.com",
+        "customerPhone": "11943593778",
+        "shippingAddress": {
+          "street": "Floida",
+          "number": "292",
+          "neighborhood": "magali",
+          "city": "embu",
+          "complement": ""
+        }
+      },
+      "createdAt": "2026-01-10T00:34:24.076Z",
+      "updatedAt": "2026-01-10T00:34:24.076Z"
+    },
+    {
+      "id": "1768005503836",
+      "preferenceId": "410909653-fa715a8a-8383-4a6d-95de-9eb363bd46a2",
+      "items": [
+        {
+          "title": "1",
+          "description": "1",
+          "unit_price": 1,
+          "quantity": 1
+        }
+      ],
+      "payer": {
+        "name": "Gustavao",
+        "email": "cliente@email.com",
+        "phone": {
+          "area_code": "11",
+          "number": "943593778"
+        }
+      },
+      "total": 1,
+      "status": "pending",
+      "paymentStatus": "pending",
+      "metadata": {
+        "orderId": "order_1768005503111",
+        "customerName": "Gustavao",
+        "customerEmail": "cliente@email.com",
+        "customerPhone": "11943593778",
+        "shippingAddress": {
+          "street": "Floida",
+          "number": "292",
+          "neighborhood": "magali",
+          "city": "embu",
+          "complement": ""
+        }
+      },
+      "createdAt": "2026-01-10T00:38:23.836Z",
+      "updatedAt": "2026-01-10T00:38:23.836Z"
+    },
+    {
+      "id": "1768005749870",
+      "preferenceId": "410909653-ba848b67-ba7c-4486-8eac-277e7987026f",
+      "items": [
+        {
+          "title": "1",
+          "description": "1",
+          "unit_price": 1,
+          "quantity": 1
+        }
+      ],
+      "payer": {
+        "name": "Gustavao",
+        "email": "cliente@email.com",
+        "phone": {
+          "area_code": "11",
+          "number": "943593778"
+        }
+      },
+      "total": 1,
+      "status": "pending",
+      "paymentStatus": "pending",
+      "metadata": {
+        "orderId": "order_1768005749157",
+        "customerName": "Gustavao",
+        "customerEmail": "cliente@email.com",
+        "customerPhone": "11943593778",
+        "shippingAddress": {
+          "street": "Floida",
+          "number": "292",
+          "neighborhood": "magali",
+          "city": "embu",
+          "complement": ""
+        }
+      },
+      "createdAt": "2026-01-10T00:42:29.870Z",
+      "updatedAt": "2026-01-10T00:42:29.870Z"
+    },
+    {
+      "id": "1768006034906",
+      "preferenceId": "410909653-e2b23dd7-889c-4e05-a17d-a2b9018ef61f",
+      "items": [
+        {
+          "title": "1",
+          "description": "1",
+          "unit_price": 1,
+          "quantity": 1
+        }
+      ],
+      "payer": {
+        "name": "Gustavao",
+        "email": "cliente@email.com",
+        "phone": {
+          "area_code": "11",
+          "number": "943593778"
+        }
+      },
+      "total": 1,
+      "status": "approved",
+      "paymentStatus": "approved",
+      "metadata": {
+        "orderId": "order_1768006034144",
+        "customerName": "Gustavao",
+        "customerEmail": "cliente@email.com",
+        "customerPhone": "11943593778",
+        "shippingAddress": {
+          "street": "Floida",
+          "number": "292",
+          "neighborhood": "magali",
+          "city": "embu",
+          "complement": ""
+        }
+      },
+      "createdAt": "2026-01-10T00:47:14.906Z",
+      "updatedAt": "2026-01-10T00:51:10.094Z",
+      "paymentId": 140752358997,
+      "payment": {
+        "id": 140752358997,
+        "status": "approved",
+        "statusDetail": "accredited",
+        "paymentMethod": "pix",
+        "transactionAmount": 1,
+        "dateApproved": "2026-01-09T20:51:44.000-04:00",
+        "dateCreated": "2026-01-09T20:48:02.000-04:00"
+      },
+      "paymentData": {
+        "id": 140752358997,
+        "status": "approved",
+        "statusDetail": "accredited",
+        "paymentMethod": "pix",
+        "transactionAmount": 1,
+        "dateApproved": "2026-01-09T20:51:44.000-04:00",
+        "dateCreated": "2026-01-09T20:48:02.000-04:00"
+      },
+      "paidAt": "2026-01-09T20:51:44.000-04:00"
+    },
+    {
+      "id": "1768156203894",
+      "preferenceId": "410909653-cba3868b-b568-49c1-9f67-233be2e6db40",
+      "items": [
+        {
+          "title": "1",
+          "description": "1",
+          "unit_price": 1,
+          "quantity": 2
+        }
+      ],
+      "payer": {
+        "name": "Gustavao",
+        "email": "cliente@email.com",
+        "phone": {
+          "area_code": "11",
+          "number": "943593778"
+        }
+      },
+      "total": 2,
+      "status": "pending",
+      "paymentStatus": "pending",
+      "metadata": {
+        "orderId": "order_1768156203122",
+        "customerName": "Gustavao",
+        "customerEmail": "cliente@email.com",
+        "customerPhone": "11943593778",
+        "shippingAddress": {
+          "street": "Floida",
+          "number": "292",
+          "neighborhood": "magali",
+          "city": "embu",
+          "complement": ""
+        }
+      },
+      "createdAt": "2026-01-11T18:30:03.894Z",
+      "updatedAt": "2026-01-11T18:30:03.894Z"
+    }
+  ]
+}

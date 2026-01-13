@@ -1,12 +1,47 @@
 // Get product ID from URL
 const urlParams = new URLSearchParams(window.location.search);
-const productId = parseInt(urlParams.get('id'));
+const productId = urlParams.get('id'); // Não converter para int, manter como string
 
-// Load products from localStorage
-const allProducts = JSON.parse(localStorage.getItem('products')) || [];
+// Products array
+let allProducts = [];
+let currentProduct = null;
 
-// Find the product
-const currentProduct = allProducts.find(p => p.id === productId);
+// Load products from API
+async function loadProductsFromAPI() {
+    console.log('Carregando produtos da API...');
+    console.log('Product ID da URL:', productId);
+    try {
+        // Usar API_URL do escopo global definido em script.js
+        const apiUrl = window.API_URL || 'http://localhost:3000/api/products';
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error('Erro ao carregar produtos');
+        allProducts = await response.json();
+        console.log('Produtos carregados:', allProducts.length);
+        console.log('Procurando produto com ID:', productId);
+        // Comparar como string para compatibilidade
+        currentProduct = allProducts.find(p => String(p.id) === String(productId));
+        console.log('Produto encontrado:', currentProduct);
+        displayProductDetail();
+        displayRelatedProducts();
+    } catch (error) {
+        console.error('Erro ao carregar produtos:', error);
+        const productDetailContainer = document.getElementById('productDetail');
+        if (productDetailContainer) {
+            productDetailContainer.innerHTML = `
+                <div class="product-not-found">
+                    <h2>Erro ao carregar produto</h2>
+                    <p>Não foi possível carregar as informações do produto. Por favor, tente novamente.</p>
+                    <a href="produtos.html" class="btn btn-primary">Ver Todos os Produtos</a>
+                </div>
+            `;
+        }
+    }
+}
+
+// Format price helper
+function formatPrice(price) {
+    return `R$ ${parseFloat(price).toFixed(2).replace('.', ',')}`;
+}
 
 function displayProductDetail() {
     const productDetailContainer = document.getElementById('productDetail');
@@ -126,9 +161,14 @@ function changeQuantity(delta) {
 }
 
 function addProductToCart() {
-    if (!currentProduct) return;
+    if (!currentProduct) {
+        console.error('Nenhum produto atual para adicionar ao carrinho');
+        return;
+    }
     
+    console.log('Adicionando produto ao carrinho:', currentProduct);
     const quantity = parseInt(document.getElementById('productQuantity').value);
+    console.log('Quantidade:', quantity);
     
     // Add to cart multiple times based on quantity
     for (let i = 0; i < quantity; i++) {
@@ -146,7 +186,7 @@ function displayRelatedProducts() {
     
     // Get products from same category
     const relatedProducts = allProducts
-        .filter(p => p.id !== currentProduct.id && p.category === currentProduct.category)
+        .filter(p => String(p.id) !== String(currentProduct.id) && p.category === currentProduct.category)
         .slice(0, 4);
     
     if (relatedProducts.length === 0) {
@@ -185,7 +225,12 @@ function displayRelatedProducts() {
                             <div class="product-price">${formatPrice(product.price)}</div>
                             ${product.oldPrice ? `<div class="product-old-price">${formatPrice(product.oldPrice)}</div>` : ''}
                         </div>
-                        <button class="add-to-cart-btn" onclick="event.preventDefault(); event.stopPropagation(); addToCart(${product.id})">
+                        <button class="add-to-cart-btn" onclick="event.preventDefault(); event.stopPropagation(); addToCart('${product.id}'); return false;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="9" cy="21" r="1"></circle>
+                                <circle cx="20" cy="21" r="1"></circle>
+                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                            </svg>
                             Adicionar
                         </button>
                     </div>
@@ -197,8 +242,7 @@ function displayRelatedProducts() {
 
 // Initialize page
 document.addEventListener('DOMContentLoaded', () => {
-    displayProductDetail();
-    displayRelatedProducts();
+    loadProductsFromAPI();
 });
 
 // Make functions global

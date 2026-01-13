@@ -294,6 +294,12 @@ button {
     transition: var(--transition);
     cursor: pointer;
     white-space: nowrap;
+    border: none;
+    outline: none;
+}
+
+.btn:active {
+    transform: scale(0.98);
 }
 
 .btn-primary {
@@ -307,6 +313,10 @@ button {
     box-shadow: var(--shadow-md);
 }
 
+.btn-primary:active {
+    transform: translateY(0) scale(0.98);
+}
+
 .btn-secondary {
     background: transparent;
     color: var(--primary-color);
@@ -316,6 +326,10 @@ button {
 .btn-secondary:hover {
     background: var(--primary-color);
     color: white;
+}
+
+.btn-secondary:active {
+    transform: scale(0.98);
 }
 
 .btn-outline {
@@ -517,14 +531,32 @@ button {
     padding: 10px 24px;
     background: var(--primary-color);
     color: white;
+    border: none;
     border-radius: 24px;
     font-size: 0.9rem;
     font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+    white-space: nowrap;
+    z-index: 10;
+    position: relative;
+}
+
+.add-to-cart-btn svg {
+    flex-shrink: 0;
 }
 
 .add-to-cart-btn:hover {
     background: var(--primary-dark);
     transform: scale(1.05);
+}
+
+.add-to-cart-btn:active {
+    transform: scale(0.98);
 }
 
 .view-all-container {
@@ -1668,6 +1700,10 @@ button {
     height: 100%;
     color: inherit;
     text-decoration: none;
+}
+
+.product-card-link .add-to-cart-btn {
+    pointer-events: auto;
 }
 
 .product-card-link:hover .product-card {

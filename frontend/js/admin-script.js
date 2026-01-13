@@ -51,19 +51,31 @@ if (checkAuth()) {
 // PRODUCTS MANAGEMENT
 // ===================================
 
+// API Base URL
+const API_URL = 'http://localhost:3000/api/products';
+
 // Initialize variables
 var adminProducts = [];
 var editingProductId = null;
 
-// Load products from storage
-try {
-    const stored = localStorage.getItem('adminProducts');
-    if (stored) {
-        adminProducts = JSON.parse(stored);
+// Load products from API
+async function loadProductsFromAPI() {
+    try {
+        const response = await fetch(API_URL);
+        if (response.ok) {
+            adminProducts = await response.json();
+        } else {
+            console.error('Erro ao carregar produtos da API');
+            adminProducts = [];
+        }
+    } catch (error) {
+        console.error('Erro ao conectar com API:', error);
+        // Fallback para localStorage se API não estiver disponível
+        const stored = localStorage.getItem('adminProducts');
+        if (stored) {
+            adminProducts = JSON.parse(stored);
+        }
     }
-} catch (e) {
-    console.error('Error loading admin products:', e);
-    adminProducts = [];
 }
 
 // Subcategories by main category
@@ -107,7 +119,10 @@ function loadProducts() {
                     ? `<img src="${product.image}" alt="${product.name}" class="product-thumb" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22><rect fill=%22%23f0f0f0%22 width=%22100%22 height=%22100%22/></svg>'">` 
                     : '<div class="product-thumb" style="display: flex; align-items: center; justify-content: center; background: #f0f0f0;">Sem imagem</div>'}
             </td>
-            <td><strong>${product.name}</strong></td>
+            <td>
+                <strong>${product.name}</strong>
+                ${product.featured ? '<span style="margin-left: 8px; font-size: 1.1em;" title="Produto em destaque">⭐</span>' : ''}
+            </td>
             <td>${product.category}${product.subcategory ? ' > ' + product.subcategory : ''}</td>
             <td><strong style="color: var(--primary-color)">R$ ${product.price.toFixed(2)}</strong></td>
             <td>
@@ -141,6 +156,7 @@ function openProductModal(productId = null) {
             document.getElementById('productOldPrice').value = product.oldPrice || '';
             document.getElementById('productDescription').value = product.description;
             document.getElementById('productImage').value = product.image || '';
+            document.getElementById('productFeatured').checked = product.featured || false;
             
             // Show image preview if exists
             if (product.image) {
@@ -157,6 +173,7 @@ function openProductModal(productId = null) {
         form.reset();
         document.getElementById('productId').value = '';
         document.getElementById('productImage').value = '';
+        document.getElementById('productFeatured').checked = false;
         document.getElementById('imagePreview').style.display = 'none';
         editingProductId = null;
     }
@@ -179,57 +196,80 @@ function editProduct(id) {
 
 function deleteProduct(id) {
     if (confirm('Tem certeza que deseja excluir este produto?')) {
-        adminProducts = adminProducts.filter(p => p.id !== id);
-        localStorage.setItem('adminProducts', JSON.stringify(adminProducts));
-        
-        // Sync with public products
-        syncProducts();
-        loadProducts();
-        updateDashboard();
-        alert('Produto excluído com sucesso!');
+        // Delete from API
+        fetch(`${API_URL}/${id}`, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if (response.ok) {
+                adminProducts = adminProducts.filter(p => p.id !== id);
+                loadProducts();
+                updateDashboard();
+                alert('Produto excluído com sucesso!');
+            } else {
+                alert('Erro ao excluir produto!');
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao excluir produto:', error);
+            alert('Erro ao excluir produto! Verifique a conexão com o servidor.');
+        });
     }
 }
 
 // Product form submission
-document.getElementById('productForm')?.addEventListener('submit', (e) => {
+document.getElementById('productForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const subcategory = document.getElementById('productSubcategory').value;
     
     const productData = {
-        id: editingProductId || Date.now(),
         name: document.getElementById('productName').value,
         category: document.getElementById('productCategory').value,
         subcategory: subcategory || '',
         price: parseFloat(document.getElementById('productPrice').value),
         oldPrice: document.getElementById('productOldPrice').value ? parseFloat(document.getElementById('productOldPrice').value) : null,
         description: document.getElementById('productDescription').value,
-        image: document.getElementById('productImage').value || null
+        image: document.getElementById('productImage').value || null,
+        featured: document.getElementById('productFeatured').checked || false
     };
     
-    if (editingProductId) {
-        const index = adminProducts.findIndex(p => p.id === editingProductId);
-        adminProducts[index] = productData;
-    } else {
-        adminProducts.push(productData);
+    try {
+        let response;
+        if (editingProductId) {
+            // Update existing product
+            response = await fetch(`${API_URL}/${editingProductId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(productData)
+            });
+        } else {
+            // Create new product
+            response = await fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(productData)
+            });
+        }
+        
+        if (response.ok) {
+            await loadProductsFromAPI();
+            closeProductModal();
+            loadProducts();
+            updateDashboard();
+            alert('Produto salvo com sucesso!');
+        } else {
+            alert('Erro ao salvar produto!');
+        }
+    } catch (error) {
+        console.error('Erro ao salvar produto:', error);
+        alert('Erro ao salvar produto! Verifique a conexão com o servidor.');
     }
-    
-    localStorage.setItem('adminProducts', JSON.stringify(adminProducts));
-    
-    // Sync with public products
-    syncProducts();
-    
-    closeProductModal();
-    loadProducts();
-    updateDashboard();
-    alert('Produto salvo com sucesso!');
 });
-
-// Sync products to public site
-function syncProducts() {
-    // Update the products array in the main script
-    localStorage.setItem('products', JSON.stringify(adminProducts));
-}
 
 // ===================================
 // ORDERS MANAGEMENT
@@ -429,35 +469,9 @@ function showSection(sectionName) {
 // INITIALIZATION
 // ===================================
 
-function loadAdminData() {
-    // Sync products from localStorage - admin products always override
-    const storedProducts = localStorage.getItem('products');
-    const storedAdminProducts = localStorage.getItem('adminProducts');
-    
-    if (storedAdminProducts) {
-        adminProducts = JSON.parse(storedAdminProducts);
-    } else if (storedProducts) {
-        adminProducts = JSON.parse(storedProducts);
-        localStorage.setItem('adminProducts', JSON.stringify(adminProducts));
-    } else {
-        // If no products exist, create empty array but sync with script.js defaults
-        adminProducts = [];
-        // Check if script.js has default products
-        setTimeout(() => {
-            const defaultProducts = localStorage.getItem('products');
-            if (defaultProducts) {
-                adminProducts = JSON.parse(defaultProducts);
-                localStorage.setItem('adminProducts', JSON.stringify(adminProducts));
-                loadProducts();
-                updateDashboard();
-            }
-        }, 100);
-    }
-    
-    // Always sync to ensure consistency
-    if (adminProducts.length > 0) {
-        syncProducts();
-    }
+async function loadAdminData() {
+    // Load products from API
+    await loadProductsFromAPI();
     
     loadProducts();
     loadOrders();
@@ -473,6 +487,13 @@ window.addEventListener('storage', (e) => {
         updateSalesData();
     }
 });
+
+// Poll API for changes every 5 seconds to keep in sync across browsers
+setInterval(async () => {
+    await loadProductsFromAPI();
+    loadProducts();
+    updateDashboard();
+}, 5000);
 
 // ===================================
 // IMAGE UPLOAD HANDLER

@@ -258,25 +258,46 @@ const defaultProducts = [
     }
 ];
 
-// Load products from localStorage or use default
-let products = JSON.parse(localStorage.getItem('products')) || defaultProducts;
+// API Base URL
+const API_URL = 'http://localhost:3000/api/products';
+// Expor no escopo global para outros scripts
+window.API_URL = API_URL;
 
-// Save default products if not exists
-if (!localStorage.getItem('products')) {
-    localStorage.setItem('products', JSON.stringify(defaultProducts));
-    products = defaultProducts;
-}
+// Load products from API or use default
+let products = [];
 
-// Sync products from localStorage periodically
-function syncProductsFromStorage() {
-    const storedProducts = localStorage.getItem('products');
-    if (storedProducts) {
-        products = JSON.parse(storedProducts);
+// Load products from API
+async function loadProductsFromAPI() {
+    try {
+        const response = await fetch(API_URL);
+        if (response.ok) {
+            products = await response.json();
+            // Não usar defaultProducts, sempre usar o que vem da API
+        } else {
+            console.error('Erro ao carregar produtos da API');
+            // Só usar defaultProducts se houver erro real
+            products = defaultProducts;
+        }
+    } catch (error) {
+        console.error('Erro ao conectar com API:', error);
+        // Só usar defaultProducts se não conseguir conectar
+        products = defaultProducts;
+    }
+    
+    // Atualizar displays se as funções existirem
+    if (typeof renderProducts === 'function') {
+        renderProducts();
+    }
+    if (typeof loadFeaturedProducts === 'function') {
+        loadFeaturedProducts();
     }
 }
 
-// Call sync on page load to ensure latest products
-syncProductsFromStorage();
+// Carregar produtos ao iniciar
+loadProductsFromAPI();
+
+// Sincronizar a cada 5 segundos para manter atualizado
+setInterval(loadProductsFromAPI, 5000);
 
 // ===================================
 // CART MANAGEMENT
@@ -292,36 +313,63 @@ function updateCartCount() {
     }
 }
 
-function addToCart(productId) {
-    const product = products.find(p => p.id === productId);
-    if (!product) return;
+// Helper function to get correct path for produto.html
+function getProductPath(productId) {
+    // Se estamos no index.html (raiz), usar caminho com frontend/pages/
+    if (window.location.pathname === '/' || window.location.pathname.endsWith('index.html')) {
+        return `frontend/pages/produto.html?id=${productId}`;
+    }
+    // Se estamos em uma página dentro de frontend/pages/, usar caminho relativo
+    return `produto.html?id=${productId}`;
+}
 
-    const existingItem = cart.find(item => item.id === productId);
+function addToCart(productId) {
+    console.log('addToCart chamado com ID:', productId);
+    console.log('Produtos disponíveis:', products);
+    
+    // Converter para string para compatibilidade
+    const productIdStr = String(productId);
+    const product = products.find(p => String(p.id) === productIdStr);
+    
+    if (!product) {
+        console.error('Produto não encontrado:', productId);
+        showNotification('Erro: Produto não encontrado!');
+        return;
+    }
+
+    console.log('Produto encontrado:', product);
+
+    const existingItem = cart.find(item => String(item.id) === productIdStr);
     
     if (existingItem) {
         existingItem.quantity += 1;
+        console.log('Quantidade atualizada:', existingItem);
     } else {
         cart.push({
             ...product,
             quantity: 1
         });
+        console.log('Produto adicionado ao carrinho');
     }
 
     localStorage.setItem('cart', JSON.stringify(cart));
     updateCartCount();
     updateCartModal();
     showNotification('Produto adicionado ao carrinho!');
+    console.log('Carrinho atualizado:', cart);
 }
 
 function removeFromCart(productId) {
-    cart = cart.filter(item => item.id !== productId);
+    const productIdStr = String(productId);
+    cart = cart.filter(item => String(item.id) !== productIdStr);
     localStorage.setItem('cart', JSON.stringify(cart));
     updateCartCount();
     updateCartModal();
 }
 
 function updateQuantity(productId, change) {
-    const item = cart.find(item => item.id === productId);
+    const productIdStr = String(productId);
+    const item = cart.find(item => String(item.id) === productIdStr);
     if (!item) return;
 
     item.quantity += change;
@@ -393,12 +441,17 @@ function displayFeaturedProducts() {
     const productsContainer = document.getElementById('featuredProducts');
     if (!productsContainer) return;
 
-    syncProductsFromStorage();
-    const featuredProducts = products.slice(0, 6);
+    // Filtrar produtos em destaque primeiro, se não houver nenhum, mostrar os 6 primeiros
+    let featuredProducts = products.filter(p => p.featured === true);
+    if (featuredProducts.length === 0) {
+        featuredProducts = products.slice(0, 6);
+    } else if (featuredProducts.length > 6) {
+        featuredProducts = featuredProducts.slice(0, 6);
+    }
 
     productsContainer.innerHTML = featuredProducts.map(product => `
         <div class="product-card">
-            <a href="produto.html?id=${product.id}" class="product-card-link">
+            <a href="${getProductPath(product.id)}" class="product-card-link">
                 <div class="product-image">
                     ${product.image 
                         ? `<img src="${product.image}" alt="${product.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
@@ -427,7 +480,12 @@ function displayFeaturedProducts() {
                             <div class="product-price">${formatPrice(product.price)}</div>
                             ${product.oldPrice ? `<div class="product-old-price">${formatPrice(product.oldPrice)}</div>` : ''}
                         </div>
-                        <button class="add-to-cart-btn" onclick="event.preventDefault(); event.stopPropagation(); addToCart(${product.id})">
+                        <button class="add-to-cart-btn" onclick="event.preventDefault(); event.stopPropagation(); addToCart('${product.id}'); return false;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="9" cy="21" r="1"></circle>
+                                <circle cx="20" cy="21" r="1"></circle>
+                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                            </svg>
                             Adicionar
                         </button>
                     </div>
@@ -441,11 +499,9 @@ function displayAllProducts() {
     const productsContainer = document.getElementById('allProducts');
     if (!productsContainer) return;
 
-    syncProductsFromStorage();
-
     productsContainer.innerHTML = products.map(product => `
         <div class="product-card">
-            <a href="produto.html?id=${product.id}" class="product-card-link">
+            <a href="${getProductPath(product.id)}" class="product-card-link">
                 <div class="product-image">
                     ${product.image 
                         ? `<img src="${product.image}" alt="${product.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
@@ -474,7 +530,12 @@ function displayAllProducts() {
                             <div class="product-price">${formatPrice(product.price)}</div>
                             ${product.oldPrice ? `<div class="product-old-price">${formatPrice(product.oldPrice)}</div>` : ''}
                         </div>
-                        <button class="add-to-cart-btn" onclick="event.preventDefault(); event.stopPropagation(); addToCart(${product.id})">
+                        <button class="add-to-cart-btn" onclick="event.preventDefault(); event.stopPropagation(); addToCart('${product.id}'); return false;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="9" cy="21" r="1"></circle>
+                                <circle cx="20" cy="21" r="1"></circle>
+                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                            </svg>
                             Adicionar
                         </button>
                     </div>
@@ -504,6 +565,7 @@ function setupCartModal() {
     const cartBtn = document.getElementById('cartBtn');
     const cartModal = document.getElementById('cartModal');
     const closeCartModal = document.getElementById('closeCartModal');
+    const finalizarCompraBtn = document.getElementById('finalizarCompraBtn');
 
     if (cartBtn && cartModal) {
         cartBtn.addEventListener('click', () => {
@@ -523,6 +585,19 @@ function setupCartModal() {
             if (e.target === cartModal) {
                 cartModal.classList.remove('active');
             }
+        });
+    }
+
+    // Botão Finalizar Compra
+    if (finalizarCompraBtn) {
+        finalizarCompraBtn.addEventListener('click', () => {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            if (cart.length === 0) {
+                alert('Seu carrinho está vazio!');
+                return;
+            }
+            // Redirecionar para página de checkout
+            window.location.href = 'checkout.html';
         });
     }
 }
@@ -631,8 +706,6 @@ function setupSmoothScroll() {
 function filterProductsByCategory(category) {
     const productsContainer = document.getElementById('allProducts');
     if (!productsContainer) return;
-
-    syncProductsFromStorage();
     
     const filteredProducts = category === 'todos' 
         ? products 
@@ -669,7 +742,12 @@ function filterProductsByCategory(category) {
                             <div class="product-price">${formatPrice(product.price)}</div>
                             ${product.oldPrice ? `<div class="product-old-price">${formatPrice(product.oldPrice)}</div>` : ''}
                         </div>
-                        <button class="add-to-cart-btn" onclick="event.preventDefault(); event.stopPropagation(); addToCart(${product.id})">
+                        <button class="add-to-cart-btn" onclick="event.preventDefault(); event.stopPropagation(); addToCart('${product.id}'); return false;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="9" cy="21" r="1"></circle>
+                                <circle cx="20" cy="21" r="1"></circle>
+                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                            </svg>
                             Adicionar
                         </button>
                     </div>
@@ -698,6 +776,25 @@ document.addEventListener('DOMContentLoaded', () => {
     // Display all products if on products page
     displayAllProducts();
     
+    // Setup event delegation for add to cart buttons
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('.add-to-cart-btn')) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            const btn = e.target.closest('.add-to-cart-btn');
+            const onclick = btn.getAttribute('onclick');
+            if (onclick) {
+                // Extract product ID from onclick attribute
+                const match = onclick.match(/addToCart\('([^']+)'\)/);
+                if (match && match[1]) {
+                    addToCart(match[1]);
+                }
+            }
+            return false;
+        }
+    }, true); // Use capture phase
+    
     console.log('Site carregado com sucesso!');
 });
 
@@ -706,3 +803,5 @@ window.addToCart = addToCart;
 window.removeFromCart = removeFromCart;
 window.updateQuantity = updateQuantity;
 window.filterProductsByCategory = filterProductsByCategory;
+window.getProductPath = getProductPath;
+window.formatPrice = formatPrice;

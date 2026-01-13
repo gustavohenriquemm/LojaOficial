@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Todos os produtos da loja Presentes Especiais">
-    <title>Produtos - Presentes Especiais</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="description" content="Ofertas especiais e promoções exclusivas">
+    <title>Ofertas - Presentes Especiais</title>
+    <link rel="stylesheet" href="../css/styles.css?v=3">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -21,8 +21,8 @@
                 
                 <nav class="nav-menu" id="navMenu">
                     <ul class="nav-list">
-                        <li><a href="index.html" class="nav-link">Início</a></li>
-                        <li><a href="produtos.html" class="nav-link active">Produtos</a></li>
+                        <li><a href="../../index.html" class="nav-link">Início</a></li>
+                        <li><a href="produtos.html" class="nav-link">Produtos</a></li>
                         <li><a href="categorias.html" class="nav-link">Categorias</a></li>
                         <li><a href="ofertas.html" class="nav-link">Ofertas</a></li>
                         <li><a href="contato.html" class="nav-link">Contato</a></li>
@@ -62,28 +62,28 @@
     <!-- Page Header -->
     <section class="page-header">
         <div class="container">
-            <h1 class="page-title">Nossos Produtos</h1>
-            <p class="page-subtitle">Descubra nossa coleção completa de presentes especiais</p>
+            <h1 class="page-title">Ofertas Especiais</h1>
+            <p class="page-subtitle">Aproveite descontos exclusivos em produtos selecionados</p>
         </div>
     </section>
 
-    <!-- Filter Section -->
-    <section class="filter-section">
+    <!-- Offers Banner -->
+    <section class="offers-banner">
         <div class="container">
-            <div class="filter-buttons">
-                <button class="filter-btn active" onclick="filterProductsByCategory('todos')">Todos</button>
-                <button class="filter-btn" onclick="filterProductsByCategory('cosmético feminino')">Cosmético Feminino</button>
-                <button class="filter-btn" onclick="filterProductsByCategory('cosmético masculino')">Cosmético Masculino</button>
-                <button class="filter-btn" onclick="filterProductsByCategory('kits presente')">Kits</button>
+            <div class="offer-highlight">
+                <div class="offer-badge">ATÉ 30% OFF</div>
+                <h2>Promoção de Janeiro</h2>
+                <p>Seleção especial com descontos imperdíveis</p>
             </div>
         </div>
     </section>
 
-    <!-- Products Section -->
+    <!-- Products on Sale -->
     <section class="products-section">
         <div class="container">
-            <div class="products-grid" id="allProducts">
-                <!-- Products will be loaded dynamically -->
+            <h2 class="section-title">Produtos em Promoção</h2>
+            <div class="products-grid" id="saleProducts">
+                <!-- Sale products will be loaded here -->
             </div>
         </div>
     </section>
@@ -100,7 +100,7 @@
                 <div class="footer-section">
                     <h4 class="footer-subtitle">Links Rápidos</h4>
                     <ul class="footer-links">
-                        <li><a href="index.html">Início</a></li>
+                        <li><a href="../../index.html">Início</a></li>
                         <li><a href="produtos.html">Produtos</a></li>
                         <li><a href="categorias.html">Categorias</a></li>
                         <li><a href="ofertas.html">Ofertas</a></li>
@@ -154,20 +154,92 @@
                     <span>Total:</span>
                     <span id="cartTotal">R$ 0,00</span>
                 </div>
-                <button class="btn btn-primary btn-block">Finalizar Compra</button>
+                <button class="btn btn-primary btn-block" id="finalizarCompraBtn">Finalizar Compra</button>
             </div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="../js/script.js"></script>
     <script>
-        // Setup filter buttons
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-            });
+        // Display only products with oldPrice (on sale)
+        async function displaySaleProducts() {
+            const saleProductsContainer = document.getElementById('saleProducts');
+            if (!saleProductsContainer) return;
+            
+            // Aguardar produtos serem carregados
+            if (!products || products.length === 0) {
+                saleProductsContainer.innerHTML = '<p class="empty-message">Carregando produtos...</p>';
+                return;
+            }
+            
+            const saleProducts = products.filter(p => p.oldPrice);
+            
+            if (saleProducts.length === 0) {
+                saleProductsContainer.innerHTML = '<p class="empty-message">Nenhum produto em promoção no momento</p>';
+                return;
+            }
+            
+            saleProductsContainer.innerHTML = saleProducts.map(product => {
+                const discount = Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100);
+                return `
+                    <div class="product-card">
+                        <a href="produto.html?id=${product.id}" class="product-card-link">
+                            <div class="product-image">
+                                <div class="discount-badge">${discount}% OFF</div>
+                                ${product.image 
+                                    ? `<img src="${product.image}" alt="${product.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                                       <div class="product-placeholder" style="display: none;">
+                                           <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#ffbdbd" stroke-width="1.5">
+                                               <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                                               <circle cx="12" cy="12" r="3"></circle>
+                                               <line x1="3" y1="3" x2="7" y2="7"></line>
+                                           </svg>
+                                       </div>`
+                                    : `<div class="product-placeholder">
+                                           <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#ffbdbd" stroke-width="1.5">
+                                               <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                                               <circle cx="12" cy="12" r="3"></circle>
+                                               <line x1="3" y1="3" x2="7" y2="7"></line>
+                                           </svg>
+                                       </div>`
+                                }
+                            </div>
+                            <div class="product-info">
+                                <div class="product-category">${product.category}</div>
+                                <h3 class="product-name">${product.name}</h3>
+                                <p class="product-description">${product.description}</p>
+                                <div class="product-footer">
+                                    <div>
+                                        <div class="product-price">${formatPrice(product.price)}</div>
+                                        <div class="product-old-price">${formatPrice(product.oldPrice)}</div>
+                                    </div>
+                                    <button class="add-to-cart-btn" onclick="event.preventDefault(); event.stopPropagation(); addToCart(${product.id})">
+                                        Adicionar
+                                    </button>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Initialize page - aguardar produtos serem carregados
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Aguardar produtos da API
+            if (typeof loadProductsFromAPI === 'function') {
+                await loadProductsFromAPI();
+            }
+            displaySaleProducts();
+            
+            // Atualizar quando produtos forem recarregados
+            setInterval(() => {
+                if (products && products.length > 0) {
+                    displaySaleProducts();
+                }
+            }, 5000);
         });
     </script>
 </body>
 </html>
+

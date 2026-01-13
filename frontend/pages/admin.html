@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Administrativo - Presentes Especiais</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="admin-styles.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/admin-styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -30,7 +30,7 @@
                 <button type="submit" class="btn btn-primary btn-block">Entrar</button>
             </form>
             <div class="login-footer">
-                <a href="index.html">← Voltar ao site</a>
+                <a href="../../index.html">← Voltar ao site</a>
             </div>
         </div>
     </div>
@@ -286,6 +286,13 @@
                 </div>
 
                 <div class="form-group">
+                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                        <input type="checkbox" id="productFeatured" style="width: auto; cursor: pointer;">
+                        <span>⭐ Produto em Destaque (aparece na página inicial)</span>
+                    </label>
+                </div>
+
+                <div class="form-group">
                     <label for="productImage">Imagem do Produto</label>
                     <input type="file" id="productImageFile" class="form-input" accept="image/*" onchange="handleImageUpload(event)">
                     <small>Selecione uma imagem do seu computador (JPG, PNG, GIF)</small>
@@ -304,7 +311,7 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
-    <script src="admin-script.js"></script>
+    <script src="../js/admin-script.js"></script>
 </body>
 </html>
+

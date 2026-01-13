@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Loja virtual de presentes especiais - Perfumes, chocolates, Tupperware e muito mais">
     <title>Presentes Especiais - Carinho em cada detalhe</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="frontend/css/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -22,10 +22,10 @@
                 <nav class="nav-menu" id="navMenu">
                     <ul class="nav-list">
                         <li><a href="index.html" class="nav-link active">Início</a></li>
-                        <li><a href="produtos.html" class="nav-link">Produtos</a></li>
-                        <li><a href="categorias.html" class="nav-link">Categorias</a></li>
-                        <li><a href="ofertas.html" class="nav-link">Ofertas</a></li>
-                        <li><a href="contato.html" class="nav-link">Contato</a></li>
+                        <li><a href="frontend/pages/produtos.html" class="nav-link">Produtos</a></li>
+                        <li><a href="frontend/pages/categorias.html" class="nav-link">Categorias</a></li>
+                        <li><a href="frontend/pages/ofertas.html" class="nav-link">Ofertas</a></li>
+                        <li><a href="frontend/pages/contato.html" class="nav-link">Contato</a></li>
                     </ul>
                 </nav>
 
@@ -67,8 +67,8 @@
                     <h2 class="hero-title">Presentes que Encantam e Transmitem Carinho</h2>
                     <p class="hero-subtitle">Descubra a seleção perfeita de perfumes, chocolates e presentes especiais para cada momento</p>
                     <div class="hero-buttons">
-                        <a href="produtos.html" class="btn btn-primary">Ver Produtos</a>
-                        <a href="categorias.html" class="btn btn-secondary">Explorar Categorias</a>
+                        <a href="frontend/pages/produtos.html" class="btn btn-primary">Ver Produtos</a>
+                        <a href="frontend/pages/categorias.html" class="btn btn-secondary">Explorar Categorias</a>
                     </div>
                 </div>
                 <div class="hero-image">
@@ -99,7 +99,7 @@
                     </div>
                     <h3 class="category-title">Cosmético Feminino</h3>
                     <p class="category-description">Fragrâncias exclusivas para momentos especiais</p>
-                    <a href="categorias.html#feminino" class="category-link">Ver mais</a>
+                    <a href="frontend/pages/cosmetico-feminino.html" class="category-link">Ver mais</a>
                 </div>
 
                 <div class="category-card">
@@ -111,7 +111,7 @@
                     </div>
                     <h3 class="category-title">Cosmético Masculino</h3>
                     <p class="category-description">Produtos práticos e elegantes para o dia a dia</p>
-                    <a href="categorias.html#masculino" class="category-link">Ver mais</a>
+                    <a href="frontend/pages/cosmetico-masculino.html" class="category-link">Ver mais</a>
                 </div>
 
                 <div class="category-card">
@@ -123,7 +123,7 @@
                     </div>
                     <h3 class="category-title">Kits Presente</h3>
                     <p class="category-description">Combinações perfeitas para presentear</p>
-                    <a href="categorias.html#kits" class="category-link">Ver mais</a>
+                    <a href="frontend/pages/ofertas.html" class="category-link">Ver mais</a>
                 </div>
             </div>
         </div>
@@ -137,7 +137,7 @@
                 <!-- Products will be loaded dynamically -->
             </div>
             <div class="view-all-container">
-                <a href="produtos.html" class="btn btn-outline">Ver Todos os Produtos</a>
+                <a href="frontend/pages/produtos.html" class="btn btn-outline">Ver Todos os Produtos</a>
             </div>
         </div>
     </section>
@@ -148,7 +148,7 @@
             <div class="banner-content">
                 <h2 class="banner-title">Ofertas Especiais</h2>
                 <p class="banner-text">Aproveite descontos exclusivos em produtos selecionados</p>
-                <a href="ofertas.html" class="btn btn-primary">Conferir Ofertas</a>
+                <a href="frontend/pages/ofertas.html" class="btn btn-primary">Conferir Ofertas</a>
             </div>
         </div>
     </section>
@@ -166,10 +166,10 @@
                     <h4 class="footer-subtitle">Links Rápidos</h4>
                     <ul class="footer-links">
                         <li><a href="index.html">Início</a></li>
-                        <li><a href="produtos.html">Produtos</a></li>
-                        <li><a href="categorias.html">Categorias</a></li>
-                        <li><a href="ofertas.html">Ofertas</a></li>
-                        <li><a href="contato.html">Contato</a></li>
+                        <li><a href="frontend/pages/produtos.html">Produtos</a></li>
+                        <li><a href="frontend/pages/categorias.html">Categorias</a></li>
+                        <li><a href="frontend/pages/ofertas.html">Ofertas</a></li>
+                        <li><a href="frontend/pages/contato.html">Contato</a></li>
                     </ul>
                 </div>
 
@@ -219,11 +219,11 @@
                     <span>Total:</span>
                     <span id="cartTotal">R$ 0,00</span>
                 </div>
-                <a href="checkout.html" class="btn btn-primary btn-block">Finalizar Compra</a>
+                <a href="frontend/pages/checkout.html" class="btn btn-primary btn-block">Finalizar Compra</a>
             </div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="frontend/js/script.js"></script>
 </body>
 </html>

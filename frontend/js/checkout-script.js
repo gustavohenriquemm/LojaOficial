@@ -23,35 +23,52 @@ let checkoutData = {
 // ===================================
 
 function goToStep(step) {
-    // Hide all steps
-    document.querySelectorAll('.checkout-step').forEach(s => {
-        s.classList.remove('active');
-    });
-    
-    // Show target step
-    document.getElementById(`step${step}`).classList.add('active');
-    
-    // Update step indicators
-    document.querySelectorAll('.checkout-step-indicator').forEach(indicator => {
-        const indicatorStep = parseInt(indicator.dataset.step);
-        indicator.classList.remove('active', 'completed');
-        
-        if (indicatorStep === step) {
-            indicator.classList.add('active');
-        } else if (indicatorStep < step) {
-            indicator.classList.add('completed');
-        }
-    });
-    
-    currentStep = step;
-    
-    // Load step content
-    if (step === 4) {
-        loadOrderSummary();
+    // Adicionar loading visual
+    const activeContent = document.querySelector('.checkout-step.active .checkout-content');
+    if (activeContent) {
+        activeContent.style.opacity = '0.6';
+        activeContent.style.pointerEvents = 'none';
     }
     
-    // Scroll to top
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Pequeno delay para feedback visual
+    setTimeout(() => {
+        // Hide all steps
+        document.querySelectorAll('.checkout-step').forEach(s => {
+            s.classList.remove('active');
+        });
+        
+        // Show target step
+        document.getElementById(`step${step}`).classList.add('active');
+        
+        // Update step indicators
+        document.querySelectorAll('.checkout-step-indicator').forEach(indicator => {
+            const indicatorStep = parseInt(indicator.dataset.step);
+            indicator.classList.remove('active', 'completed');
+            
+            if (indicatorStep === step) {
+                indicator.classList.add('active');
+            } else if (indicatorStep < step) {
+                indicator.classList.add('completed');
+            }
+        });
+        
+        currentStep = step;
+        
+        // Load step content
+        if (step === 4) {
+            loadOrderSummary();
+        }
+        
+        // Restaurar opacidade
+        const newActiveContent = document.querySelector('.checkout-step.active .checkout-content');
+        if (newActiveContent) {
+            newActiveContent.style.opacity = '1';
+            newActiveContent.style.pointerEvents = 'auto';
+        }
+        
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
 }
 
 // ===================================
@@ -145,38 +162,6 @@ function updateCheckoutTotals() {
     
     document.getElementById('sidebarTotal').textContent = formatPrice(total);
 }
-
-// ===================================
-// FORM HANDLERS
-// ===================================
-
-// Personal Data Form
-document.getElementById('personalDataForm')?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    
-    checkoutData.customer = {
-        name: document.getElementById('customerName').value,
-        phone: document.getElementById('customerPhone').value,
-        email: document.getElementById('customerEmail').value
-    };
-    
-    goToStep(3);
-});
-
-// Address Form
-document.getElementById('addressForm')?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    
-    checkoutData.address = {
-        street: document.getElementById('addressStreet').value,
-        number: document.getElementById('addressNumber').value,
-        neighborhood: document.getElementById('addressNeighborhood').value,
-        city: document.getElementById('addressCity').value,
-        complement: document.getElementById('addressComplement').value
-    };
-    
-    goToStep(4);
-});
 
 // ===================================
 // ORDER SUMMARY
@@ -318,6 +303,74 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('addressComplement').value = checkoutData.address.complement || '';
         }
     }
+    
+    // ===================================
+    // FORM HANDLERS
+    // ===================================
+    
+    // Personal Data Form
+    const personalDataForm = document.getElementById('personalDataForm');
+    if (personalDataForm) {
+        personalDataForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Validação básica
+            const name = document.getElementById('customerName').value.trim();
+            const phone = document.getElementById('customerPhone').value.trim();
+            
+            if (!name || !phone) {
+                alert('Por favor, preencha nome e telefone.');
+                return;
+            }
+            
+            checkoutData.customer = {
+                name: name,
+                phone: phone,
+                email: document.getElementById('customerEmail').value.trim()
+            };
+            
+            // Salvar no sessionStorage
+            sessionStorage.setItem('checkoutData', JSON.stringify(checkoutData));
+            console.log('✅ Dados pessoais salvos:', checkoutData.customer);
+            
+            // Avançar para próxima etapa
+            goToStep(3);
+        });
+    }
+    
+    // Address Form
+    const addressForm = document.getElementById('addressForm');
+    if (addressForm) {
+        addressForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Validação básica
+            const street = document.getElementById('addressStreet').value.trim();
+            const number = document.getElementById('addressNumber').value.trim();
+            const neighborhood = document.getElementById('addressNeighborhood').value.trim();
+            const city = document.getElementById('addressCity').value.trim();
+            
+            if (!street || !number || !neighborhood || !city) {
+                alert('Por favor, preencha todos os campos obrigatórios do endereço.');
+                return;
+            }
+            
+            checkoutData.address = {
+                street: street,
+                number: number,
+                neighborhood: neighborhood,
+                city: city,
+                complement: document.getElementById('addressComplement').value.trim()
+            };
+            
+            // Salvar no sessionStorage
+            sessionStorage.setItem('checkoutData', JSON.stringify(checkoutData));
+            console.log('✅ Endereço salvo:', checkoutData.address);
+            
+            // Avançar para próxima etapa
+            goToStep(4);
+        });
+    }
 });
 
 // Save checkout data to session storage
@@ -325,7 +378,8 @@ window.addEventListener('beforeunload', () => {
     sessionStorage.setItem('checkoutData', JSON.stringify(checkoutData));
 });
 
-// Make functions global
+// Make functions and data global
 window.goToStep = goToStep;
 window.removeItemFromCheckout = removeItemFromCheckout;
 window.finalizeOrder = finalizeOrder;
+window.checkoutData = checkoutData; // Exportar checkoutData globalmente

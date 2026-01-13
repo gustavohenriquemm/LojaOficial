@@ -52,7 +52,11 @@
 
 .checkout-step.active {
     display: block;
-    animation: fadeInUp 0.4s ease;
+    animation: fadeInUp 0.3s ease;
+}
+
+.checkout-content {
+    transition: opacity 0.15s ease;
 }
 
 @keyframes fadeInUp {
