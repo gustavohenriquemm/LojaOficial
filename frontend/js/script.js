@@ -291,6 +291,10 @@ async function loadProductsFromAPI() {
     if (typeof loadFeaturedProducts === 'function') {
         loadFeaturedProducts();
     }
+    
+    // Atualizar displays de produtos
+    displayFeaturedProducts();
+    displayAllProducts();
 }
 
 // Carregar produtos ao iniciar
@@ -407,10 +411,17 @@ function updateCartModal() {
     cartItems.innerHTML = cart.map(item => `
         <div class="cart-item">
             <div class="cart-item-image">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ffbdbd" stroke-width="1.5">
-                    <rect x="3" y="3" width="18" height="18" rx="2"></rect>
-                    <circle cx="12" cy="12" r="3"></circle>
-                </svg>
+                ${item.image 
+                    ? `<img src="${item.image}" alt="${item.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                       <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ffbdbd" stroke-width="1.5" style="display: none;">
+                           <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                           <circle cx="12" cy="12" r="3"></circle>
+                       </svg>`
+                    : `<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ffbdbd" stroke-width="1.5">
+                           <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                           <circle cx="12" cy="12" r="3"></circle>
+                       </svg>`
+                }
             </div>
             <div class="cart-item-info">
                 <div class="cart-item-name">${item.name}</div>
@@ -604,14 +615,100 @@ function setupCartModal() {
 
 function setupSearch() {
     const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.querySelector('.search-btn');
     
-    if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-            const searchTerm = e.target.value.toLowerCase();
-            // Implementar lógica de busca aqui
-            console.log('Buscando por:', searchTerm);
+    if (!searchInput) return;
+    
+    // Criar container de resultados se não existir
+    let searchResults = document.querySelector('.search-results');
+    if (!searchResults) {
+        searchResults = document.createElement('div');
+        searchResults.className = 'search-results';
+        searchInput.closest('.search-box').appendChild(searchResults);
+    }
+    
+    // Função para realizar a busca
+    function performSearch(searchTerm) {
+        const term = searchTerm.toLowerCase().trim();
+        
+        if (term.length < 2) {
+            searchResults.classList.remove('active');
+            return;
+        }
+        
+        // Filtrar produtos
+        const filteredProducts = products.filter(product => 
+            product.name.toLowerCase().includes(term) ||
+            product.description.toLowerCase().includes(term) ||
+            product.category.toLowerCase().includes(term) ||
+            (product.subcategory && product.subcategory.toLowerCase().includes(term))
+        ).slice(0, 8); // Limitar a 8 resultados
+        
+        // Exibir resultados
+        if (filteredProducts.length === 0) {
+            searchResults.innerHTML = '<div class="search-no-results">Nenhum produto encontrado</div>';
+            searchResults.classList.add('active');
+            return;
+        }
+        
+        searchResults.innerHTML = filteredProducts.map(product => `
+            <div class="search-result-item" onclick="window.location.href='${getProductPath(product.id)}'">
+                ${product.image 
+                    ? `<img src="${product.image}" alt="${product.name}" class="search-result-image">`
+                    : `<div class="search-result-image">
+                           <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#ffbdbd" stroke-width="1.5">
+                               <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                               <circle cx="12" cy="12" r="3"></circle>
+                           </svg>
+                       </div>`
+                }
+                <div class="search-result-info">
+                    <div class="search-result-name">${product.name}</div>
+                    <div class="search-result-category">${product.category}</div>
+                </div>
+                <div class="search-result-price">${formatPrice(product.price)}</div>
+            </div>
+        `).join('');
+        
+        searchResults.classList.add('active');
+    }
+    
+    // Evento de input com debounce
+    let searchTimeout;
+    searchInput.addEventListener('input', (e) => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            performSearch(e.target.value);
+        }, 300);
+    });
+    
+    // Evento de clique no botão
+    if (searchBtn) {
+        searchBtn.addEventListener('click', () => {
+            performSearch(searchInput.value);
         });
     }
+    
+    // Evento Enter
+    searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            performSearch(searchInput.value);
+        }
+    });
+    
+    // Fechar resultados ao clicar fora
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.search-box')) {
+            searchResults.classList.remove('active');
+        }
+    });
+    
+    // Manter aberto ao clicar dentro
+    searchInput.addEventListener('click', () => {
+        if (searchInput.value.trim().length >= 2) {
+            performSearch(searchInput.value);
+        }
+    });
 }
 
 function showNotification(message) {
@@ -770,11 +867,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setActiveLink();
     setupSmoothScroll();
     
-    // Display products if on homepage
-    displayFeaturedProducts();
-    
-    // Display all products if on products page
-    displayAllProducts();
+    // Display products will be called after API loads in loadProductsFromAPI()
     
     // Setup event delegation for add to cart buttons
     document.addEventListener('click', (e) => {

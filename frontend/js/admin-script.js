@@ -158,12 +158,22 @@ function openProductModal(productId = null) {
             document.getElementById('productImage').value = product.image || '';
             document.getElementById('productFeatured').checked = product.featured || false;
             
-            // Show image preview if exists
+            // Show main image preview if exists
             if (product.image) {
                 const preview = document.getElementById('imagePreview');
                 const previewImg = document.getElementById('previewImg');
                 previewImg.src = product.image;
                 preview.style.display = 'block';
+            }
+            
+            // Load secondary image if exists
+            if (product.images && product.images.length > 1) {
+                const secondaryImage = product.images[1];
+                document.getElementById('productImageSecondary').value = secondaryImage;
+                const previewSecondary = document.getElementById('imageSecondaryPreview');
+                const previewImgSecondary = document.getElementById('previewImgSecondary');
+                previewImgSecondary.src = secondaryImage;
+                previewSecondary.style.display = 'block';
             }
             
             editingProductId = productId;
@@ -173,8 +183,10 @@ function openProductModal(productId = null) {
         form.reset();
         document.getElementById('productId').value = '';
         document.getElementById('productImage').value = '';
+        document.getElementById('productImageSecondary').value = '';
         document.getElementById('productFeatured').checked = false;
         document.getElementById('imagePreview').style.display = 'none';
+        document.getElementById('imageSecondaryPreview').style.display = 'none';
         editingProductId = null;
     }
     
@@ -186,7 +198,10 @@ function closeProductModal() {
     document.getElementById('productForm').reset();
     document.getElementById('productImageFile').value = '';
     document.getElementById('productImage').value = '';
+    document.getElementById('productImageSecondaryFile').value = '';
+    document.getElementById('productImageSecondary').value = '';
     document.getElementById('imagePreview').style.display = 'none';
+    document.getElementById('imageSecondaryPreview').style.display = 'none';
     editingProductId = null;
 }
 
@@ -222,6 +237,17 @@ document.getElementById('productForm')?.addEventListener('submit', async (e) => 
     e.preventDefault();
     
     const subcategory = document.getElementById('productSubcategory').value;
+    const mainImage = document.getElementById('productImage').value || null;
+    const secondaryImage = document.getElementById('productImageSecondary').value || null;
+    
+    // Criar array de imagens para a galeria
+    const images = [];
+    if (mainImage) {
+        images.push(mainImage);
+    }
+    if (secondaryImage) {
+        images.push(secondaryImage);
+    }
     
     const productData = {
         name: document.getElementById('productName').value,
@@ -230,7 +256,8 @@ document.getElementById('productForm')?.addEventListener('submit', async (e) => 
         price: parseFloat(document.getElementById('productPrice').value),
         oldPrice: document.getElementById('productOldPrice').value ? parseFloat(document.getElementById('productOldPrice').value) : null,
         description: document.getElementById('productDescription').value,
-        image: document.getElementById('productImage').value || null,
+        image: mainImage, // Imagem principal (usada nos cards)
+        images: images.length > 0 ? images : undefined, // Array de imagens para galeria
         featured: document.getElementById('productFeatured').checked || false
     };
     
@@ -550,6 +577,58 @@ function removeImage() {
     document.getElementById('previewImg').src = '';
 }
 
+// Handle secondary image upload
+function handleSecondaryImageUpload(event) {
+    const file = event.target.files[0];
+    
+    if (!file) return;
+    
+    // Check file size (max 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+        alert('A imagem é muito grande! Tamanho máximo: 2MB');
+        event.target.value = '';
+        return;
+    }
+    
+    // Check file type
+    if (!file.type.startsWith('image/')) {
+        alert('Por favor, selecione apenas arquivos de imagem!');
+        event.target.value = '';
+        return;
+    }
+    
+    // Read and convert to base64
+    const reader = new FileReader();
+    
+    reader.onload = function(e) {
+        const base64Image = e.target.result;
+        
+        // Store in hidden input
+        document.getElementById('productImageSecondary').value = base64Image;
+        
+        // Show preview
+        const preview = document.getElementById('imageSecondaryPreview');
+        const previewImg = document.getElementById('previewImgSecondary');
+        
+        previewImg.src = base64Image;
+        preview.style.display = 'block';
+    };
+    
+    reader.onerror = function() {
+        alert('Erro ao carregar a imagem. Tente novamente.');
+        event.target.value = '';
+    };
+    
+    reader.readAsDataURL(file);
+}
+
+function removeSecondaryImage() {
+    document.getElementById('productImageSecondaryFile').value = '';
+    document.getElementById('productImageSecondary').value = '';
+    document.getElementById('imageSecondaryPreview').style.display = 'none';
+    document.getElementById('previewImgSecondary').src = '';
+}
+
 // Close modal when clicking outside
 document.getElementById('productModal')?.addEventListener('click', (e) => {
     if (e.target.id === 'productModal') {
@@ -568,3 +647,5 @@ window.updateSalesData = updateSalesData;
 window.updateSubcategoryOptions = updateSubcategoryOptions;
 window.handleImageUpload = handleImageUpload;
 window.removeImage = removeImage;
+window.handleSecondaryImageUpload = handleSecondaryImageUpload;
+window.removeSecondaryImage = removeSecondaryImage;

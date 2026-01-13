@@ -67,26 +67,60 @@ function displayProductDetail() {
         ? Math.round(((currentProduct.oldPrice - currentProduct.price) / currentProduct.oldPrice) * 100)
         : 0;
 
+    // Criar galeria de imagens
+    const hasGallery = currentProduct.images && currentProduct.images.length > 1;
+    let galleryHTML = '';
+    
+    if (hasGallery) {
+        galleryHTML = `
+            <div class="product-gallery">
+                <div class="product-gallery-main">
+                    <img id="mainProductImage" src="${currentProduct.images[0]}" alt="${currentProduct.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                    <div class="product-image-placeholder" style="display: none;">
+                        <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#ffbdbd" stroke-width="1.5">
+                            <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <line x1="3" y1="3" x2="7" y2="7"></line>
+                        </svg>
+                    </div>
+                </div>
+                <div class="product-gallery-thumbs">
+                    ${currentProduct.images.map((img, index) => `
+                        <img src="${img}" 
+                             alt="${currentProduct.name} - Imagem ${index + 1}" 
+                             class="gallery-thumb ${index === 0 ? 'active' : ''}"
+                             onclick="changeMainImage('${img}', ${index})">
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    } else if (currentProduct.image) {
+        galleryHTML = `
+            <img src="${currentProduct.image}" alt="${currentProduct.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+            <div class="product-image-placeholder" style="display: none;">
+                <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#ffbdbd" stroke-width="1.5">
+                    <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <line x1="3" y1="3" x2="7" y2="7"></line>
+                </svg>
+            </div>
+        `;
+    } else {
+        galleryHTML = `
+            <div class="product-image-placeholder">
+                <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#ffbdbd" stroke-width="1.5">
+                    <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <line x1="3" y1="3" x2="7" y2="7"></line>
+                </svg>
+            </div>
+        `;
+    }
+
     productDetailContainer.innerHTML = `
         <div class="product-detail-grid">
             <div class="product-detail-image">
-                ${currentProduct.image 
-                    ? `<img src="${currentProduct.image}" alt="${currentProduct.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-                       <div class="product-image-placeholder" style="display: none;">
-                           <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#ffbdbd" stroke-width="1.5">
-                               <rect x="3" y="3" width="18" height="18" rx="2"></rect>
-                               <circle cx="12" cy="12" r="3"></circle>
-                               <line x1="3" y1="3" x2="7" y2="7"></line>
-                           </svg>
-                       </div>`
-                    : `<div class="product-image-placeholder">
-                           <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#ffbdbd" stroke-width="1.5">
-                               <rect x="3" y="3" width="18" height="18" rx="2"></rect>
-                               <circle cx="12" cy="12" r="3"></circle>
-                               <line x1="3" y1="3" x2="7" y2="7"></line>
-                           </svg>
-                       </div>`
-                }
+                ${galleryHTML}
             </div>
 
             <div class="product-detail-info">
@@ -245,6 +279,20 @@ document.addEventListener('DOMContentLoaded', () => {
     loadProductsFromAPI();
 });
 
+// Function to change main image in gallery
+function changeMainImage(imageUrl, index) {
+    const mainImage = document.getElementById('mainProductImage');
+    if (mainImage) {
+        mainImage.src = imageUrl;
+        
+        // Update active thumbnail
+        document.querySelectorAll('.gallery-thumb').forEach((thumb, i) => {
+            thumb.classList.toggle('active', i === index);
+        });
+    }
+}
+
 // Make functions global
 window.changeQuantity = changeQuantity;
 window.addProductToCart = addProductToCart;
+window.changeMainImage = changeMainImage;

@@ -15,7 +15,7 @@
     <div class="admin-login" id="loginScreen">
         <div class="login-container">
             <div class="login-header">
-                <h1>Presentes Especiais</h1>
+                <img src="/img/Logoroofc (1).png" alt="Logo Presentes Especiais" class="header-logo">
                 <p>Painel Administrativo</p>
             </div>
             <form class="login-form" id="loginForm">
@@ -40,7 +40,8 @@
         <!-- Admin Header -->
         <header class="admin-header">
             <div class="admin-header-content">
-                <h1>Presentes Especiais - Admin</h1>
+                <img src="/img/Logoroofc (1).png" alt="Logo Presentes Especiais" class="header-logo" style="height: 50px;">
+                <span style="margin-left: 10px; font-size: 1.5rem; font-weight: 600;">- Admin</span>
                 <div class="admin-header-actions">
                     <span class="admin-user">👤 Administrador</span>
                     <button class="btn btn-secondary" onclick="logout()">Sair</button>
@@ -293,13 +294,24 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="productImage">Imagem do Produto</label>
+                    <label for="productImage">Imagem Principal do Produto</label>
                     <input type="file" id="productImageFile" class="form-input" accept="image/*" onchange="handleImageUpload(event)">
-                    <small>Selecione uma imagem do seu computador (JPG, PNG, GIF)</small>
+                    <small>Imagem exibida nos cards e como primeira imagem na galeria (preferência: fundo branco)</small>
                     <input type="hidden" id="productImage">
                     <div id="imagePreview" style="margin-top: 10px; display: none;">
                         <img id="previewImg" style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 2px solid #ffbdbd;">
                         <button type="button" onclick="removeImage()" style="display: block; margin-top: 10px; padding: 5px 10px; background: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer;">Remover Imagem</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="productImageSecondary">Imagem Secundária (Opcional)</label>
+                    <input type="file" id="productImageSecondaryFile" class="form-input" accept="image/*" onchange="handleSecondaryImageUpload(event)">
+                    <small>Imagem adicional exibida apenas na página de detalhes do produto (ex: segredinho, outra visão)</small>
+                    <input type="hidden" id="productImageSecondary">
+                    <div id="imageSecondaryPreview" style="margin-top: 10px; display: none;">
+                        <img id="previewImgSecondary" style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 2px solid #ffbdbd;">
+                        <button type="button" onclick="removeSecondaryImage()" style="display: block; margin-top: 10px; padding: 5px 10px; background: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer;">Remover Imagem Secundária</button>
                     </div>
                 </div>
 
