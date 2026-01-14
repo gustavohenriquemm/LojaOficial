@@ -6,8 +6,15 @@
 const fs = require('fs');
 const path = require('path');
 
-const DB_FILE = path.join(__dirname, '../data/orders.json');
-const DB_DIR = path.join(__dirname, '../data');
+// Em produção no Render, usar /tmp pois o filesystem é read-only
+const isProduction = process.env.NODE_ENV === 'production';
+const DB_DIR = isProduction && process.platform === 'linux'
+  ? '/tmp/data'
+  : path.join(__dirname, '../data');
+  
+const DB_FILE = path.join(DB_DIR, 'orders.json');
+
+console.log(`💾 Diretório de dados: ${DB_DIR}`);
 
 // Criar diretório se não existir
 if (!fs.existsSync(DB_DIR)) {

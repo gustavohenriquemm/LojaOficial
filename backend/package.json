@@ -12,6 +12,7 @@
     "dev": "nodemon server.js",
     "test": "node server-test.js",
     "init": "node init.js",
+    "diagnose": "node test-startup.js",
     "health-check": "node -e \"const http=require('http'); http.get('http://localhost:'+process.env.PORT+'/health', (r)=>{r.statusCode===200?console.log('✅'):process.exit(1);}).on('error',()=>process.exit(1));\""
   },
   "keywords": ["mercadopago", "pagamento", "nodejs", "express"],

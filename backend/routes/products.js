@@ -3,7 +3,13 @@ const router = express.Router();
 const fs = require('fs').promises;
 const path = require('path');
 
-const PRODUCTS_FILE = path.join(__dirname, '../data/products.json');
+// Em produção no Render, usar /tmp pois o filesystem é read-only
+const isProduction = process.env.NODE_ENV === 'production';
+const DATA_DIR = isProduction && process.platform === 'linux'
+  ? '/tmp/data'
+  : path.join(__dirname, '../data');
+  
+const PRODUCTS_FILE = path.join(DATA_DIR, 'products.json');
 
 // Função para ler produtos
 async function readProducts() {

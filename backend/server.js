@@ -13,42 +13,80 @@ const path = require('path');
 
 console.log('🔧 Inicializando ambiente do backend...');
 
-// Criar diretório data se não existir
-const dataDir = path.join(__dirname, 'data');
-if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir, { recursive: true });
-  console.log('✅ Diretório data/ criado');
-}
+try {
+  // Criar diretório data se não existir
+  // Em produção no Render, usar /tmp pois o filesystem é read-only
+  const isProduction = process.env.NODE_ENV === 'production';
+  const dataDir = isProduction && process.platform === 'linux'
+    ? '/tmp/data'
+    : path.join(__dirname, 'data');
+    
+  console.log(`💾 Diretório de dados: ${dataDir}`);
+  
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
+    console.log('✅ Diretório data/ criado');
+  } else {
+    console.log('✓ Diretório data/ já existe');
+  }
 
-// Inicializar orders.json se não existir
-const ordersPath = path.join(dataDir, 'orders.json');
-if (!fs.existsSync(ordersPath)) {
-  fs.writeFileSync(ordersPath, JSON.stringify({ orders: [] }, null, 2));
-  console.log('✅ Arquivo orders.json inicializado');
-}
+  // Inicializar orders.json se não existir
+  const ordersPath = path.join(dataDir, 'orders.json');
+  if (!fs.existsSync(ordersPath)) {
+    fs.writeFileSync(ordersPath, JSON.stringify({ orders: [] }, null, 2));
+    console.log('✅ Arquivo orders.json inicializado');
+  } else {
+    console.log('✓ Arquivo orders.json já existe');
+  }
 
-// Inicializar products.json se não existir
-const productsPath = path.join(dataDir, 'products.json');
-if (!fs.existsSync(productsPath)) {
-  fs.writeFileSync(productsPath, JSON.stringify([], null, 2));
-  console.log('✅ Arquivo products.json inicializado');
-}
+  // Inicializar products.json se não existir
+  const productsPath = path.join(dataDir, 'products.json');
+  if (!fs.existsSync(productsPath)) {
+    fs.writeFileSync(productsPath, JSON.stringify([], null, 2));
+    console.log('✅ Arquivo products.json inicializado');
+  } else {
+    console.log('✓ Arquivo products.json já existe');
+  }
 
-console.log('✅ Inicialização concluída!\n');
+  console.log('✅ Inicialização concluída!\n');
+} catch (error) {
+  console.error('❌ Erro na inicialização:', error.message);
+  console.error('Stack:', error.stack);
+  // Continuar mesmo com erro na inicialização
+  console.log('⚠️ Continuando sem inicialização completa...\n');
+}
 
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
-// Importar rotas
-const paymentRoutes = require('./routes/payment');
-const webhookRoutes = require('./routes/webhook');
-const productsRoutes = require('./routes/products');
+// Importar configuração do Mercado Pago para verificar se está configurado
+const { configured } = require('./config/mercadopago');
+
+// Importar rotas com tratamento de erro
+let paymentRoutes, webhookRoutes, productsRoutes;
+
+try {
+  console.log('📦 Carregando módulos de rotas...');
+  paymentRoutes = require('./routes/payment');
+  console.log('   ✓ routes/payment.js');
+  webhookRoutes = require('./routes/webhook');
+  console.log('   ✓ routes/webhook.js');
+  productsRoutes = require('./routes/products');
+  console.log('   ✓ routes/products.js');
+  console.log('✅ Todas as rotas carregadas\n');
+} catch (error) {
+  console.error('❌ ERRO CRÍTICO ao carregar rotas:', error.message);
+  console.error('Stack:', error.stack);
+  process.exit(1);
+}
 
 // Inicializar aplicação
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+console.log(`🔌 Porta configurada: ${PORT}`);
 
 // ================================================
 // MIDDLEWARES
@@ -188,14 +226,28 @@ app.use((err, req, res, next) => {
 // ================================================
 
 const HOST = '0.0.0.0'; // Necessário para Render e Docker
-app.listen(PORT, HOST, () => {
+
+// Adicionar tratamento de erro no listen
+const server = app.listen(PORT, HOST, () => {
   console.log('\n' + '='.repeat(50));
   console.log('🚀 SERVIDOR BACKEND INICIADO');
   console.log('='.repeat(50));
   console.log(`📍 Host: ${HOST}:${PORT}`);
   console.log(`🌍 Ambiente: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`💳 Mercado Pago: Configurado`);
+  console.log(`💳 Mercado Pago: ${configured ? 'Configurado' : 'Não configurado'}`);
   console.log('='.repeat(50) + '\n');
+});
+
+// Tratamento de erro ao iniciar servidor
+server.on('error', (error) => {
+  if (error.code === 'EADDRINUSE') {
+    console.error(`❌ Porta ${PORT} já está em uso`);
+    console.error('💡 Tente usar outra porta ou encerre o processo que está usando esta porta');
+  } else {
+    console.error('❌ Erro ao iniciar servidor:', error.message);
+    console.error('Stack:', error.stack);
+  }
+  process.exit(1);
 });
 
 // Tratamento de encerramento gracioso
