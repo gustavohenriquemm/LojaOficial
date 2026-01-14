@@ -4,13 +4,22 @@
 
 const express = require('express');
 const router = express.Router();
-const { payment } = require('../config/mercadopago');
+const { payment, configured } = require('../config/mercadopago');
 const Database = require('../config/database');
+
+// Middleware para verificar se Mercado Pago está configurado
+const checkMercadoPagoConfig = (req, res, next) => {
+  if (!configured) {
+    console.warn('⚠️ Webhook recebido mas Mercado Pago não configurado');
+    return res.status(200).send('OK'); // Responder OK para não bloquear Mercado Pago
+  }
+  next();
+};
 
 // ================================================
 // POST: Receber notificações do Mercado Pago
 // ================================================
-router.post('/', async (req, res) => {
+router.post('/', checkMercadoPagoConfig, async (req, res) => {
   try {
     // Mercado Pago envia notificações neste formato:
     // { id: "123456", topic: "payment" } ou { id: "123456", topic: "merchant_order" }
