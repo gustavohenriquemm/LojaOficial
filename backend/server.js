@@ -7,6 +7,35 @@ console.log(`📦 Node.js: ${process.version}`);
 console.log(`💻 Plataforma: ${process.platform}`);
 console.log(`🌍 NODE_ENV: ${process.env.NODE_ENV || 'development'}`);
 
+// Inicialização do ambiente
+const fs = require('fs');
+const path = require('path');
+
+console.log('🔧 Inicializando ambiente do backend...');
+
+// Criar diretório data se não existir
+const dataDir = path.join(__dirname, 'data');
+if (!fs.existsSync(dataDir)) {
+  fs.mkdirSync(dataDir, { recursive: true });
+  console.log('✅ Diretório data/ criado');
+}
+
+// Inicializar orders.json se não existir
+const ordersPath = path.join(dataDir, 'orders.json');
+if (!fs.existsSync(ordersPath)) {
+  fs.writeFileSync(ordersPath, JSON.stringify({ orders: [] }, null, 2));
+  console.log('✅ Arquivo orders.json inicializado');
+}
+
+// Inicializar products.json se não existir
+const productsPath = path.join(dataDir, 'products.json');
+if (!fs.existsSync(productsPath)) {
+  fs.writeFileSync(productsPath, JSON.stringify([], null, 2));
+  console.log('✅ Arquivo products.json inicializado');
+}
+
+console.log('✅ Inicialização concluída!\n');
+
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
