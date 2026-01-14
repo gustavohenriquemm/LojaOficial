@@ -150,31 +150,6 @@ app.listen(PORT, HOST, () => {
   console.log(`🌍 Ambiente: ${process.env.NODE_ENV || 'development'}`);
   console.log(`💳 Mercado Pago: Configurado`);
   console.log('='.repeat(50) + '\n');
-  
-  // Sistema de auto-ping para evitar hibernação (apenas em produção)
-  if (process.env.NODE_ENV === 'production' && process.env.RENDER_EXTERNAL_URL) {
-    const pingInterval = 14 * 60 * 1000; // 14 minutos
-    const pingUrl = process.env.RENDER_EXTERNAL_URL || `http://localhost:${PORT}`;
-    
-    console.log('🔄 Sistema de ping ativado para evitar hibernação');
-    console.log(`📡 Ping URL: ${pingUrl}/health`);
-    
-    setInterval(async () => {
-      try {
-        const https = require('https');
-        const http = require('http');
-        const protocol = pingUrl.startsWith('https') ? https : http;
-        
-        protocol.get(`${pingUrl}/health`, (res) => {
-          console.log(`✅ Ping enviado - Status: ${res.statusCode} - ${new Date().toISOString()}`);
-        }).on('error', (err) => {
-          console.error('❌ Erro no ping:', err.message);
-        });
-      } catch (error) {
-        console.error('❌ Erro ao enviar ping:', error.message);
-      }
-    }, pingInterval);
-  }
 });
 
 // Tratamento de encerramento gracioso

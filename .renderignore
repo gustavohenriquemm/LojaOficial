@@ -1,0 +1,7 @@
+# Arquivos desnecessários para deploy
+*.ps1
+deploy.sh
+limpar-cache.html
+server-test.js
+update-images.js
+.env.example
