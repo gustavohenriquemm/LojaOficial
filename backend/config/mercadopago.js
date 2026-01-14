@@ -21,30 +21,42 @@ const publicKey = process.env.MERCADOPAGO_PUBLIC_KEY
 
 // Validar se as credenciais existem
 if (!accessToken) {
-  console.error('❌ ERRO: Access Token do Mercado Pago não configurado!');
-  console.error('💡 Configure uma destas variáveis de ambiente:');
-  console.error('   - MERCADOPAGO_ACCESS_TOKEN (Render/produção)');
-  console.error('   - MP_ACCESS_TOKEN_TEST (desenvolvimento)');
-  console.error('   - MP_ACCESS_TOKEN_PROD (produção local)');
-  process.exit(1);
+  console.warn('⚠️ AVISO: Access Token do Mercado Pago não configurado!');
+  console.warn('💡 Configure uma destas variáveis de ambiente:');
+  console.warn('   - MERCADOPAGO_ACCESS_TOKEN (Render/produção)');
+  console.warn('   - MP_ACCESS_TOKEN_TEST (desenvolvimento)');
+  console.warn('   - MP_ACCESS_TOKEN_PROD (produção local)');
+  console.warn('🔒 Funcionalidades de pagamento desabilitadas até configuração.');
+  
+  // Exportar módulo com funcionalidades desabilitadas
+  module.exports = {
+    client: null,
+    preference: null,
+    payment: null,
+    publicKey: null,
+    accessToken: null,
+    isProduction,
+    configured: false
+  };
+} else {
+  // Configurar o SDK do Mercado Pago (v2)
+  const client = new MercadoPagoConfig({ 
+    accessToken: accessToken,
+    options: { timeout: 5000 }
+  });
+
+  const preference = new Preference(client);
+  const payment = new Payment(client);
+
+  console.log(`✅ Mercado Pago configurado em modo: ${isProduction ? 'PRODUÇÃO' : 'TESTE'}`);
+
+  module.exports = {
+    client,
+    preference,
+    payment,
+    publicKey,
+    accessToken,
+    isProduction,
+    configured: true
+  };
 }
-
-// Configurar o SDK do Mercado Pago (v2)
-const client = new MercadoPagoConfig({ 
-  accessToken: accessToken,
-  options: { timeout: 5000 }
-});
-
-const preference = new Preference(client);
-const payment = new Payment(client);
-
-console.log(`✅ Mercado Pago configurado em modo: ${isProduction ? 'PRODUÇÃO' : 'TESTE'}`);
-
-module.exports = {
-  client,
-  preference,
-  payment,
-  publicKey,
-  accessToken,
-  isProduction
-};

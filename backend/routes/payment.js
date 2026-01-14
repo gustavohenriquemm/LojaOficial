@@ -4,20 +4,31 @@
 
 const express = require('express');
 const router = express.Router();
-const { preference, publicKey, payment } = require('../config/mercadopago');
+const { preference, publicKey, payment, configured } = require('../config/mercadopago');
 const Database = require('../config/database');
+
+// Middleware para verificar se Mercado Pago está configurado
+const checkMercadoPagoConfig = (req, res, next) => {
+  if (!configured) {
+    return res.status(503).json({ 
+      error: 'Mercado Pago não configurado',
+      message: 'As credenciais do Mercado Pago não foram configuradas. Configure MERCADOPAGO_ACCESS_TOKEN e MERCADOPAGO_PUBLIC_KEY.'
+    });
+  }
+  next();
+};
 
 // ================================================
 // GET: Retornar Public Key para o frontend
 // ================================================
-router.get('/public-key', (req, res) => {
+router.get('/public-key', checkMercadoPagoConfig, (req, res) => {
   res.json({ publicKey });
 });
 
 // ================================================
 // POST: Criar Preferência de Pagamento
 // ================================================
-router.post('/create-preference', async (req, res) => {
+router.post('/create-preference', checkMercadoPagoConfig, async (req, res) => {
   try {
     const { items, payer, back_urls, metadata } = req.body;
 
