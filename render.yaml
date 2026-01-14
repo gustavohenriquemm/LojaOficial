@@ -5,8 +5,9 @@ services:
     runtime: node
     region: oregon
     plan: free
-    buildCommand: cd backend && npm install
-    startCommand: cd backend && npm start
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
@@ -20,9 +21,8 @@ services:
     autoDeploy: true
 
   # Frontend (Static Site)
-  - type: web
+  - type: static
     name: loja-oficial-frontend
-    runtime: static
     region: oregon
     plan: free
     buildCommand: echo "No build needed"
