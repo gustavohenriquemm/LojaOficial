@@ -16,6 +16,8 @@ app.get('/health', (req, res) => {
   res.json({ status: 'healthy' });
 });
 
-app.listen(PORT, () => {
-  console.log(`✅ Servidor rodando na porta ${PORT}`);
+const HOST = '0.0.0.0';
+app.listen(PORT, HOST, () => {
+  console.log(`✅ Servidor rodando em ${HOST}:${PORT}`);
+  console.log(`📍 Ambiente: ${process.env.NODE_ENV || 'development'}`);
 });

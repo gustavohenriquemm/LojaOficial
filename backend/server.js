@@ -141,11 +141,12 @@ app.use((err, req, res, next) => {
 // INICIAR SERVIDOR
 // ================================================
 
-app.listen(PORT, () => {
+const HOST = '0.0.0.0'; // Necessário para Render e Docker
+app.listen(PORT, HOST, () => {
   console.log('\n' + '='.repeat(50));
   console.log('🚀 SERVIDOR BACKEND INICIADO');
   console.log('='.repeat(50));
-  console.log(`📍 URL: http://localhost:${PORT}`);
+  console.log(`📍 Host: ${HOST}:${PORT}`);
   console.log(`🌍 Ambiente: ${process.env.NODE_ENV || 'development'}`);
   console.log(`💳 Mercado Pago: Configurado`);
   console.log('='.repeat(50) + '\n');
