@@ -528,5 +528,17 @@
     "description": "Leave-in reparador para uso diário.",
     "image": "/img/Fotoprodutos lojaro/23319b83-6f37-4cf6-a52e-945586cc404e-eud-siage-novas-fotos-hair-plastia-booster.jpg",
     "featured": false
+  },
+  {
+    "id": "1768434252934",
+    "name": "1",
+    "category": "Cosmético Feminino",
+    "subcategory": "Perfumes",
+    "price": 1,
+    "oldPrice": 1,
+    "description": "1",
+    "image": null,
+    "featured": false,
+    "createdAt": "2026-01-14T23:44:12.934Z"
   }
 ]

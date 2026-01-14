@@ -893,6 +893,82 @@
       },
       "createdAt": "2026-01-11T18:30:03.894Z",
       "updatedAt": "2026-01-11T18:30:03.894Z"
+    },
+    {
+      "id": "1768431683790",
+      "preferenceId": "410909653-e728d5ed-b86b-420c-b455-79a6b9fea909",
+      "items": [
+        {
+          "title": "Elysée Nuit",
+          "description": "Elysée Nuit",
+          "unit_price": 299.9,
+          "quantity": 2
+        }
+      ],
+      "payer": {
+        "name": "GUSTAVO Henrique",
+        "email": "gustavo.henrique.m2005@gmail.com",
+        "phone": {
+          "area_code": "11",
+          "number": "943593778"
+        }
+      },
+      "total": 599.8,
+      "status": "pending",
+      "paymentStatus": "pending",
+      "metadata": {
+        "orderId": "order_1768431683020",
+        "customerName": "GUSTAVO Henrique",
+        "customerEmail": "gustavo.henrique.m2005@gmail.com",
+        "customerPhone": "11943593778",
+        "shippingAddress": {
+          "street": "Rua Florida",
+          "number": "282",
+          "neighborhood": "Jardim magali",
+          "city": "São Paulo",
+          "complement": ""
+        }
+      },
+      "createdAt": "2026-01-14T23:01:23.790Z",
+      "updatedAt": "2026-01-14T23:01:23.790Z"
+    },
+    {
+      "id": "1768431710302",
+      "preferenceId": "410909653-ec9745f8-c47b-42fa-bb01-656313e1abdf",
+      "items": [
+        {
+          "title": "Elysée Nuit",
+          "description": "Elysée Nuit",
+          "unit_price": 299.9,
+          "quantity": 2
+        }
+      ],
+      "payer": {
+        "name": "GUSTAVO Henrique",
+        "email": "gustavo.henrique.m2005@gmail.com",
+        "phone": {
+          "area_code": "11",
+          "number": "943593778"
+        }
+      },
+      "total": 599.8,
+      "status": "pending",
+      "paymentStatus": "pending",
+      "metadata": {
+        "orderId": "order_1768431710034",
+        "customerName": "GUSTAVO Henrique",
+        "customerEmail": "gustavo.henrique.m2005@gmail.com",
+        "customerPhone": "11943593778",
+        "shippingAddress": {
+          "street": "Rua Florida",
+          "number": "282",
+          "neighborhood": "Jardim magali",
+          "city": "São Paulo",
+          "complement": ""
+        }
+      },
+      "createdAt": "2026-01-14T23:01:50.302Z",
+      "updatedAt": "2026-01-14T23:01:50.302Z"
     }
   ]
 }
