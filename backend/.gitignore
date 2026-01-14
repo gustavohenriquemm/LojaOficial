@@ -21,6 +21,12 @@ Thumbs.db
 *.sqlite
 *.db
 
+# Data files (mantém estrutura mas ignora dados sensíveis)
+data/orders.json
+data/products.json
+# Mantém o .gitkeep para preservar a estrutura do diretório
+!data/.gitkeep
+
 # Payment records
 payments/
 orders/

@@ -6,17 +6,19 @@ services:
     region: oregon
     plan: free
     rootDir: backend
-    buildCommand: npm install
-    startCommand: node server.js
+    buildCommand: npm install && npm run init
+    startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: 10000
       - key: MERCADOPAGO_ACCESS_TOKEN
         sync: false
       - key: MERCADOPAGO_PUBLIC_KEY
         sync: false
+      - key: FRONTEND_URL
+        value: https://loja-oficial-frontend.onrender.com
+      - key: CORS_ORIGIN
+        value: https://loja-oficial-frontend.onrender.com
     healthCheckPath: /health
     autoDeploy: true
 

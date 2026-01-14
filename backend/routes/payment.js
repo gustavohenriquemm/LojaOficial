@@ -48,8 +48,27 @@ router.post('/create-preference', checkMercadoPagoConfig, async (req, res) => {
       }
     }
 
-    // Configurar URLs de retorno padrão se não fornecidas
-    const frontendUrl = process.env.FRONTEND_URL || 'http://127.0.0.1:5503';
+    // Configurar URLs de retorno baseadas no ambiente
+    const getBackendUrl = () => {
+      if (process.env.RENDER_EXTERNAL_URL) {
+        return process.env.RENDER_EXTERNAL_URL; // URL automática do Render
+      }
+      if (process.env.BACKEND_URL) {
+        return process.env.BACKEND_URL;
+      }
+      return `http://localhost:${process.env.PORT || 3000}`;
+    };
+
+    const getFrontendUrl = () => {
+      if (process.env.FRONTEND_URL) {
+        return process.env.FRONTEND_URL;
+      }
+      return 'http://localhost:5503';
+    };
+
+    const backendUrl = getBackendUrl();
+    const frontendUrl = getFrontendUrl();
+
     const defaultBackUrls = {
       success: process.env.SUCCESS_URL || `${frontendUrl}/checkout.html?status=success`,
       failure: process.env.FAILURE_URL || `${frontendUrl}/checkout.html?status=failure`,
@@ -61,6 +80,8 @@ router.post('/create-preference', checkMercadoPagoConfig, async (req, res) => {
       ? back_urls 
       : defaultBackUrls;
 
+    console.log('📋 Backend URL:', backendUrl);
+    console.log('📋 Frontend URL:', frontendUrl);
     console.log('📋 Back URLs configuradas:', backUrls);
 
     // Criar preferência no Mercado Pago
@@ -78,7 +99,7 @@ router.post('/create-preference', checkMercadoPagoConfig, async (req, res) => {
         failure: backUrls.failure,
         pending: backUrls.pending
       },
-      notification_url: `${process.env.BACKEND_URL || 'http://localhost:3000'}/api/webhook`,
+      notification_url: `${backendUrl}/api/webhook`,
       statement_descriptor: 'Presentes Especiais',
       external_reference: metadata?.orderId || `order_${Date.now()}`,
       metadata: metadata || {}

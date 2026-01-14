@@ -29,28 +29,42 @@ const PORT = process.env.PORT || 3000;
 const allowedOrigins = [
   'http://localhost:8080',
   'http://localhost:5500',
+  'http://localhost:5503',
   'http://127.0.0.1:8080',
-  'http://127.0.0.1:5500'
+  'http://127.0.0.1:5500',
+  'http://127.0.0.1:5503'
 ];
 
-// Adicionar URLs do Render em produção
+// Adicionar URLs do Render e outras origens de produção
 if (process.env.NODE_ENV === 'production') {
   if (process.env.FRONTEND_URL) {
     allowedOrigins.push(process.env.FRONTEND_URL);
+    // Adicionar variações com e sem trailing slash e http/https
+    allowedOrigins.push(process.env.FRONTEND_URL.replace(/\/$/, ''));
+    allowedOrigins.push(process.env.FRONTEND_URL.replace('http://', 'https://'));
+    allowedOrigins.push(process.env.FRONTEND_URL.replace('https://', 'http://'));
   }
-  // Permitir qualquer subdomínio do Render
-  allowedOrigins.push(/\.onrender\.com$/);
+  
+  // Aceitar CORS_ORIGIN se configurado
+  if (process.env.CORS_ORIGIN) {
+    const origins = process.env.CORS_ORIGIN.split(',').map(o => o.trim());
+    allowedOrigins.push(...origins);
+  }
 }
+
+console.log('🔐 Origens CORS permitidas:', allowedOrigins);
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Permitir requisições sem origin (mobile apps, postman, etc)
-    if (!origin) return callback(null, true);
+    // Permitir requisições sem origin (mobile apps, postman, curl, etc)
+    if (!origin) {
+      return callback(null, true);
+    }
     
     // Verificar se a origem está na lista permitida
     const isAllowed = allowedOrigins.some(allowed => {
       if (typeof allowed === 'string') {
-        return allowed === origin;
+        return allowed === origin || origin.endsWith('.onrender.com') || origin.endsWith('.vercel.app');
       }
       if (allowed instanceof RegExp) {
         return allowed.test(origin);
@@ -61,11 +75,14 @@ app.use(cors({
     if (isAllowed) {
       callback(null, true);
     } else {
-      console.log('❌ CORS bloqueado para origem:', origin);
-      callback(null, true); // Permitir mesmo assim em produção
+      console.log('⚠️ CORS requisição de origem não listada:', origin);
+      // Em produção, permitir mesmo assim para evitar bloqueios
+      callback(null, process.env.NODE_ENV === 'production');
     }
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
 // Body parser
