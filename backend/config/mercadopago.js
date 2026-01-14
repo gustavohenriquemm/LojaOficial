@@ -8,18 +8,24 @@ const { MercadoPagoConfig, Preference, Payment } = require('mercadopago');
 // Determinar qual credencial usar baseado no ambiente
 const isProduction = process.env.NODE_ENV === 'production';
 
-const accessToken = isProduction 
-  ? process.env.MP_ACCESS_TOKEN_PROD 
-  : process.env.MP_ACCESS_TOKEN_TEST;
+// Aceitar tanto formato MERCADOPAGO_* (Render) quanto MP_* (local)
+const accessToken = process.env.MERCADOPAGO_ACCESS_TOKEN 
+  || (isProduction 
+    ? process.env.MP_ACCESS_TOKEN_PROD 
+    : process.env.MP_ACCESS_TOKEN_TEST);
 
-const publicKey = isProduction 
-  ? process.env.MP_PUBLIC_KEY_PROD 
-  : process.env.MP_PUBLIC_KEY_TEST;
+const publicKey = process.env.MERCADOPAGO_PUBLIC_KEY 
+  || (isProduction 
+    ? process.env.MP_PUBLIC_KEY_PROD 
+    : process.env.MP_PUBLIC_KEY_TEST);
 
 // Validar se as credenciais existem
 if (!accessToken) {
   console.error('❌ ERRO: Access Token do Mercado Pago não configurado!');
-  console.error('Configure as variáveis de ambiente no arquivo .env');
+  console.error('💡 Configure uma destas variáveis de ambiente:');
+  console.error('   - MERCADOPAGO_ACCESS_TOKEN (Render/produção)');
+  console.error('   - MP_ACCESS_TOKEN_TEST (desenvolvimento)');
+  console.error('   - MP_ACCESS_TOKEN_PROD (produção local)');
   process.exit(1);
 }
 
