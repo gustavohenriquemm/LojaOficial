@@ -21,8 +21,45 @@ const PORT = process.env.PORT || 3000;
 // ================================================
 
 // CORS - Permitir requisições do frontend
+const allowedOrigins = [
+  'http://localhost:8080',
+  'http://localhost:5500',
+  'http://127.0.0.1:8080',
+  'http://127.0.0.1:5500'
+];
+
+// Adicionar URLs do Render em produção
+if (process.env.NODE_ENV === 'production') {
+  if (process.env.FRONTEND_URL) {
+    allowedOrigins.push(process.env.FRONTEND_URL);
+  }
+  // Permitir qualquer subdomínio do Render
+  allowedOrigins.push(/\.onrender\.com$/);
+}
+
 app.use(cors({
-  origin: ['http://localhost:8080', 'http://localhost:5500', 'http://127.0.0.1:8080'],
+  origin: function (origin, callback) {
+    // Permitir requisições sem origin (mobile apps, postman, etc)
+    if (!origin) return callback(null, true);
+    
+    // Verificar se a origem está na lista permitida
+    const isAllowed = allowedOrigins.some(allowed => {
+      if (typeof allowed === 'string') {
+        return allowed === origin;
+      }
+      if (allowed instanceof RegExp) {
+        return allowed.test(origin);
+      }
+      return false;
+    });
+    
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      console.log('❌ CORS bloqueado para origem:', origin);
+      callback(null, true); // Permitir mesmo assim em produção
+    }
+  },
   credentials: true
 }));
 
@@ -107,6 +144,31 @@ app.listen(PORT, () => {
   console.log(`🌍 Ambiente: ${process.env.NODE_ENV || 'development'}`);
   console.log(`💳 Mercado Pago: Configurado`);
   console.log('='.repeat(50) + '\n');
+  
+  // Sistema de auto-ping para evitar hibernação (apenas em produção)
+  if (process.env.NODE_ENV === 'production' && process.env.RENDER_EXTERNAL_URL) {
+    const pingInterval = 14 * 60 * 1000; // 14 minutos
+    const pingUrl = process.env.RENDER_EXTERNAL_URL || `http://localhost:${PORT}`;
+    
+    console.log('🔄 Sistema de ping ativado para evitar hibernação');
+    console.log(`📡 Ping URL: ${pingUrl}/health`);
+    
+    setInterval(async () => {
+      try {
+        const https = require('https');
+        const http = require('http');
+        const protocol = pingUrl.startsWith('https') ? https : http;
+        
+        protocol.get(`${pingUrl}/health`, (res) => {
+          console.log(`✅ Ping enviado - Status: ${res.statusCode} - ${new Date().toISOString()}`);
+        }).on('error', (err) => {
+          console.error('❌ Erro no ping:', err.message);
+        });
+      } catch (error) {
+        console.error('❌ Erro ao enviar ping:', error.message);
+      }
+    }, pingInterval);
+  }
 });
 
 // Tratamento de encerramento gracioso

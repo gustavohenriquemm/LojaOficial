@@ -1,0 +1,44 @@
+services:
+  # Backend API
+  - type: web
+    name: loja-oficial-backend
+    runtime: node
+    region: oregon
+    plan: free
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MERCADOPAGO_ACCESS_TOKEN
+        sync: false
+      - key: MERCADOPAGO_PUBLIC_KEY
+        sync: false
+    healthCheckPath: /health
+    autoDeploy: true
+
+  # Frontend (Static Site)
+  - type: web
+    name: loja-oficial-frontend
+    runtime: static
+    region: oregon
+    plan: free
+    buildCommand: echo "No build needed"
+    staticPublishPath: ./
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=3600
+    envVars:
+      - key: API_URL
+        fromService:
+          type: web
+          name: loja-oficial-backend
+          property: host
+    autoDeploy: true

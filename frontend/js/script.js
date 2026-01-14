@@ -258,8 +258,25 @@ const defaultProducts = [
     }
 ];
 
-// API Base URL
-const API_URL = 'http://localhost:3000/api/products';
+// API Base URL - Usa configuração do config.js se disponível
+const API_URL = (() => {
+  // Se config.js foi carregado, usar a configuração
+  if (window.APP_CONFIG && window.APP_CONFIG.apiUrl) {
+    return window.APP_CONFIG.apiUrl;
+  }
+  
+  // Fallback: detectar ambiente automaticamente
+  if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+    // Em produção - SUBSTITUA pela URL real do seu backend no Render
+    return 'https://SEU-BACKEND.onrender.com/api/products';
+  }
+  
+  // Em desenvolvimento local
+  return 'http://localhost:3000/api/products';
+})();
+
+console.log('🔗 API URL configurada:', API_URL);
+
 // Expor no escopo global para outros scripts
 window.API_URL = API_URL;
 
