@@ -2,6 +2,11 @@
 // SERVIDOR NODE.JS - BACKEND MERCADO PAGO
 // ================================================
 
+console.log('🔧 Iniciando servidor...');
+console.log(`📦 Node.js: ${process.version}`);
+console.log(`💻 Plataforma: ${process.platform}`);
+console.log(`🌍 NODE_ENV: ${process.env.NODE_ENV || 'development'}`);
+
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
