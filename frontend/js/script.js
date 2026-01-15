@@ -268,7 +268,7 @@ const API_URL = (() => {
   // Fallback: detectar ambiente automaticamente
   if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
     // Em produção - SUBSTITUA pela URL real do seu backend no Render
-    return 'https://seu-backend.onrender.com/api/products'; // ajuste para o domínio real do backend
+    return 'https://lojaoficial-3.onrender.com/api/products'; // domínio correto do backend
   }
   
   // Em desenvolvimento local

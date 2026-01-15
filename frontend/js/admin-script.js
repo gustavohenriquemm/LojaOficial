@@ -52,7 +52,7 @@ if (checkAuth()) {
 // ===================================
 
 // API Base URL
-const API_URL = 'https://seu-backend.onrender.com/api/products'; // ajuste para o domínio real do backend
+const API_URL = 'https://lojaoficial-3.onrender.com/api/products'; // domínio correto do backend
 
 // Initialize variables
 var adminProducts = [];
