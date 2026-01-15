@@ -15,23 +15,21 @@ const cors = require('cors');
 
 console.log('🔧 Inicializando ambiente do backend...');
 
+
+// Inicialização única de diretórios e arquivos
+const isProduction = process.env.NODE_ENV === 'production';
+const dataDir = isProduction && process.platform === 'linux'
+  ? '/tmp/data'
+  : path.join(__dirname, 'data');
+
+console.log(`💾 Diretório de dados: ${dataDir}`);
 try {
-  // Criar diretório data se não existir
-  // Em produção no Render, usar /tmp pois o filesystem é read-only
-  const isProduction = process.env.NODE_ENV === 'production';
-  const dataDir = isProduction && process.platform === 'linux'
-    ? '/tmp/data'
-    : path.join(__dirname, 'data');
-
-  console.log(`💾 Diretório de dados: ${dataDir}`);
-
   if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
     console.log('✅ Diretório data/ criado');
   } else {
     console.log('✓ Diretório data/ já existe');
   }
-
   // Inicializar orders.json se não existir
   const ordersPath = path.join(dataDir, 'orders.json');
   if (!fs.existsSync(ordersPath)) {
@@ -40,28 +38,14 @@ try {
   } else {
     console.log('✓ Arquivo orders.json já existe');
   }
-
-  // Inicializar products.json se não existir
+  // Inicializar products.json se não existir (sempre array vazio)
   const productsPath = path.join(dataDir, 'products.json');
   if (!fs.existsSync(productsPath)) {
-    // Em produção, copiar products.json inicial do projeto para /tmp/data se existir
-    if (isProduction) {
-      const initialProducts = path.join(__dirname, 'data', 'products.json');
-      if (fs.existsSync(initialProducts)) {
-        fs.copyFileSync(initialProducts, productsPath);
-        console.log('✅ Copiado products.json inicial para /tmp/data');
-      } else {
-        fs.writeFileSync(productsPath, JSON.stringify([], null, 2));
-        console.log('✅ Arquivo products.json vazio criado em /tmp/data');
-      }
-    } else {
-      fs.writeFileSync(productsPath, JSON.stringify([], null, 2));
-      console.log('✅ Arquivo products.json inicializado');
-    }
+    fs.writeFileSync(productsPath, JSON.stringify([]));
+    console.log('✅ Arquivo products.json vazio criado');
   } else {
     console.log('✓ Arquivo products.json já existe');
   }
-
   console.log('✅ Inicialização concluída!\n');
 } catch (error) {
   console.error('❌ Erro na inicialização:', error.message);
@@ -103,39 +87,38 @@ const PORT = process.env.PORT || 3000;
 console.log(`🔌 Porta configurada: ${PORT}`);
 
 // ================================================
-try {
-  const isProduction = process.env.NODE_ENV === 'production';
-  const dataDir = isProduction && process.platform === 'linux'
-    ? '/tmp/data'
-    : path.join(__dirname, 'data');
 
-  console.log(`💾 Diretório de dados: ${dataDir}`);
+// Definir allowedOrigins antes do uso
+const allowedOrigins = [
+  'http://localhost:8080',
+  'http://localhost:5500',
+  'http://localhost:5503',
+  'http://127.0.0.1:8080',
+  'http://127.0.0.1:5500',
+  'http://127.0.0.1:5503',
+  'http://localhost:5151',
+  'https://lojaropresentes.onrender.com',
+  'https://lojaoficial-3.onrender.com'
+];
 
-  // Garantir criação de /tmp/data e /tmp/data/products.json (array vazio) em produção
-  if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir, { recursive: true });
-    console.log('✅ Diretório data/ criado');
-  } else {
-    console.log('✓ Diretório data/ já existe');
+// Adicionar URLs do Render e outras origens de produção
+if (process.env.NODE_ENV === 'production') {
+  if (process.env.FRONTEND_URL) {
+    allowedOrigins.push(process.env.FRONTEND_URL);
+    allowedOrigins.push(process.env.FRONTEND_URL.replace(/\/$/, ''));
+    allowedOrigins.push(process.env.FRONTEND_URL.replace('http://', 'https://'));
+    allowedOrigins.push(process.env.FRONTEND_URL.replace('https://', 'http://'));
   }
-
-  // Inicializar orders.json se não existir
-  const ordersPath = path.join(dataDir, 'orders.json');
-  if (!fs.existsSync(ordersPath)) {
-    fs.writeFileSync(ordersPath, JSON.stringify({ orders: [] }, null, 2));
-    console.log('✅ Arquivo orders.json inicializado');
-  } else {
-    console.log('✓ Arquivo orders.json já existe');
+  if (process.env.CORS_ORIGIN) {
+    const origins = process.env.CORS_ORIGIN.split(',').map(o => o.trim());
+    allowedOrigins.push(...origins);
   }
+}
 
-  // Inicializar products.json se não existir (sempre array vazio)
-  const productsPath = path.join(dataDir, 'products.json');
-  if (!fs.existsSync(productsPath)) {
-    fs.writeFileSync(productsPath, JSON.stringify([]));
-    console.log('✅ Arquivo products.json vazio criado');
-  } else {
-    console.log('✓ Arquivo products.json já existe');
-  }
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    const isAllowed = allowedOrigins.some(allowed => {
       if (typeof allowed === 'string') {
         return allowed === origin || origin.endsWith('.onrender.com') || origin.endsWith('.vercel.app');
       }
@@ -144,12 +127,10 @@ try {
       }
       return false;
     });
-    
     if (isAllowed) {
       callback(null, true);
     } else {
       console.log('⚠️ CORS requisição de origem não listada:', origin);
-      // Em produção, permitir mesmo assim para evitar bloqueios
       callback(null, process.env.NODE_ENV === 'production');
     }
   },
