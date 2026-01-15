@@ -7,7 +7,6 @@ const API_URL = 'https://lojaoficial-3.onrender.com/api/products'; // domínio c
 // ADMIN AUTHENTICATION
 // ===================================
 
-const ADMIN_CREDENTIALS = {
     username: 'admin',
     password: 'admin123'
 };
