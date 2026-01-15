@@ -98,6 +98,11 @@ const allowedOrigins = [
   'http://127.0.0.1:5503',
   'http://localhost:5151',
   'https://lojaropresentes.onrender.com',
+  'https://lojaropresentes.onrender.com/frontend/pages/cosmetico-feminino.html',
+  'https://lojaropresentes.onrender.com/frontend/pages/produtos.html',
+  'https://lojaropresentes.onrender.com/frontend/pages/categorias.html',
+  'https://lojaropresentes.onrender.com/frontend/pages/cosmetico-masculino.html',
+  'https://lojaropresentes.onrender.com/frontend/pages/ofertas.html',
   'https://lojaoficial-3.onrender.com'
 ];
 
