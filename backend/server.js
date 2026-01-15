@@ -11,6 +11,8 @@ console.log(`🌍 NODE_ENV: ${process.env.NODE_ENV || 'development'}`);
 const fs = require('fs');
 const path = require('path');
 
+const cors = require('cors');
+
 console.log('🔧 Inicializando ambiente do backend...');
 
 try {
@@ -125,6 +127,9 @@ if (process.env.NODE_ENV === 'production') {
 console.log('🔐 Origens CORS permitidas:', allowedOrigins);
 
 app.use(cors({
+  origin: 'https://lojaropresentes.onrender.com', // ajuste para o domínio do seu frontend
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
   origin: function (origin, callback) {
     // Permitir requisições sem origin (mobile apps, postman, curl, etc)
     if (!origin) {
