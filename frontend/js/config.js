@@ -11,7 +11,7 @@ const CONFIG = {
     development: 'http://localhost:3000/api/products',
     
     // Produção (Render.com) - SUBSTITUA PELA SUA URL REAL
-    production: 'https://loja-oficial-backend.onrender.com/api/products',
+    production: 'https://lojaoficial-2.onrender.com/api/products',
     // Exemplo: 'https://loja-oficial-backend.onrender.com/api/products'
   },
   
