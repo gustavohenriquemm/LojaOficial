@@ -60,7 +60,8 @@ var editingProductId = null;
 // Load products from API
 async function loadProductsFromAPI() {
     try {
-        const response = await fetch(API_URL);
+        const apiUrl = window.API_URL;
+        const response = await fetch(apiUrl);
         if (response.ok) {
             adminProducts = await response.json();
         } else {
@@ -211,7 +212,7 @@ function editProduct(id) {
 function deleteProduct(id) {
     if (confirm('Tem certeza que deseja excluir este produto?')) {
         // Delete from API
-        fetch(`${API_URL}/${id}`, {
+        fetch(`${window.API_URL}/${id}`, {
             method: 'DELETE'
         })
         .then(response => {
@@ -264,7 +265,7 @@ document.getElementById('productForm')?.addEventListener('submit', async (e) => 
         let response;
         if (editingProductId) {
             // Update existing product
-            response = await fetch(`${API_URL}/${editingProductId}`, {
+            response = await fetch(`${window.API_URL}/${editingProductId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -273,7 +274,7 @@ document.getElementById('productForm')?.addEventListener('submit', async (e) => 
             });
         } else {
             // Create new product
-            response = await fetch(API_URL, {
+            response = await fetch(window.API_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
