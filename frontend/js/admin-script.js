@@ -1,12 +1,14 @@
 
 // ===================================
 // API Base URL
-const API_URL = 'https://lojaoficial-3.onrender.com/api/products'; // domínio correto do backend
+ fetch(window.API_URL)
+// domínio correto do backend
 
 // ===================================
 // ADMIN AUTHENTICATION
 // ===================================
 
+const ADMIN_CREDENTIALS = {
     username: 'admin',
     password: 'admin123'
 };
