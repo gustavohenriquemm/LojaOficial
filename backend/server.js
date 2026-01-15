@@ -100,7 +100,9 @@ const allowedOrigins = [
   'http://127.0.0.1:8080',
   'http://127.0.0.1:5500',
   'http://127.0.0.1:5503',
-  'http://localhost:5151'
+  'http://localhost:5151',
+  // Adicionado domínio do frontend Render
+  'https://lojaoficial-3.onrender.com'
 ];
 
 // Adicionar URLs do Render e outras origens de produção
