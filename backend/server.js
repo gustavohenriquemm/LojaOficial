@@ -22,9 +22,9 @@ try {
   const dataDir = isProduction && process.platform === 'linux'
     ? '/tmp/data'
     : path.join(__dirname, 'data');
-    
+
   console.log(`💾 Diretório de dados: ${dataDir}`);
-  
+
   if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
     console.log('✅ Diretório data/ criado');
@@ -44,8 +44,20 @@ try {
   // Inicializar products.json se não existir
   const productsPath = path.join(dataDir, 'products.json');
   if (!fs.existsSync(productsPath)) {
-    fs.writeFileSync(productsPath, JSON.stringify([], null, 2));
-    console.log('✅ Arquivo products.json inicializado');
+    // Em produção, copiar products.json inicial do projeto para /tmp/data se existir
+    if (isProduction) {
+      const initialProducts = path.join(__dirname, 'data', 'products.json');
+      if (fs.existsSync(initialProducts)) {
+        fs.copyFileSync(initialProducts, productsPath);
+        console.log('✅ Copiado products.json inicial para /tmp/data');
+      } else {
+        fs.writeFileSync(productsPath, JSON.stringify([], null, 2));
+        console.log('✅ Arquivo products.json vazio criado em /tmp/data');
+      }
+    } else {
+      fs.writeFileSync(productsPath, JSON.stringify([], null, 2));
+      console.log('✅ Arquivo products.json inicializado');
+    }
   } else {
     console.log('✓ Arquivo products.json já existe');
   }
