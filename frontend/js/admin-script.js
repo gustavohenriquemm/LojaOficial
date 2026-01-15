@@ -53,11 +53,9 @@ if (checkAuth()) {
 }
 
 // ===================================
+
 // PRODUCTS MANAGEMENT
 // ===================================
-
-// API Base URL
-const API_URL = 'https://lojaoficial-3.onrender.com/api/products'; // domínio correto do backend
 
 // Initialize variables
 var adminProducts = [];
