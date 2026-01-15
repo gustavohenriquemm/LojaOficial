@@ -11,7 +11,7 @@ console.log(`🌍 NODE_ENV: ${process.env.NODE_ENV || 'development'}`);
 const fs = require('fs');
 const path = require('path');
 
-const cors = require('cors');
+// const cors = require('cors'); // Removido: declaração duplicada
 
 console.log('🔧 Inicializando ambiente do backend...');
 
@@ -54,9 +54,9 @@ try {
   console.log('⚠️ Continuando sem inicialização completa...\n');
 }
 
+
 require('dotenv').config();
 const express = require('express');
-const cors = require('cors');
 const bodyParser = require('body-parser');
 
 // Importar configuração do Mercado Pago para verificar se está configurado
