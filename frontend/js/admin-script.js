@@ -1,13 +1,4 @@
 // ===================================
-// CONFIGURAÇÃO DA API (ÚNICA)
-// ===================================
-
-const BACKEND_URL = 'https://lojaoficial-3.onrender.com';
-const API_URL = `${BACKEND_URL}/api/products`;
-
-console.log('API configurada:', API_URL);
-
-// ===================================
 // ADMIN AUTHENTICATION
 // ===================================
 
@@ -21,10 +12,7 @@ function checkAuth() {
 }
 
 function login(username, password) {
-    if (
-        username === ADMIN_CREDENTIALS.username &&
-        password === ADMIN_CREDENTIALS.password
-    ) {
+    if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
         localStorage.setItem('adminLoggedIn', 'true');
         return true;
     }
@@ -36,6 +24,7 @@ function logout() {
     location.reload();
 }
 
+// Login form handler
 document.getElementById('loginForm')?.addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -51,6 +40,7 @@ document.getElementById('loginForm')?.addEventListener('submit', (e) => {
     }
 });
 
+// Auto login
 if (checkAuth()) {
     document.getElementById('loginScreen')?.classList.add('hidden');
     document.getElementById('adminPanel')?.classList.remove('hidden');
@@ -64,14 +54,15 @@ if (checkAuth()) {
 let adminProducts = [];
 let editingProductId = null;
 
+// 🔥 USANDO SEMPRE window.API_URL 🔥
 async function loadProductsFromAPI() {
     try {
-        const response = await fetch(API_URL);
-        if (!response.ok) throw new Error('Erro ao buscar produtos');
+        const response = await fetch(window.API_URL);
+        if (!response.ok) throw new Error('Erro na API');
         adminProducts = await response.json();
     } catch (error) {
-        console.error('Erro API:', error);
-        adminProducts = JSON.parse(localStorage.getItem('adminProducts')) || [];
+        console.error('Erro ao carregar produtos:', error);
+        adminProducts = JSON.parse(localStorage.getItem('adminProducts') || '[]');
     }
 }
 
@@ -80,20 +71,13 @@ function loadProducts() {
     if (!tbody) return;
 
     if (adminProducts.length === 0) {
-        tbody.innerHTML =
-            '<tr><td colspan="5">Nenhum produto cadastrado</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5">Nenhum produto cadastrado</td></tr>';
         return;
     }
 
     tbody.innerHTML = adminProducts.map(product => `
         <tr>
-            <td>
-                ${
-                    product.image
-                        ? `<img src="${product.image}" class="product-thumb">`
-                        : 'Sem imagem'
-                }
-            </td>
+            <td><img src="${product.image || ''}" class="product-thumb"></td>
             <td>${product.name}</td>
             <td>${product.category}</td>
             <td>R$ ${product.price.toFixed(2)}</td>
@@ -105,56 +89,52 @@ function loadProducts() {
     `).join('');
 }
 
-async function deleteProduct(id) {
+function deleteProduct(id) {
     if (!confirm('Deseja excluir este produto?')) return;
 
-    try {
-        const response = await fetch(`${API_URL}/${id}`, {
-            method: 'DELETE'
-        });
-
-        if (!response.ok) throw new Error('Erro ao excluir');
-
-        adminProducts = adminProducts.filter(p => p.id !== id);
-        loadProducts();
-        alert('Produto excluído!');
-    } catch (err) {
-        alert('Erro ao excluir produto');
-        console.error(err);
-    }
+    fetch(`${window.API_URL}/${id}`, { method: 'DELETE' })
+        .then(res => {
+            if (!res.ok) throw new Error();
+            adminProducts = adminProducts.filter(p => p.id !== id);
+            loadProducts();
+            updateDashboard();
+        })
+        .catch(() => alert('Erro ao excluir produto'));
 }
 
 document.getElementById('productForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const productData = {
-        name: document.getElementById('productName').value,
-        category: document.getElementById('productCategory').value,
-        price: parseFloat(document.getElementById('productPrice').value),
-        image: document.getElementById('productImage').value || null
+        name: productName.value,
+        category: productCategory.value,
+        price: parseFloat(productPrice.value),
+        description: productDescription.value,
+        image: productImage.value,
+        featured: productFeatured.checked
     };
 
-    try {
-        const response = editingProductId
-            ? await fetch(`${API_URL}/${editingProductId}`, {
-                  method: 'PUT',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify(productData)
-              })
-            : await fetch(API_URL, {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify(productData)
-              });
+    const url = editingProductId
+        ? `${window.API_URL}/${editingProductId}`
+        : window.API_URL;
 
-        if (!response.ok) throw new Error('Erro ao salvar');
+    const method = editingProductId ? 'PUT' : 'POST';
+
+    try {
+        const res = await fetch(url, {
+            method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(productData)
+        });
+
+        if (!res.ok) throw new Error();
 
         await loadProductsFromAPI();
         loadProducts();
-        alert('Produto salvo!');
-    } catch (err) {
+        updateDashboard();
+        closeProductModal();
+    } catch {
         alert('Erro ao salvar produto');
-        console.error(err);
     }
 });
 
@@ -163,12 +143,12 @@ document.getElementById('productForm')?.addEventListener('submit', async (e) => 
 // ===================================
 
 function updateDashboard() {
-    document.getElementById('totalProducts')?.textContent =
-        adminProducts.length;
+    document.getElementById('totalProducts') &&
+        (totalProducts.textContent = adminProducts.length);
 }
 
 // ===================================
-// INITIALIZATION
+// INIT
 // ===================================
 
 async function loadAdminData() {
@@ -180,12 +160,9 @@ async function loadAdminData() {
 setInterval(async () => {
     await loadProductsFromAPI();
     loadProducts();
-    updateDashboard();
 }, 5000);
 
-// ===================================
-// GLOBAL FUNCTIONS
-// ===================================
-
-window.logout = logout;
+// Expor funções
+window.editProduct = editProduct;
 window.deleteProduct = deleteProduct;
+window.logout = logout;
