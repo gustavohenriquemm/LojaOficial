@@ -70,7 +70,11 @@ async function loadProductsFromAPI() {
         }
     } catch (error) {
         console.error('Erro ao conectar com API:', error);
-        adminProducts = [];
+        // Fallback para localStorage se API não estiver disponível
+        const stored = localStorage.getItem('adminProducts');
+        if (stored) {
+            adminProducts = JSON.parse(stored);
+        }
     }
 }
 
