@@ -9,7 +9,7 @@
 
 const CONFIG = {
   API: {
-    production: 'https://lojaoficial-3.onrender.com/api/products',
+    production: 'https://lojaoficial-2.onrender.com/api/products',
     development: 'http://localhost:3000/api/products'
   },
   MERCADOPAGO: {
