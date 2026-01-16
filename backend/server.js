@@ -41,6 +41,7 @@ try {
   // Inicializar products.json se não existir (sempre array vazio)
   const productsPath = path.join(dataDir, 'products.json');
   if (!fs.existsSync(productsPath)) {
+    // Só cria o arquivo vazio se não existir, não sobrescreve se já existe
     fs.writeFileSync(productsPath, JSON.stringify([]));
     console.log('✅ Arquivo products.json vazio criado');
   } else {
