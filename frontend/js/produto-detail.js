@@ -222,12 +222,16 @@ function calcularFreteHandler() {
     const pesoFinal = Math.max(peso, pesoCubico);
 
 
-    // Simulação de distância (quanto mais diferente o CEP, maior a distância)
-    // Corrigido: considera os 5 primeiros dígitos como string, depois converte para número mantendo zeros à esquerda
-    const cepDest5 = cepDestino.substring(0, 5);
-    const cepOrig5 = cepOrigem.substring(0, 5);
-    let distancia = Math.abs(Number(cepDest5) - Number(cepOrig5));
-    if (isNaN(distancia)) distancia = 0;
+    // --- Cálculo de distância simulada por faixas de CEP ---
+    function calcularDistanciaSimulada(cepOrigem, cepDestino) {
+        const origem = cepOrigem.replace(/\D/g, "").substring(0, 5);
+        const destino = cepDestino.replace(/\D/g, "").substring(0, 5);
+        if (origem === destino) return 5; // mesma rua/bairro
+        if (origem.substring(0, 3) === destino.substring(0, 3)) return 20; // mesma cidade
+        if (origem.substring(0, 2) === destino.substring(0, 2)) return 60; // mesmo estado
+        return 150; // outros estados
+    }
+    const distancia = calcularDistanciaSimulada(cepOrigem, cepDestino);
 
     // Simulação de valores
     const basePAC = 18 + pesoFinal * 6 + distancia * 0.01;
