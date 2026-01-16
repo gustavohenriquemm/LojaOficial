@@ -241,10 +241,12 @@ function calcularFreteHandler() {
     const distancia = calcularDistanciaSimulada(cepOrigem, cepDestino);
 
     // Simulação de valores
-    const basePAC = 18 + pesoFinal * 6 + distancia * 0.01;
-    const baseSEDEX = 28 + pesoFinal * 9 + distancia * 0.018;
-    const prazoPAC = 5 + Math.ceil(distancia / 1000);
-    const prazoSEDEX = 2 + Math.ceil(distancia / 2000);
+    const basePAC = 18 + (pesoFinal * 6) + (distancia * 0.1);
+    const baseSEDEX = 28 + (pesoFinal * 9) + (distancia * 0.2);
+
+    const prazoPAC = 5 + Math.ceil(distancia / 40);
+    const prazoSEDEX = 2 + Math.ceil(distancia / 80);
+
 
     resultado.innerHTML = `
         <div class="frete-opcao">
