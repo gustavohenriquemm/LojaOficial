@@ -38,6 +38,24 @@ if (!fs.existsSync(ordersPath)) {
 }
 
 // Inicializar products.json se não existir
+// Copiar products.json para /tmp/data/products.json no ambiente Linux (Render)
+const srcProducts = path.join(__dirname, 'data', 'products.json');
+const destProducts = '/tmp/data/products.json';
+if (process.platform === 'linux') {
+  try {
+    if (fs.existsSync(srcProducts)) {
+      // Cria diretório /tmp/data se não existir
+      const tmpDataDir = '/tmp/data';
+      if (!fs.existsSync(tmpDataDir)) {
+        fs.mkdirSync(tmpDataDir, { recursive: true });
+      }
+      fs.copyFileSync(srcProducts, destProducts);
+      console.log('✅ products.json copiado para /tmp/data/products.json');
+    }
+  } catch (err) {
+    console.error('❌ Erro ao copiar products.json para /tmp/data:', err.message);
+  }
+}
 const productsPath = path.join(__dirname, 'data', 'products.json');
 if (!fs.existsSync(productsPath)) {
   fs.writeFileSync(productsPath, JSON.stringify([], null, 2));
