@@ -283,40 +283,32 @@ window.API_URL = API_URL;
 // Load products from API or use default
 let products = [];
 
-// Load products from API
+// Carregar produtos da API
 async function loadProductsFromAPI() {
     try {
         const response = await fetch(API_URL);
         if (response.ok) {
             products = await response.json();
-            // Não usar defaultProducts, sempre usar o que vem da API
         } else {
             console.error('Erro ao carregar produtos da API');
-            // Só usar defaultProducts se houver erro real
-            products = defaultProducts;
+            products = [];
         }
     } catch (error) {
         console.error('Erro ao conectar com API:', error);
-        // Só usar defaultProducts se não conseguir conectar
-        products = defaultProducts;
+        products = [];
     }
-    
-    // Atualizar displays se as funções existirem
     if (typeof renderProducts === 'function') {
         renderProducts();
     }
     if (typeof loadFeaturedProducts === 'function') {
         loadFeaturedProducts();
     }
-    
-    // Atualizar displays de produtos
     displayFeaturedProducts();
     displayAllProducts();
 }
 
 // Carregar produtos ao iniciar
 loadProductsFromAPI();
-
 // Sincronizar a cada 5 segundos para manter atualizado
 setInterval(loadProductsFromAPI, 5000);
 
