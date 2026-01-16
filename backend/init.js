@@ -43,14 +43,19 @@ const srcProducts = path.join(__dirname, 'data', 'products.json');
 const destProducts = '/tmp/data/products.json';
 if (process.platform === 'linux') {
   try {
+    // Cria diretório /tmp/data se não existir
+    const tmpDataDir = '/tmp/data';
+    if (!fs.existsSync(tmpDataDir)) {
+      fs.mkdirSync(tmpDataDir, { recursive: true });
+    }
     if (fs.existsSync(srcProducts)) {
-      // Cria diretório /tmp/data se não existir
-      const tmpDataDir = '/tmp/data';
-      if (!fs.existsSync(tmpDataDir)) {
-        fs.mkdirSync(tmpDataDir, { recursive: true });
-      }
+      // Sempre sobrescreve o arquivo de destino
       fs.copyFileSync(srcProducts, destProducts);
-      console.log('✅ products.json copiado para /tmp/data/products.json');
+      console.log('✅ products.json copiado para /tmp/data/products.json (sobrescrito)');
+    } else {
+      // Se não existe products.json de origem, cria vazio no destino
+      fs.writeFileSync(destProducts, JSON.stringify([], null, 2));
+      console.log('⚠️ products.json de origem não encontrado, criado vazio em /tmp/data/products.json');
     }
   } catch (err) {
     console.error('❌ Erro ao copiar products.json para /tmp/data:', err.message);
