@@ -14,18 +14,17 @@ let checkoutData = {
         number: '',
         neighborhood: '',
         city: '',
-        complement: ''
-    }
+        complement: '',
+        cep: ''
+    },
+    deliveryType: 'entrega', // 'entrega' ou 'retirada'
+    frete: 0
 };
 
 // ===================================
 // STEP NAVIGATION
 // ===================================
-
-                cep: ''
 function goToStep(step) {
-            deliveryType: 'entrega', // 'entrega' ou 'retirada'
-            frete: 0
     // Adicionar loading visual
     const activeContent = document.querySelector('.checkout-step.active .checkout-content');
     if (activeContent) {
