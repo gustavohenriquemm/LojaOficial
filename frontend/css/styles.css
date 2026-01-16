@@ -355,7 +355,7 @@ button {
 
 .hero-img {
     width: 100%;
-    max-width: 350px;
+    max-width: 450px;
     min-width: unset;
     height: auto;
     display: block;
@@ -1023,7 +1023,8 @@ button {
     }
 
     .hero-content {
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column-reverse;
         gap: 40px;
     }
 
