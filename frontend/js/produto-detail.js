@@ -211,11 +211,11 @@ function calcularFreteHandler() {
         return;
     }
     // Dados simulados do produto (poderia vir do backend)
-    const cepOrigem = '01001000'; // Exemplo: centro de SP
-    const peso = currentProduct.peso || 0.5; // kg (simulado)
-    const altura = currentProduct.altura || 10; // cm
-    const largura = currentProduct.largura || 15; // cm
-    const comprimento = currentProduct.comprimento || 20; // cm
+    const cepOrigem = '06833160'; // Origem ajustada para Embu-Guaçu/SP
+    const peso = currentProduct.peso || 0.6; // kg (ajustado)
+    const altura = currentProduct.altura || 15; // cm (ajustado)
+    const largura = currentProduct.largura || 8; // cm (ajustado)
+    const comprimento = currentProduct.comprimento || 8; // cm (ajustado)
 
     // Peso cúbico
     const pesoCubico = (altura * largura * comprimento) / 6000;
