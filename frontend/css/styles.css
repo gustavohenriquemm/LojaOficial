@@ -1,3 +1,35 @@
+/* FRETE */
+.frete-box {
+    background: #f8f8f8;
+    border-radius: 8px;
+    padding: 18px 16px 12px 16px;
+    margin: 18px 0 18px 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    max-width: 350px;
+}
+.frete-form {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+.frete-input {
+    flex: 1;
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+.frete-resultado {
+    font-size: 1rem;
+    margin-top: 4px;
+}
+.frete-opcao {
+    background: #fff;
+    border-radius: 4px;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    border: 1px solid #e0e0e0;
+}
 /* ===================================
    RESET & BASE STYLES
    =================================== */

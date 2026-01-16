@@ -141,6 +141,16 @@ function displayProductDetail() {
                     <p>${currentProduct.description}</p>
                 </div>
 
+                <!-- FRETE -->
+                <div class="frete-box">
+                    <h3>Calcule o Frete</h3>
+                    <div class="frete-form">
+                        <input type="text" id="cepDestino" maxlength="9" placeholder="Digite seu CEP" class="frete-input" />
+                        <button class="btn btn-secondary" id="btnCalcularFrete">Calcular Frete</button>
+                    </div>
+                    <div id="freteResultado" class="frete-resultado"></div>
+                </div>
+
                 <div class="product-detail-actions">
                     <div class="quantity-selector">
                         <button class="quantity-btn" onclick="changeQuantity(-1)">-</button>
@@ -185,6 +195,53 @@ function displayProductDetail() {
             </div>
         </div>
     `;
+// --- FRETE ---
+document.addEventListener('click', function (e) {
+    if (e.target && e.target.id === 'btnCalcularFrete') {
+        calcularFreteHandler();
+    }
+});
+
+function calcularFreteHandler() {
+    const cepDestino = document.getElementById('cepDestino').value.replace(/\D/g, '');
+    const resultado = document.getElementById('freteResultado');
+    resultado.innerHTML = '';
+    if (!cepDestino || cepDestino.length < 8) {
+        resultado.innerHTML = '<span style="color:red">Digite um CEP válido.</span>';
+        return;
+    }
+    // Dados simulados do produto (poderia vir do backend)
+    const cepOrigem = '01001000'; // Exemplo: centro de SP
+    const peso = currentProduct.peso || 0.5; // kg (simulado)
+    const altura = currentProduct.altura || 10; // cm
+    const largura = currentProduct.largura || 15; // cm
+    const comprimento = currentProduct.comprimento || 20; // cm
+
+    // Peso cúbico
+    const pesoCubico = (altura * largura * comprimento) / 6000;
+    const pesoFinal = Math.max(peso, pesoCubico);
+
+    // Simulação de distância (quanto mais diferente o CEP, maior a distância)
+    let distancia = Math.abs(parseInt(cepDestino.substring(0, 5)) - parseInt(cepOrigem.substring(0, 5)));
+    if (isNaN(distancia)) distancia = 1000;
+
+    // Simulação de valores
+    const basePAC = 18 + pesoFinal * 6 + distancia * 0.01;
+    const baseSEDEX = 28 + pesoFinal * 9 + distancia * 0.018;
+    const prazoPAC = 5 + Math.ceil(distancia / 1000);
+    const prazoSEDEX = 2 + Math.ceil(distancia / 2000);
+
+    resultado.innerHTML = `
+        <div class="frete-opcao">
+            <strong>PAC:</strong> R$ ${basePAC.toFixed(2)}<br>
+            <span>Prazo estimado: ${prazoPAC} dias úteis</span>
+        </div>
+        <div class="frete-opcao">
+            <strong>SEDEX:</strong> R$ ${baseSEDEX.toFixed(2)}<br>
+            <span>Prazo estimado: ${prazoSEDEX} dias úteis</span>
+        </div>
+    `;
+}
 }
 
 function changeQuantity(delta) {
