@@ -160,9 +160,9 @@ function removeItemFromCheckout(productId) {
 
 function updateCheckoutTotals() {
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    
-    document.getElementById('sidebarTotal').textContent = formatPrice(total);
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const frete = checkoutData.frete || 0;
+    document.getElementById('sidebarTotal').textContent = formatPrice(subtotal + frete);
 }
 
 // ===================================
@@ -171,7 +171,8 @@ function updateCheckoutTotals() {
 
 function loadOrderSummary() {
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const frete = checkoutData.frete || 0;
     
     // Personal data
     document.getElementById('summaryPersonal').innerHTML = `
@@ -199,7 +200,7 @@ function loadOrderSummary() {
     `).join('');
     
     // Total
-    document.getElementById('summaryTotal').textContent = formatPrice(total);
+    document.getElementById('summaryTotal').textContent = formatPrice(subtotal + frete);
 }
 
 // ===================================
@@ -215,7 +216,9 @@ function finalizeOrder() {
     }
     
     // Calculate total
-    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const frete = checkoutData.frete || 0;
+    const total = subtotal + frete;
     
     // Build WhatsApp message
     let message = `*🎁 NOVO PEDIDO - Presentes Especiais*\n\n`;
@@ -242,6 +245,11 @@ function finalizeOrder() {
     });
     
     message += `\n*💰 VALOR TOTAL: R$ ${total.toFixed(2)}*\n`;
+    if (frete > 0) {
+        message += `Frete: R$ ${frete.toFixed(2)}\n`;
+    } else {
+        message += `Frete: Grátis\n`;
+    }
     message += `\n_Aguardo confirmação e informações sobre o pagamento. Obrigado! 😊_`;
     
     // Save order to localStorage
