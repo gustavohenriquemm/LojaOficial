@@ -5,20 +5,19 @@
 // Default products array
 const defaultProducts = [
     // Cosmético Feminino - Perfumes
-    {
-        id: 1,
-        name: "Perfume Floral Elegance Feminino",
-        category: "Cosmético Feminino",
-        subcategory: "Perfumes",
-        price: 189.90,
-        oldPrice: 249.90,
-        description: "Fragrância sofisticada e duradoura para momentos especiais",
-        image: null
-    },
-    {
-        id: 2,
-        name: "Perfume Floral Delicado",
-        category: "Cosmético Feminino",
+    try {
+        const apiUrl = window.API_URL;
+        const response = await fetch(apiUrl);
+        if (response.ok) {
+            products = await response.json();
+        } else {
+            console.error('Erro ao carregar produtos da API');
+            products = [];
+        }
+    } catch (error) {
+        console.error('Erro ao conectar com API:', error);
+        products = [];
+    }
         subcategory: "Perfumes",
         price: 129.90,
         oldPrice: null,
