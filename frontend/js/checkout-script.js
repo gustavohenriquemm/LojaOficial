@@ -22,7 +22,10 @@ let checkoutData = {
 // STEP NAVIGATION
 // ===================================
 
+                cep: ''
 function goToStep(step) {
+            deliveryType: 'entrega', // 'entrega' ou 'retirada'
+            frete: 0
     // Adicionar loading visual
     const activeContent = document.querySelector('.checkout-step.active .checkout-content');
     if (activeContent) {
