@@ -221,9 +221,13 @@ function calcularFreteHandler() {
     const pesoCubico = (altura * largura * comprimento) / 6000;
     const pesoFinal = Math.max(peso, pesoCubico);
 
+
     // Simulação de distância (quanto mais diferente o CEP, maior a distância)
-    let distancia = Math.abs(parseInt(cepDestino.substring(0, 5)) - parseInt(cepOrigem.substring(0, 5)));
-    if (isNaN(distancia)) distancia = 1000;
+    // Corrigido: considera os 5 primeiros dígitos como string, depois converte para número mantendo zeros à esquerda
+    const cepDest5 = cepDestino.substring(0, 5);
+    const cepOrig5 = cepOrigem.substring(0, 5);
+    let distancia = Math.abs(Number(cepDest5) - Number(cepOrig5));
+    if (isNaN(distancia)) distancia = 0;
 
     // Simulação de valores
     const basePAC = 18 + pesoFinal * 6 + distancia * 0.01;
