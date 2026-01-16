@@ -354,9 +354,12 @@ button {
 }
 
 .hero-img {
-    width: 550px;
-    min-width: 550px;
+    width: 100%;
+    max-width: 350px;
+    min-width: unset;
     height: auto;
+    display: block;
+    margin: 0 auto;
 }
 
 
@@ -1042,6 +1045,15 @@ button {
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
         gap: 20px;
     }
+    .hero-img {
+        max-width: 220px;
+        width: 100%;
+    }
+    .hero-buttons .btn {
+        font-size: 1rem;
+        padding: 12px 0;
+        min-width: 0;
+    }
 }
 
 @media (max-width: 640px) {
@@ -1113,6 +1125,15 @@ button {
 
     .cart-modal-content {
         max-width: 100%;
+    }
+    .hero-img {
+        max-width: 160px;
+        width: 100%;
+    }
+    .hero-buttons .btn {
+        font-size: 0.95rem;
+        padding: 10px 0;
+        min-width: 0;
     }
 }
 
