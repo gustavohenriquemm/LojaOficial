@@ -223,13 +223,20 @@ function calcularFreteHandler() {
 
 
     // --- Cálculo de distância simulada por faixas de CEP ---
+    // --- Cálculo de distância simulada por faixas de CEP e região ---
     function calcularDistanciaSimulada(cepOrigem, cepDestino) {
-        const origem = cepOrigem.replace(/\D/g, "").substring(0, 5);
-        const destino = cepDestino.replace(/\D/g, "").substring(0, 5);
-        if (origem === destino) return 5; // mesma rua/bairro
-        if (origem.substring(0, 3) === destino.substring(0, 3)) return 20; // mesma cidade
-        if (origem.substring(0, 2) === destino.substring(0, 2)) return 60; // mesmo estado
-        return 150; // outros estados
+        const o = cepOrigem.replace(/\D/g, "").substring(0, 5);
+        const d = cepDestino.replace(/\D/g, "").substring(0, 5);
+        // Mesma rua/bairro
+        if (o === d) return 5;
+        // Mesma cidade/região próxima (exemplo: Embu-Guaçu e região)
+        if (o.startsWith("068") && d.startsWith("068")) return 20;
+        // Estado de SP (faixa 0xxxx ou 1xxxx)
+        if (d.startsWith("0") || d.startsWith("1")) return 60;
+        // RJ, Sul, Centro-Oeste (faixa 2xxxx ou 3xxxx)
+        if (d.startsWith("2") || d.startsWith("3")) return 100;
+        // Norte/Nordeste e demais regiões
+        return 150;
     }
     const distancia = calcularDistanciaSimulada(cepOrigem, cepDestino);
 
