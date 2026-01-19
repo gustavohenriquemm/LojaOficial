@@ -58,30 +58,102 @@ function calcularFreteCheckout() {
     const cep = cepInput.value.replace(/\D/g, '');
     
     if (cep.length !== 8) {
-        freteBox.innerHTML = '<div style="color: #f44336; font-size: 0.9rem;">CEP inválido. Digite 8 dígitos.</div>';
+        freteBox.innerHTML = '<div style="color: #f44336; font-size: 0.9rem;">⚠️ CEP inválido. Digite 8 dígitos.</div>';
         return;
     }
     
     freteBox.innerHTML = '<div style="color: #666; font-size: 0.9rem;">Calculando frete...</div>';
     
-    // Simular cálculo de frete (substituir por API real se necessário)
+    // Simular cálculo de frete com a mesma lógica da página de produtos
     setTimeout(() => {
-        const valorFrete = 15.00; // Valor fixo por enquanto
-        checkoutData.frete = valorFrete;
+        const cepOrigem = '06833160'; // Embu-Guaçu/SP
+        const peso = 0.6; // kg padrão
+        const altura = 15; // cm
+        const largura = 8; // cm
+        const comprimento = 8; // cm
+        
+        // Peso cúbico
+        const pesoCubico = (altura * largura * comprimento) / 6000;
+        const pesoFinal = Math.max(peso, pesoCubico);
+        
+        // Cálculo de distância simulada
+        function calcularDistanciaSimulada(cepOrigem, cepDestino) {
+            const o = cepOrigem.replace(/\D/g, "").substring(0, 5);
+            const d = cepDestino.replace(/\D/g, "").substring(0, 5);
+            if (o === d) return 5;
+            if (o.startsWith("068") && d.startsWith("068")) return 20;
+            if (d.startsWith("0") || d.startsWith("1")) return 60;
+            if (d.startsWith("2") || d.startsWith("3")) return 100;
+            return 150;
+        }
+        
+        const distancia = calcularDistanciaSimulada(cepOrigem, cep);
+        
+        // Cálculo dos valores de frete
+        const basePAC = 18 + (pesoFinal * 6) + (distancia * 0.1);
+        const baseSEDEX = 28 + (pesoFinal * 9) + (distancia * 0.2);
+        
+        const prazoPAC = 5 + Math.ceil(distancia / 40);
+        const prazoSEDEX = 2 + Math.ceil(distancia / 80);
+        
+        // Armazenar valores
+        checkoutData.freteOpcoes = {
+            pac: basePAC,
+            sedex: baseSEDEX
+        };
+        checkoutData.frete = basePAC; // PAC como padrão
         checkoutData.address.cep = cep;
         
         freteBox.innerHTML = `
-            <div style="padding: 12px; background: #e8f5e9; border-radius: 6px; color: #2e7d32;">
-                <strong>Frete calculado:</strong> R$ ${valorFrete.toFixed(2)}
+            <div class="frete-opcoes-checkout">
+                <div class="frete-opcao-checkout ativa" onclick="selecionarFreteCheckout('pac', ${basePAC})" data-tipo="pac">
+                    <div class="frete-opcao-header">
+                        <strong>📦 PAC</strong>
+                        <span class="frete-preco">R$ ${basePAC.toFixed(2)}</span>
+                    </div>
+                    <div class="frete-opcao-prazo">Prazo: ${prazoPAC} dias úteis</div>
+                    <div class="frete-opcao-badge">✓ Selecionado</div>
+                </div>
+                <div class="frete-opcao-checkout" onclick="selecionarFreteCheckout('sedex', ${baseSEDEX})" data-tipo="sedex">
+                    <div class="frete-opcao-header">
+                        <strong>⚡ SEDEX</strong>
+                        <span class="frete-preco">R$ ${baseSEDEX.toFixed(2)}</span>
+                    </div>
+                    <div class="frete-opcao-prazo">Prazo: ${prazoSEDEX} dias úteis</div>
+                    <div class="frete-opcao-badge" style="display: none;">✓ Selecionado</div>
+                </div>
             </div>
         `;
         
         updateCheckoutTotals();
-        
-        // Salvar no sessionStorage
         sessionStorage.setItem('checkoutData', JSON.stringify(checkoutData));
     }, 500);
 }
+
+// Função para selecionar opção de frete no checkout
+function selecionarFreteCheckout(tipo, valor) {
+    checkoutData.frete = valor;
+    checkoutData.freteOpcoes.selecionado = tipo;
+    
+    // Atualizar visual
+    const opcoes = document.querySelectorAll('.frete-opcao-checkout');
+    opcoes.forEach(opcao => {
+        const badge = opcao.querySelector('.frete-opcao-badge');
+        if (opcao.dataset.tipo === tipo) {
+            opcao.classList.add('ativa');
+            badge.style.display = 'block';
+        } else {
+            opcao.classList.remove('ativa');
+            badge.style.display = 'none';
+        }
+    });
+    
+    updateCheckoutTotals();
+    sessionStorage.setItem('checkoutData', JSON.stringify(checkoutData));
+}
+
+// Tornar função global
+window.selecionarFreteCheckout = selecionarFreteCheckout;
 
 // Máscara de CEP
 function aplicarMascaraCEP(input) {

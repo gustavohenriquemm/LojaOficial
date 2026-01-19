@@ -52,15 +52,20 @@
 
 /* Delivery Options Checkout */
 .delivery-options-checkout {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 28px;
 }
 
 .delivery-option-checkout {
-    flex: 1;
     position: relative;
     cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.delivery-option-checkout:hover {
+    transform: translateY(-2px);
 }
 
 .delivery-option-checkout input[type="radio"] {
@@ -71,43 +76,73 @@
 
 .delivery-option-content-checkout {
     display: flex;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 12px;
-    padding: 16px 20px;
+    padding: 24px 16px;
     border: 2px solid #e0e0e0;
-    border-radius: 8px;
+    border-radius: 12px;
     background: white;
     transition: all 0.3s ease;
+    min-height: 120px;
+    text-align: center;
 }
 
 .delivery-option-checkout input[type="radio"]:checked + .delivery-option-content-checkout {
     border-color: var(--primary-color);
-    background: rgba(var(--primary-rgb), 0.05);
+    background: linear-gradient(135deg, rgba(255, 189, 189, 0.15), rgba(255, 189, 189, 0.05));
+    box-shadow: 0 4px 12px rgba(255, 189, 189, 0.3);
 }
 
 .delivery-option-checkout:hover .delivery-option-content-checkout {
     border-color: var(--primary-color);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
 }
 
 .delivery-option-content-checkout svg {
-    width: 24px;
-    height: 24px;
+    width: 32px;
+    height: 32px;
     flex-shrink: 0;
+    stroke: var(--text-dark);
+    transition: all 0.3s ease;
+}
+
+.delivery-option-checkout input[type="radio"]:checked + .delivery-option-content-checkout svg {
+    stroke: var(--primary-color);
+    transform: scale(1.1);
 }
 
 .delivery-option-content-checkout strong {
-    font-size: 1rem;
+    font-size: 1.05rem;
+    font-weight: 600;
     color: var(--text-dark);
+    transition: color 0.3s ease;
+}
+
+.delivery-option-checkout input[type="radio"]:checked + .delivery-option-content-checkout strong {
+    color: var(--primary-color);
 }
 
 .retiradaInfo {
-    background: #fff3cd;
-    border: 1px solid #ffc107;
-    border-radius: 8px;
-    padding: 16px;
-    margin-top: 16px;
+    background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+    border: 2px solid #4caf50;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
     display: none;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .retiradaInfo.show {
@@ -115,24 +150,110 @@
 }
 
 .retiradaInfo h4 {
-    margin: 0 0 8px 0;
-    color: #856404;
-    font-size: 1rem;
+    margin: 0 0 10px 0;
+    color: #2e7d32;
+    font-size: 1.05rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .retiradaInfo p {
     margin: 4px 0;
-    color: #856404;
-    font-size: 0.9rem;
+    color: #2e7d32;
+    font-size: 0.95rem;
+    line-height: 1.5;
 }
 
 @media (max-width: 640px) {
     .delivery-options-checkout {
-        flex-direction: column;
+        grid-template-columns: 1fr;
+        gap: 16px;
     }
     
     .delivery-option-content-checkout {
-        padding: 14px 16px;
+        padding: 20px 16px;
+        min-height: 100px;
+    }
+    
+    .delivery-option-content-checkout svg {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .delivery-option-content-checkout strong {
+        font-size: 1rem;
+    }
+}
+
+/* Opções de Frete no Checkout */
+.frete-opcoes-checkout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.frete-opcao-checkout {
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    background: white;
+}
+
+.frete-opcao-checkout:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.frete-opcao-checkout.ativa {
+    border-color: var(--primary-color);
+    background: linear-gradient(135deg, rgba(255, 189, 189, 0.1), rgba(255, 189, 189, 0.05));
+    box-shadow: 0 4px 12px rgba(255, 189, 189, 0.3);
+}
+
+.frete-opcao-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.frete-opcao-header strong {
+    font-size: 0.95rem;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.frete-preco {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.frete-opcao-prazo {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-bottom: 6px;
+}
+
+.frete-opcao-badge {
+    font-size: 0.8rem;
+    color: var(--primary-color);
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+@media (max-width: 640px) {
+    .frete-opcoes-checkout {
+        grid-template-columns: 1fr;
     }
 }
 
