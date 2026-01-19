@@ -8,19 +8,14 @@ let currentProduct = null;
 
 // Load products from API
 async function loadProductsFromAPI() {
-    console.log('Carregando produtos da API...');
-    console.log('Product ID da URL:', productId);
     try {
         // Usar API_URL do escopo global definido em script.js
         const apiUrl = window.API_URL || 'http://localhost:3000/api/products';
         const response = await fetch(apiUrl);
         if (!response.ok) throw new Error('Erro ao carregar produtos');
         allProducts = await response.json();
-        console.log('Produtos carregados:', allProducts.length);
-        console.log('Procurando produto com ID:', productId);
         // Comparar como string para compatibilidade
         currentProduct = allProducts.find(p => String(p.id) === String(productId));
-        console.log('Produto encontrado:', currentProduct);
         displayProductDetail();
         displayRelatedProducts();
     } catch (error) {
@@ -74,6 +69,14 @@ function displayProductDetail() {
     if (hasGallery) {
         galleryHTML = `
             <div class="product-gallery">
+                <div class="product-gallery-thumbs">
+                    ${currentProduct.images.map((img, index) => `
+                        <img src="${img}" 
+                             alt="${currentProduct.name} - Imagem ${index + 1}" 
+                             class="gallery-thumb ${index === 0 ? 'active' : ''}"
+                             onclick="changeMainImage('${img}', ${index})">
+                    `).join('')}
+                </div>
                 <div class="product-gallery-main">
                     <img id="mainProductImage" src="${currentProduct.images[0]}" alt="${currentProduct.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
                     <div class="product-image-placeholder" style="display: none;">
@@ -83,14 +86,6 @@ function displayProductDetail() {
                             <line x1="3" y1="3" x2="7" y2="7"></line>
                         </svg>
                     </div>
-                </div>
-                <div class="product-gallery-thumbs">
-                    ${currentProduct.images.map((img, index) => `
-                        <img src="${img}" 
-                             alt="${currentProduct.name} - Imagem ${index + 1}" 
-                             class="gallery-thumb ${index === 0 ? 'active' : ''}"
-                             onclick="changeMainImage('${img}', ${index})">
-                    `).join('')}
                 </div>
             </div>
         `;
@@ -128,12 +123,18 @@ function displayProductDetail() {
                 <h1 class="product-detail-title">${currentProduct.name}</h1>
                 
                 <div class="product-detail-prices">
-                    <div class="product-detail-price">R$ ${currentProduct.price.toFixed(2)}</div>
+                    <div class="product-detail-price" id="preco-produto">R$ ${currentProduct.price.toFixed(2)}</div>
                     ${currentProduct.oldPrice 
                         ? `<div class="product-detail-old-price">R$ ${currentProduct.oldPrice.toFixed(2)}</div>
                            <div class="product-detail-discount">${discount}% OFF</div>`
                         : ''
                     }
+                </div>
+                
+                <div class="total-com-frete" id="total-com-frete" style="display: none;">
+                    <h3 style="font-size: 1.2rem; color: var(--text-color); margin: 10px 0 5px 0;">Valor Total:</h3>
+                    <div style="font-size: 1.8rem; color: var(--primary-color); font-weight: 700;" id="preco-total"></div>
+                    <small style="color: var(--text-light); display: block; margin-top: 5px;">Produto + Frete</small>
                 </div>
 
                 <div class="product-detail-description">
@@ -141,8 +142,37 @@ function displayProductDetail() {
                     <p>${currentProduct.description}</p>
                 </div>
 
+                <!-- OPÇÃO DE ENTREGA/RETIRADA -->
+                <div class="delivery-options">
+                    <h3>Forma de Recebimento</h3>
+                    <div class="delivery-toggle">
+                        <label class="delivery-option active" for="deliveryTypeEntrega">
+                            <input type="radio" name="deliveryType" id="deliveryTypeEntrega" value="entrega" checked onchange="selecionarFormaEntrega('entrega')">
+                            <div class="delivery-option-content">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="1" y="3" width="15" height="13"></rect>
+                                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                                    <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                                    <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                                </svg>
+                                <span>Receber em Casa</span>
+                            </div>
+                        </label>
+                        <label class="delivery-option" for="deliveryTypeRetirada">
+                            <input type="radio" name="deliveryType" id="deliveryTypeRetirada" value="retirada" onchange="selecionarFormaEntrega('retirada')">
+                            <div class="delivery-option-content">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                                </svg>
+                                <span>Retirar na Loja</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
                 <!-- FRETE -->
-                <div class="frete-box">
+                <div class="frete-box" id="frete-box">
                     <h3>Calcule o Frete</h3>
                     <div class="frete-form">
                         <input type="text" id="cepDestino" maxlength="9" placeholder="Digite seu CEP" class="frete-input" />
@@ -202,14 +232,33 @@ document.addEventListener('click', function (e) {
     }
 });
 
+// Adicionar máscara de CEP
+document.addEventListener('input', function (e) {
+    if (e.target && e.target.id === 'cepDestino') {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 5) {
+            value = value.slice(0, 5) + '-' + value.slice(5, 8);
+        }
+        e.target.value = value;
+    }
+});
+
 function calcularFreteHandler() {
-    const cepDestino = document.getElementById('cepDestino').value.replace(/\D/g, '');
+    const cepInput = document.getElementById('cepDestino');
+    const cepDestino = cepInput.value.replace(/\D/g, '');
     const resultado = document.getElementById('freteResultado');
+    
     resultado.innerHTML = '';
+    
     if (!cepDestino || cepDestino.length < 8) {
-        resultado.innerHTML = '<span style="color:red">Digite um CEP válido.</span>';
+        resultado.innerHTML = '<span style="color:red; font-size: 0.9rem;">⚠️ Digite um CEP válido (8 dígitos)</span>';
+        cepInput.style.borderColor = 'red';
         return;
     }
+    
+    cepInput.style.borderColor = '';
+    resultado.innerHTML = '<span style="color: var(--primary-color);">Calculando frete...</span>';
+    
     // Dados simulados do produto (poderia vir do backend)
     const cepOrigem = '06833160'; // Origem ajustada para Embu-Guaçu/SP
     const peso = currentProduct.peso || 0.6; // kg (ajustado)
@@ -247,17 +296,27 @@ function calcularFreteHandler() {
     const prazoPAC = 5 + Math.ceil(distancia / 40);
     const prazoSEDEX = 2 + Math.ceil(distancia / 80);
 
+    // Armazenar valores de frete para uso posterior
+    window.freteCalculado = {
+        pac: basePAC,
+        sedex: baseSEDEX,
+        selecionado: basePAC // Usar PAC como padrão
+    };
 
     resultado.innerHTML = `
-        <div class="frete-opcao">
+        <div class="frete-opcao" onclick="selecionarFrete('pac', ${basePAC})" style="cursor: pointer; border: 2px solid var(--primary-light); padding: 10px; border-radius: 8px; margin-bottom: 10px;">
             <strong>PAC:</strong> R$ ${basePAC.toFixed(2)}<br>
             <span>Prazo estimado: ${prazoPAC} dias úteis</span>
+            <small style="display: block; color: var(--primary-color); margin-top: 5px;">✓ Opção selecionada</small>
         </div>
-        <div class="frete-opcao">
+        <div class="frete-opcao" onclick="selecionarFrete('sedex', ${baseSEDEX})" style="cursor: pointer; border: 2px solid #e0e0e0; padding: 10px; border-radius: 8px;">
             <strong>SEDEX:</strong> R$ ${baseSEDEX.toFixed(2)}<br>
             <span>Prazo estimado: ${prazoSEDEX} dias úteis</span>
         </div>
     `;
+    
+    // Atualizar o preço total automaticamente
+    atualizarPrecoTotal(basePAC);
 }
 }
 
@@ -266,17 +325,34 @@ function changeQuantity(delta) {
     let newValue = parseInt(quantityInput.value) + delta;
     if (newValue < 1) newValue = 1;
     quantityInput.value = newValue;
+    
+    // Recalcular preço total
+    const formaEntrega = window.formaEntrega || localStorage.getItem('formaEntrega') || 'entrega';
+    
+    if (formaEntrega === 'retirada') {
+        // Atualizar apenas o preço do produto sem frete
+        atualizarPrecoTotal(0);
+    } else if (window.freteCalculado && window.freteCalculado.selecionado) {
+        // Atualizar com o frete já calculado
+        atualizarPrecoTotal(window.freteCalculado.selecionado);
+    }
 }
 
 function addProductToCart() {
     if (!currentProduct) {
-        console.error('Nenhum produto atual para adicionar ao carrinho');
         return;
     }
     
-    console.log('Adicionando produto ao carrinho:', currentProduct);
     const quantity = parseInt(document.getElementById('productQuantity').value);
-    console.log('Quantidade:', quantity);
+    
+    // Salvar informação de entrega no sessionStorage para referência
+    const formaEntrega = window.formaEntrega || localStorage.getItem('formaEntrega') || 'entrega';
+    const freteValor = (formaEntrega === 'entrega' && window.freteCalculado) 
+        ? window.freteCalculado.selecionado 
+        : 0;
+    
+    sessionStorage.setItem('ultimaFormaEntrega', formaEntrega);
+    sessionStorage.setItem('ultimoFreteCalculado', freteValor.toString());
     
     // Add to cart multiple times based on quantity
     for (let i = 0; i < quantity; i++) {
@@ -351,6 +427,12 @@ function displayRelatedProducts() {
 // Initialize page
 document.addEventListener('DOMContentLoaded', () => {
     loadProductsFromAPI();
+    
+    // Restaurar forma de entrega do localStorage
+    const formaEntregaSalva = localStorage.getItem('formaEntrega') || 'entrega';
+    if (formaEntregaSalva === 'retirada') {
+        setTimeout(() => selecionarFormaEntrega('retirada'), 500);
+    }
 });
 
 // Function to change main image in gallery
@@ -370,3 +452,129 @@ function changeMainImage(imageUrl, index) {
 window.changeQuantity = changeQuantity;
 window.addProductToCart = addProductToCart;
 window.changeMainImage = changeMainImage;
+
+// Funções para frete e preço total
+function selecionarFrete(tipo, valor) {
+    if (window.freteCalculado) {
+        window.freteCalculado.selecionado = valor;
+        
+        // Atualizar visual das opções
+        const opcoes = document.querySelectorAll('.frete-opcao');
+        opcoes.forEach(opcao => {
+            opcao.style.border = '2px solid #e0e0e0';
+            const small = opcao.querySelector('small');
+            if (small) small.remove();
+        });
+        
+        event.target.closest('.frete-opcao').style.border = '2px solid var(--primary-light)';
+        const small = document.createElement('small');
+        small.style.cssText = 'display: block; color: var(--primary-color); margin-top: 5px;';
+        small.textContent = '✓ Opção selecionada';
+        event.target.closest('.frete-opcao').appendChild(small);
+        
+        // Atualizar preço total
+        atualizarPrecoTotal(valor);
+    }
+}
+
+function atualizarPrecoTotal(valorFrete) {
+    if (!currentProduct) return;
+    
+    const precoProduto = parseFloat(currentProduct.price);
+    const quantidade = parseInt(document.getElementById('productQuantity').value) || 1;
+    
+    // Verificar forma de entrega
+    const formaEntrega = window.formaEntrega || localStorage.getItem('formaEntrega') || 'entrega';
+    
+    let precoTotal;
+    let descricao;
+    
+    if (formaEntrega === 'retirada') {
+        // Retirada na loja: sem frete
+        precoTotal = precoProduto * quantidade;
+        descricao = 'Produto (Retirada na Loja)';
+    } else {
+        // Entrega: com frete
+        precoTotal = (precoProduto * quantidade) + valorFrete;
+        descricao = 'Produto + Frete';
+    }
+    
+    const totalComFreteDiv = document.getElementById('total-com-frete');
+    const precoTotalDiv = document.getElementById('preco-total');
+    const small = totalComFreteDiv?.querySelector('small');
+    
+    if (totalComFreteDiv && precoTotalDiv) {
+        totalComFreteDiv.style.display = 'block';
+        precoTotalDiv.textContent = `R$ ${precoTotal.toFixed(2)}`;
+        if (small) {
+            small.textContent = descricao;
+        }
+    }
+}
+
+window.selecionarFrete = selecionarFrete;
+window.atualizarPrecoTotal = atualizarPrecoTotal;
+
+// Função para selecionar forma de entrega
+function selecionarFormaEntrega(tipo) {
+    // Salvar escolha
+    localStorage.setItem('formaEntrega', tipo);
+    window.formaEntrega = tipo;
+    
+    // Atualizar visual dos labels e inputs
+    const radioEntrega = document.getElementById('deliveryTypeEntrega');
+    const radioRetirada = document.getElementById('deliveryTypeRetirada');
+    const labelEntrega = document.querySelector('label[for="deliveryTypeEntrega"]');
+    const labelRetirada = document.querySelector('label[for="deliveryTypeRetirada"]');
+    const freteBox = document.getElementById('frete-box');
+    const totalComFrete = document.getElementById('total-com-frete');
+    
+    if (!radioEntrega || !radioRetirada) return;
+    
+    if (tipo === 'entrega') {
+        radioEntrega.checked = true;
+        if (labelEntrega) labelEntrega.classList.add('active');
+        if (labelRetirada) labelRetirada.classList.remove('active');
+        
+        // Mostrar box de frete
+        if (freteBox) {
+            freteBox.style.display = 'block';
+        }
+        
+        // Se já tinha frete calculado, restaurar
+        if (window.freteCalculado && window.freteCalculado.selecionado) {
+            atualizarPrecoTotal(window.freteCalculado.selecionado);
+        } else if (totalComFrete) {
+            totalComFrete.style.display = 'none';
+        }
+    } else {
+        radioRetirada.checked = true;
+        if (labelRetirada) labelRetirada.classList.add('active');
+        if (labelEntrega) labelEntrega.classList.remove('active');
+        
+        // Ocultar box de frete
+        if (freteBox) {
+            freteBox.style.display = 'none';
+        }
+        
+        // Limpar frete e mostrar apenas preço do produto
+        if (totalComFrete) {
+            totalComFrete.style.display = 'block';
+            const precoTotalDiv = document.getElementById('preco-total');
+            if (precoTotalDiv && currentProduct) {
+                const precoProduto = parseFloat(currentProduct.price);
+                const quantidade = parseInt(document.getElementById('productQuantity')?.value || 1);
+                const precoTotal = precoProduto * quantidade;
+                precoTotalDiv.textContent = `R$ ${precoTotal.toFixed(2)}`;
+            }
+        }
+        
+        // Limpar resultados de frete
+        const freteResultado = document.getElementById('freteResultado');
+        if (freteResultado) {
+            freteResultado.innerHTML = '<p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 10px;">✓ Retirada na loja selecionada - Sem custo de frete</p>';
+        }
+    }
+}
+
+window.selecionarFormaEntrega = selecionarFormaEntrega;

@@ -337,47 +337,47 @@ function getProductPath(productId) {
 }
 
 function addToCart(productId) {
-    console.log('addToCart chamado com ID:', productId);
-    console.log('Produtos disponíveis:', products);
-    
     // Converter para string para compatibilidade
     const productIdStr = String(productId);
     const product = products.find(p => String(p.id) === productIdStr);
     
     if (!product) {
-        console.error('Produto não encontrado:', productId);
         showNotification('Erro: Produto não encontrado!');
         return;
     }
-
-    console.log('Produto encontrado:', product);
 
     const existingItem = cart.find(item => String(item.id) === productIdStr);
     
     if (existingItem) {
         existingItem.quantity += 1;
-        console.log('Quantidade atualizada:', existingItem);
     } else {
         cart.push({
             ...product,
             quantity: 1
         });
-        console.log('Produto adicionado ao carrinho');
     }
 
     localStorage.setItem('cart', JSON.stringify(cart));
     updateCartCount();
     updateCartModal();
     showNotification('Produto adicionado ao carrinho!');
-    console.log('Carrinho atualizado:', cart);
 }
 
 function removeFromCart(productId) {
     const productIdStr = String(productId);
+    const itemRemovido = cart.find(item => String(item.id) === productIdStr);
+    
     cart = cart.filter(item => String(item.id) !== productIdStr);
     localStorage.setItem('cart', JSON.stringify(cart));
+    
+    // Atualizar todas as visualizações
     updateCartCount();
     updateCartModal();
+    
+    // Mostrar notificação
+    if (itemRemovido) {
+        showNotification(`${itemRemovido.name} removido do carrinho`);
+    }
 }
 
 function updateQuantity(productId, change) {
@@ -393,6 +393,16 @@ function updateQuantity(productId, change) {
         localStorage.setItem('cart', JSON.stringify(cart));
         updateCartModal();
         updateCartCount();
+    }
+    
+    // Feedback visual imediato
+    const itemElement = document.querySelector(`[data-product-id="${productIdStr}"]`);
+    if (itemElement) {
+        itemElement.style.transition = 'all 0.2s ease';
+        itemElement.style.transform = 'scale(0.98)';
+        setTimeout(() => {
+            itemElement.style.transform = 'scale(1)';
+        }, 200);
     }
 }
 
@@ -896,8 +906,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return false;
         }
     }, true); // Use capture phase
-    
-    console.log('Site carregado com sucesso!');
 });
 
 // Export functions for use in HTML onclick attributes
