@@ -50,6 +50,92 @@
     box-shadow: var(--shadow-sm);
 }
 
+/* Delivery Options Checkout */
+.delivery-options-checkout {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.delivery-option-checkout {
+    flex: 1;
+    position: relative;
+    cursor: pointer;
+}
+
+.delivery-option-checkout input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.delivery-option-content-checkout {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.delivery-option-checkout input[type="radio"]:checked + .delivery-option-content-checkout {
+    border-color: var(--primary-color);
+    background: rgba(var(--primary-rgb), 0.05);
+}
+
+.delivery-option-checkout:hover .delivery-option-content-checkout {
+    border-color: var(--primary-color);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.delivery-option-content-checkout svg {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.delivery-option-content-checkout strong {
+    font-size: 1rem;
+    color: var(--text-dark);
+}
+
+.retiradaInfo {
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 16px;
+    display: none;
+}
+
+.retiradaInfo.show {
+    display: block;
+}
+
+.retiradaInfo h4 {
+    margin: 0 0 8px 0;
+    color: #856404;
+    font-size: 1rem;
+}
+
+.retiradaInfo p {
+    margin: 4px 0;
+    color: #856404;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+    .delivery-options-checkout {
+        flex-direction: column;
+    }
+    
+    .delivery-option-content-checkout {
+        padding: 14px 16px;
+    }
+}
+
 .checkout-step.active {
     display: block;
     animation: fadeInUp 0.3s ease;
@@ -312,11 +398,32 @@
     color: var(--text-primary);
 }
 
+.sidebar-subtotal,
+.sidebar-frete {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    font-size: 0.95rem;
+    color: var(--text-light);
+}
+
+.sidebar-subtotal {
+    padding-top: 12px;
+    border-top: 1px solid var(--border-color);
+}
+
+.sidebar-frete span:last-child {
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
 .sidebar-total {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 16px;
+    padding-top: 12px;
+    margin-top: 8px;
     border-top: 2px solid var(--border-color);
     font-size: 1.3rem;
     font-weight: 700;

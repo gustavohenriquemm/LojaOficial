@@ -22,6 +22,77 @@ let checkoutData = {
 };
 
 // ===================================
+// DELIVERY TYPE TOGGLE
+// ===================================
+function toggleDeliveryFields() {
+    const deliveryType = document.querySelector('input[name="deliveryType"]:checked').value;
+    const enderecoFields = document.getElementById('enderecoEntregaFields');
+    const retiradaInfo = document.getElementById('retiradaInfo');
+    
+    checkoutData.deliveryType = deliveryType;
+    
+    if (deliveryType === 'entrega') {
+        enderecoFields.style.display = 'block';
+        retiradaInfo.classList.remove('show');
+        // Não zera o frete aqui, ele será calculado pelo campo de CEP
+    } else {
+        enderecoFields.style.display = 'none';
+        retiradaInfo.classList.add('show');
+        checkoutData.frete = 0;
+        updateCheckoutTotals();
+    }
+    
+    // Salvar escolha no localStorage
+    localStorage.setItem('deliveryType', deliveryType);
+}
+
+// ===================================
+// CEP AND FREIGHT CALCULATION
+// ===================================
+function calcularFreteCheckout() {
+    const cepInput = document.getElementById('addressCep');
+    const freteBox = document.getElementById('freteCheckoutBox');
+    
+    if (!cepInput || !freteBox) return;
+    
+    const cep = cepInput.value.replace(/\D/g, '');
+    
+    if (cep.length !== 8) {
+        freteBox.innerHTML = '<div style="color: #f44336; font-size: 0.9rem;">CEP inválido. Digite 8 dígitos.</div>';
+        return;
+    }
+    
+    freteBox.innerHTML = '<div style="color: #666; font-size: 0.9rem;">Calculando frete...</div>';
+    
+    // Simular cálculo de frete (substituir por API real se necessário)
+    setTimeout(() => {
+        const valorFrete = 15.00; // Valor fixo por enquanto
+        checkoutData.frete = valorFrete;
+        checkoutData.address.cep = cep;
+        
+        freteBox.innerHTML = `
+            <div style="padding: 12px; background: #e8f5e9; border-radius: 6px; color: #2e7d32;">
+                <strong>Frete calculado:</strong> R$ ${valorFrete.toFixed(2)}
+            </div>
+        `;
+        
+        updateCheckoutTotals();
+        
+        // Salvar no sessionStorage
+        sessionStorage.setItem('checkoutData', JSON.stringify(checkoutData));
+    }, 500);
+}
+
+// Máscara de CEP
+function aplicarMascaraCEP(input) {
+    let valor = input.value.replace(/\D/g, '');
+    if (valor.length > 5) {
+        valor = valor.substring(0, 5) + '-' + valor.substring(5, 8);
+    }
+    input.value = valor;
+}
+
+// ===================================
 // STEP NAVIGATION
 // ===================================
 function goToStep(step) {
@@ -162,7 +233,12 @@ function updateCheckoutTotals() {
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     const frete = checkoutData.frete || 0;
-    document.getElementById('sidebarTotal').textContent = formatPrice(subtotal + frete);
+    const total = subtotal + frete;
+    
+    // Atualizar sidebar
+    document.getElementById('sidebarSubtotal').textContent = formatPrice(subtotal);
+    document.getElementById('sidebarFrete').textContent = frete > 0 ? formatPrice(frete) : 'A calcular';
+    document.getElementById('sidebarTotal').textContent = formatPrice(total);
 }
 
 // ===================================
@@ -181,12 +257,21 @@ function loadOrderSummary() {
         ${checkoutData.customer.email ? `<div><strong>E-mail:</strong> ${checkoutData.customer.email}</div>` : ''}
     `;
     
-    // Address
-    document.getElementById('summaryAddress').innerHTML = `
-        <div>${checkoutData.address.street}, ${checkoutData.address.number}</div>
-        <div>${checkoutData.address.neighborhood} - ${checkoutData.address.city}</div>
-        ${checkoutData.address.complement ? `<div>${checkoutData.address.complement}</div>` : ''}
-    `;
+    // Address / Delivery Type
+    if (checkoutData.deliveryType === 'entrega') {
+        document.getElementById('summaryAddress').innerHTML = `
+            <div><strong>🚚 Entrega</strong></div>
+            <div>${checkoutData.address.street}, ${checkoutData.address.number}</div>
+            <div>${checkoutData.address.neighborhood} - ${checkoutData.address.city}</div>
+            ${checkoutData.address.cep ? `<div>CEP: ${checkoutData.address.cep}</div>` : ''}
+            ${checkoutData.address.complement ? `<div>${checkoutData.address.complement}</div>` : ''}
+        `;
+    } else {
+        document.getElementById('summaryAddress').innerHTML = `
+            <div><strong>🏪 Retirada na Loja</strong></div>
+            <div style="color: #2e7d32; margin-top: 8px;">Você retirará seu pedido presencialmente após a confirmação do pagamento.</div>
+        `;
+    }
     
     // Products
     document.getElementById('summaryProducts').innerHTML = cart.map(item => `
@@ -229,11 +314,21 @@ function finalizeOrder() {
         message += `E-mail: ${checkoutData.customer.email}\n`;
     }
     
-    message += `\n*📍 ENDEREÇO DE ENTREGA*\n`;
-    message += `${checkoutData.address.street}, ${checkoutData.address.number}\n`;
-    message += `${checkoutData.address.neighborhood} - ${checkoutData.address.city}\n`;
-    if (checkoutData.address.complement) {
-        message += `Complemento: ${checkoutData.address.complement}\n`;
+    // Tipo de entrega
+    const tipoEntrega = checkoutData.deliveryType === 'entrega' ? '🚚 ENTREGA' : '🏪 RETIRADA NA LOJA';
+    message += `\n*${tipoEntrega}*\n`;
+    
+    if (checkoutData.deliveryType === 'entrega') {
+        message += `${checkoutData.address.street}, ${checkoutData.address.number}\n`;
+        message += `${checkoutData.address.neighborhood} - ${checkoutData.address.city}\n`;
+        if (checkoutData.address.cep) {
+            message += `CEP: ${checkoutData.address.cep}\n`;
+        }
+        if (checkoutData.address.complement) {
+            message += `Complemento: ${checkoutData.address.complement}\n`;
+        }
+    } else {
+        message += `Cliente irá retirar o pedido na loja após confirmação.\n`;
     }
     
     message += `\n*🛍️ PRODUTOS*\n`;
@@ -245,10 +340,10 @@ function finalizeOrder() {
     });
     
     message += `\n*💰 VALOR TOTAL: R$ ${total.toFixed(2)}*\n`;
-    if (frete > 0) {
+    if (checkoutData.deliveryType === 'entrega' && frete > 0) {
         message += `Frete: R$ ${frete.toFixed(2)}\n`;
-    } else {
-        message += `Frete: Grátis\n`;
+    } else if (checkoutData.deliveryType === 'retirada') {
+        message += `Frete: Grátis (Retirada na loja)\n`;
     }
     message += `\n_Aguardo confirmação e informações sobre o pagamento. Obrigado! 😊_`;
     
@@ -292,6 +387,30 @@ function finalizeOrder() {
 
 document.addEventListener('DOMContentLoaded', () => {
     loadCheckoutCart();
+    
+    // Restaurar escolha de tipo de entrega
+    const savedDeliveryType = localStorage.getItem('deliveryType');
+    if (savedDeliveryType) {
+        const radioInput = document.getElementById(`deliveryType${savedDeliveryType.charAt(0).toUpperCase() + savedDeliveryType.slice(1)}`);
+        if (radioInput) {
+            radioInput.checked = true;
+            toggleDeliveryFields();
+        }
+    }
+    
+    // Adicionar eventos ao campo de CEP
+    const cepInput = document.getElementById('addressCep');
+    if (cepInput) {
+        cepInput.addEventListener('input', function() {
+            aplicarMascaraCEP(this);
+        });
+        
+        cepInput.addEventListener('blur', function() {
+            if (this.value.replace(/\D/g, '').length === 8) {
+                calcularFreteCheckout();
+            }
+        });
+    }
     
     // Load saved data if exists
     const savedData = sessionStorage.getItem('checkoutData');
@@ -354,28 +473,51 @@ document.addEventListener('DOMContentLoaded', () => {
         addressForm.addEventListener('submit', (e) => {
             e.preventDefault();
             
-            // Validação básica
-            const street = document.getElementById('addressStreet').value.trim();
-            const number = document.getElementById('addressNumber').value.trim();
-            const neighborhood = document.getElementById('addressNeighborhood').value.trim();
-            const city = document.getElementById('addressCity').value.trim();
+            // Verificar tipo de entrega
+            const deliveryType = document.querySelector('input[name="deliveryType"]:checked').value;
+            checkoutData.deliveryType = deliveryType;
             
-            if (!street || !number || !neighborhood || !city) {
-                alert('Por favor, preencha todos os campos obrigatórios do endereço.');
-                return;
+            if (deliveryType === 'entrega') {
+                // Validação completa para entrega
+                const street = document.getElementById('addressStreet').value.trim();
+                const number = document.getElementById('addressNumber').value.trim();
+                const neighborhood = document.getElementById('addressNeighborhood').value.trim();
+                const city = document.getElementById('addressCity').value.trim();
+                const cep = document.getElementById('addressCep').value.trim();
+                
+                if (!street || !number || !neighborhood || !city || !cep) {
+                    alert('Por favor, preencha todos os campos obrigatórios do endereço.');
+                    return;
+                }
+                
+                if (cep.replace(/\D/g, '').length !== 8) {
+                    alert('Por favor, insira um CEP válido.');
+                    return;
+                }
+                
+                checkoutData.address = {
+                    street: street,
+                    number: number,
+                    neighborhood: neighborhood,
+                    city: city,
+                    complement: document.getElementById('addressComplement').value.trim(),
+                    cep: cep
+                };
+            } else {
+                // Para retirada, não precisa de endereço completo
+                checkoutData.address = {
+                    street: 'Retirada na loja',
+                    number: '-',
+                    neighborhood: '-',
+                    city: '-',
+                    complement: '',
+                    cep: ''
+                };
+                checkoutData.frete = 0;
             }
-            
-            checkoutData.address = {
-                street: street,
-                number: number,
-                neighborhood: neighborhood,
-                city: city,
-                complement: document.getElementById('addressComplement').value.trim()
-            };
             
             // Salvar no sessionStorage
             sessionStorage.setItem('checkoutData', JSON.stringify(checkoutData));
-            console.log('✅ Endereço salvo:', checkoutData.address);
             
             // Avançar para próxima etapa
             goToStep(4);
@@ -392,4 +534,5 @@ window.addEventListener('beforeunload', () => {
 window.goToStep = goToStep;
 window.removeItemFromCheckout = removeItemFromCheckout;
 window.finalizeOrder = finalizeOrder;
+window.toggleDeliveryFields = toggleDeliveryFields;
 window.checkoutData = checkoutData; // Exportar checkoutData globalmente

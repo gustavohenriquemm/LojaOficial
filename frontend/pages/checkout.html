@@ -84,10 +84,35 @@
                     <h2 class="checkout-title">Entrega ou Retirada</h2>
                     <div class="checkout-content">
                         <form class="checkout-form" id="addressForm">
-                            <div class="form-group">
-                                <label><input type="radio" name="deliveryType" id="deliveryTypeEntrega" value="entrega" checked> Entrega no endereço</label>
-                                <label style="margin-left: 24px;"><input type="radio" name="deliveryType" id="deliveryTypeRetirada" value="retirada"> Retirada na loja</label>
+                            <!-- FORMA DE RECEBIMENTO -->
+                            <div class="delivery-options-checkout">
+                                <h3>Forma de Recebimento</h3>
+                                <div class="delivery-toggle-checkout">
+                                    <label class="delivery-option-checkout active" for="deliveryTypeEntrega">
+                                        <input type="radio" name="deliveryType" id="deliveryTypeEntrega" value="entrega" checked onchange="toggleDeliveryFields()">
+                                        <div class="delivery-option-content-checkout">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <rect x="1" y="3" width="15" height="13"></rect>
+                                                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                                                <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                                                <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                                            </svg>
+                                            <span>Receber em Casa</span>
+                                        </div>
+                                    </label>
+                                    <label class="delivery-option-checkout" for="deliveryTypeRetirada">
+                                        <input type="radio" name="deliveryType" id="deliveryTypeRetirada" value="retirada" onchange="toggleDeliveryFields()">
+                                        <div class="delivery-option-content-checkout">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                                            </svg>
+                                            <span>Retirar na Loja</span>
+                                        </div>
+                                    </label>
+                                </div>
                             </div>
+                            
                             <div id="enderecoEntregaFields">
                                 <div class="form-row">
                                     <div class="form-group" style="flex: 2">
@@ -119,8 +144,10 @@
                                 </div>
                                 <div class="form-group" id="freteCheckoutBox" style="margin-bottom: 0;"></div>
                             </div>
-                            <div id="retiradaInfo" style="display:none; margin-bottom: 16px; color: #4caf50;">
-                                <strong>Retirada na loja:</strong> Após a confirmação do pagamento, você poderá retirar seu pedido presencialmente. O frete será gratuito.
+                            
+                            <div id="retiradaInfo" class="retiradaInfo">
+                                <h4>✓ Retirada na loja selecionada</h4>
+                                <p>Após a confirmação do pagamento, você poderá retirar seu pedido presencialmente. Sem custo de frete.</p>
                             </div>
                             <div class="checkout-actions">
                                 <button type="button" class="btn btn-secondary" onclick="goToStep(2)">← Voltar</button>
@@ -174,6 +201,14 @@
                         <h3>Resumo do Pedido</h3>
                         <div class="sidebar-items" id="sidebarItems">
                             <!-- Items will be loaded here -->
+                        </div>
+                        <div class="sidebar-subtotal">
+                            <span>Subtotal:</span>
+                            <span id="sidebarSubtotal">R$ 0,00</span>
+                        </div>
+                        <div class="sidebar-frete">
+                            <span>Frete:</span>
+                            <span id="sidebarFrete">R$ 0,00</span>
                         </div>
                         <div class="sidebar-total">
                             <span>Total:</span>
