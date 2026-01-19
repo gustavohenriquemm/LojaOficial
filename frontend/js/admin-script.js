@@ -3,17 +3,31 @@
 // ADMIN AUTHENTICATION
 // ===================================
 
+// IMPORTANTE: Esta é uma autenticação básica para demonstração
+// Para produção, use autenticação backend com JWT ou OAuth
+
+// Hash seguro da senha (use um gerador de hash online)
+// Senha atual: admin123 -> Hash SHA-256
 const ADMIN_CREDENTIALS = {
     username: 'admin',
-    password: 'admin123'
+    // Hash SHA-256 de 'admin123'
+    passwordHash: '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9'
 };
+
+async function hashPassword(password) {
+    const msgBuffer = new TextEncoder().encode(password);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
 
 function checkAuth() {
     return localStorage.getItem('adminLoggedIn') === 'true';
 }
 
-function login(username, password) {
-    if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+async function login(username, password) {
+    const hashedPassword = await hashPassword(password);
+    if (username === ADMIN_CREDENTIALS.username && hashedPassword === ADMIN_CREDENTIALS.passwordHash) {
         localStorage.setItem('adminLoggedIn', 'true');
         return true;
     }
@@ -26,13 +40,13 @@ function logout() {
 }
 
 // Login form handler
-document.getElementById('loginForm')?.addEventListener('submit', (e) => {
+document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const username = document.getElementById('adminUser').value;
     const password = document.getElementById('adminPassword').value;
     
-    if (login(username, password)) {
+    if (await login(username, password)) {
         document.getElementById('loginScreen').classList.add('hidden');
         document.getElementById('adminPanel').classList.remove('hidden');
         loadAdminData();
@@ -141,20 +155,21 @@ function openProductModal(productId = null) {
     const modalTitle = document.getElementById('modalTitle');
     
     if (productId) {
-        const product = adminProducts.find(p => p.id === productId);
+        // Converter productId para string para garantir comparação correta
+        const product = adminProducts.find(p => String(p.id) === String(productId));
         if (product) {
             modalTitle.textContent = 'Editar Produto';
             document.getElementById('productId').value = product.id;
-            document.getElementById('productName').value = product.name;
-            document.getElementById('productCategory').value = product.category;
+            document.getElementById('productName').value = product.name || '';
+            document.getElementById('productCategory').value = product.category || '';
             
             // Update subcategory options and set value
             updateSubcategoryOptions();
             document.getElementById('productSubcategory').value = product.subcategory || '';
             
-            document.getElementById('productPrice').value = product.price;
+            document.getElementById('productPrice').value = product.price || '';
             document.getElementById('productOldPrice').value = product.oldPrice || '';
-            document.getElementById('productDescription').value = product.description;
+            document.getElementById('productDescription').value = product.description || '';
             document.getElementById('productImage').value = product.image || '';
             document.getElementById('productFeatured').checked = product.featured || false;
             
@@ -162,8 +177,10 @@ function openProductModal(productId = null) {
             if (product.image) {
                 const preview = document.getElementById('imagePreview');
                 const previewImg = document.getElementById('previewImg');
-                previewImg.src = product.image;
-                preview.style.display = 'block';
+                if (preview && previewImg) {
+                    previewImg.src = product.image;
+                    preview.style.display = 'block';
+                }
             }
             
             // Load secondary image if exists
@@ -172,11 +189,16 @@ function openProductModal(productId = null) {
                 document.getElementById('productImageSecondary').value = secondaryImage;
                 const previewSecondary = document.getElementById('imageSecondaryPreview');
                 const previewImgSecondary = document.getElementById('previewImgSecondary');
-                previewImgSecondary.src = secondaryImage;
-                previewSecondary.style.display = 'block';
+                if (previewSecondary && previewImgSecondary) {
+                    previewImgSecondary.src = secondaryImage;
+                    previewSecondary.style.display = 'block';
+                }
             }
             
             editingProductId = productId;
+        } else {
+            console.error('Produto não encontrado:', productId);
+            console.log('Produtos disponíveis:', adminProducts);
         }
     } else {
         modalTitle.textContent = 'Novo Produto';
@@ -185,8 +207,12 @@ function openProductModal(productId = null) {
         document.getElementById('productImage').value = '';
         document.getElementById('productImageSecondary').value = '';
         document.getElementById('productFeatured').checked = false;
-        document.getElementById('imagePreview').style.display = 'none';
-        document.getElementById('imageSecondaryPreview').style.display = 'none';
+        
+        const imagePreview = document.getElementById('imagePreview');
+        const imageSecondaryPreview = document.getElementById('imageSecondaryPreview');
+        if (imagePreview) imagePreview.style.display = 'none';
+        if (imageSecondaryPreview) imageSecondaryPreview.style.display = 'none';
+        
         editingProductId = null;
     }
     
