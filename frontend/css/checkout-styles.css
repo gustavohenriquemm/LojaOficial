@@ -168,22 +168,45 @@
 
 @media (max-width: 640px) {
     .delivery-options-checkout {
-        grid-template-columns: 1fr;
-        gap: 16px;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
     }
     
     .delivery-option-content-checkout {
-        padding: 20px 16px;
-        min-height: 100px;
+        padding: 16px 12px;
+        min-height: 90px;
+        gap: 8px;
     }
     
     .delivery-option-content-checkout svg {
-        width: 28px;
-        height: 28px;
+        width: 26px;
+        height: 26px;
     }
     
     .delivery-option-content-checkout strong {
-        font-size: 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .delivery-options-checkout {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+    
+    .delivery-option-content-checkout {
+        padding: 14px 10px;
+        min-height: 85px;
+        gap: 6px;
+    }
+    
+    .delivery-option-content-checkout svg {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .delivery-option-content-checkout strong {
+        font-size: 0.85rem;
     }
 }
 
