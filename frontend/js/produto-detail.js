@@ -130,12 +130,6 @@ function displayProductDetail() {
                         : ''
                     }
                 </div>
-                
-                <div class="total-com-frete" id="total-com-frete" style="display: none;">
-                    <h3 style="font-size: 1.2rem; color: var(--text-color); margin: 10px 0 5px 0;">Valor Total:</h3>
-                    <div style="font-size: 1.8rem; color: var(--primary-color); font-weight: 700;" id="preco-total"></div>
-                    <small style="color: var(--text-light); display: block; margin-top: 5px;">Produto + Frete</small>
-                </div>
 
                 <div class="product-detail-description">
                     <h3>Descrição</h3>
@@ -285,9 +279,7 @@ function calcularFreteHandler() {
             <span>Prazo estimado: ${prazoSEDEX} dias úteis</span>
         </div>
     `;
-    
-    // Atualizar o preço total automaticamente
-    atualizarPrecoTotal(basePAC);
+
 }
 }
 
@@ -296,11 +288,6 @@ function changeQuantity(delta) {
     let newValue = parseInt(quantityInput.value) + delta;
     if (newValue < 1) newValue = 1;
     quantityInput.value = newValue;
-    
-    // Recalcular preço total se frete já foi calculado
-    if (window.freteCalculado && window.freteCalculado.selecionado) {
-        atualizarPrecoTotal(window.freteCalculado.selecionado);
-    }
 }
 
 function addProductToCart() {
@@ -310,13 +297,11 @@ function addProductToCart() {
     
     const quantity = parseInt(document.getElementById('productQuantity').value);
     
-    // Salvar informação de entrega no sessionStorage para referência
-    const formaEntrega = window.formaEntrega || localStorage.getItem('formaEntrega') || 'entrega';
-    const freteValor = (formaEntrega === 'entrega' && window.freteCalculado) 
-        ? window.freteCalculado.selecionado 
-        : 0;
+    // Adicionar produto ao carrinho usando a função global
+    addToCart(currentProduct.id, quantity);
     
-    sesument.getElementById('productQuantity').value = 1;
+    // Resetar quantidade
+    document.getElementById('productQuantity').value = 1;
 }
 
 function displayRelatedProducts() {
@@ -421,27 +406,7 @@ function selecionarFrete(tipo, valor) {
         small.style.cssText = 'display: block; color: var(--primary-color); margin-top: 5px;';
         small.textContent = '✓ Opção selecionada';
         event.target.closest('.frete-opcao').appendChild(small);
-        
-        // Atualizar preço total
-        atualizarPrecoTotal(valor);
-    }
-}
-
-function atualizarPrecoTotal(valorFrete) {
-    if (!currentProduct) return;
-    
-    const precoProduto = parseFloat(currentProduct.price);
-    const quantidade = parseInt(document.getElementById('productQuantity').value) || 1;
-    const precoTotal = (precoProduto * quantidade) + valorFrete;
-    
-    const totalComFreteDiv = document.getElementById('total-com-frete');
-    const precoTotalDiv = document.getElementById('preco-total');
-    
-    if (totalComFreteDiv && precoTotalDiv) {
-        totalComFreteDiv.style.display = 'block';
-        precoTotalDiv.textContent = `R$ ${precoTotal.toFixed(2)}`;
     }
 }
 
 window.selecionarFrete = selecionarFrete;
-window.atualizarPrecoTotal = atualizarPrecoTotal;
