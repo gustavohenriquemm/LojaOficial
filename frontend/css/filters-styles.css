@@ -72,7 +72,7 @@ select {
     background: white;
     padding: 24px;
     box-shadow: 2px 0 20px rgba(0, 0, 0, 0.15);
-    z-index: 999;
+    z-index: 1001;
     overflow-y: auto;
     transition: left 0.3s ease;
     border-radius: 0;
@@ -415,8 +415,8 @@ select {
 /* Products Grid - Updated to work with filters */
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 24px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
 }
 
 /* Empty State */
@@ -452,7 +452,7 @@ select {
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
-    z-index: 998;
+    z-index: 1000;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -469,8 +469,8 @@ select {
 
 @media screen and (max-width: 1024px) {
     .products-grid {
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-        gap: 20px;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 25px;
     }
 }
 
@@ -480,8 +480,8 @@ select {
     }
 
     .products-grid {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-        gap: 16px;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 20px;
     }
 
     .products-header {
@@ -502,7 +502,7 @@ select {
 @media screen and (max-width: 480px) {
     .products-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
+        gap: 16px;
     }
 
     .price-range-inputs {

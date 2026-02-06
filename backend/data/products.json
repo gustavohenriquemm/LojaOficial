@@ -1,5 +1,93 @@
 [
   {
+    "id": "choc-1",
+    "name": "Chocolate ao Leite Premium 500g",
+    "category": "Chocolates",
+    "subcategory": "Chocolate ao Leite",
+    "price": 45.90,
+    "oldPrice": 55.90,
+    "description": "Chocolate ao leite cremoso e irresistível, feito com os melhores ingredientes.",
+    "image": null,
+    "featured": true
+  },
+  {
+    "id": "choc-2",
+    "name": "Trufas Sortidas 250g",
+    "category": "Chocolates",
+    "subcategory": "Trufas",
+    "price": 38.90,
+    "oldPrice": null,
+    "description": "Mix de trufas com diversos sabores: chocolate ao leite, meio amargo e branco.",
+    "image": null,
+    "featured": true
+  },
+  {
+    "id": "choc-3",
+    "name": "Chocolate Meio Amargo 70% Cacau 300g",
+    "category": "Chocolates",
+    "subcategory": "Chocolate Meio Amargo",
+    "price": 52.90,
+    "oldPrice": 62.90,
+    "description": "Chocolate meio amargo intenso com 70% de cacau, perfeito para apreciadores.",
+    "image": null,
+    "featured": false
+  },
+  {
+    "id": "choc-4",
+    "name": "Chocolate Branco com Morango 400g",
+    "category": "Chocolates",
+    "subcategory": "Chocolate Branco",
+    "price": 42.90,
+    "oldPrice": null,
+    "description": "Chocolate branco cremoso com pedaços de morango desidratado.",
+    "image": null,
+    "featured": false
+  },
+  {
+    "id": "choc-5",
+    "name": "Bombons Sortidos Gourmet 350g",
+    "category": "Chocolates",
+    "subcategory": "Bombons",
+    "price": 58.90,
+    "oldPrice": 68.90,
+    "description": "Seleção especial de bombons gourmet com recheios variados.",
+    "image": null,
+    "featured": true
+  },
+  {
+    "id": "choc-6",
+    "name": "Kit Presente Chocolate Luxo",
+    "category": "Chocolates",
+    "subcategory": "Kits Presente",
+    "price": 89.90,
+    "oldPrice": 109.90,
+    "description": "Kit presente especial com chocolates premium em embalagem luxuosa.",
+    "image": null,
+    "featured": true
+  },
+  {
+    "id": "choc-7",
+    "name": "Bombom de Licor 200g",
+    "category": "Chocolates",
+    "subcategory": "Bombons",
+    "price": 48.90,
+    "oldPrice": null,
+    "description": "Bombons recheados com licor de alta qualidade.",
+    "image": null,
+    "featured": false
+  },
+  {
+    "id": "choc-8",
+    "name": "Chocolate ao Leite com Amendoim 450g",
+    "category": "Chocolates",
+    "subcategory": "Chocolate ao Leite",
+    "price": 39.90,
+    "oldPrice": 49.90,
+    "description": "Chocolate ao leite crocante com amendoim torrado.",
+    "image": null,
+    "featured": false
+  },
+  {
     "id": "1",
     "name": "Malbec Icon",
     "category": "Cosmético Masculino",
