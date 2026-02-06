@@ -289,6 +289,10 @@ async function loadProductsFromAPI() {
         const response = await fetch(API_URL);
         if (response.ok) {
             products = await response.json();
+            console.log('✅ Produtos carregados da API:', products.length);
+            
+            // Disparar evento customizado quando produtos são carregados
+            window.dispatchEvent(new CustomEvent('productsLoaded', { detail: { products } }));
         } else {
             console.error('Erro ao carregar produtos da API');
             products = [];

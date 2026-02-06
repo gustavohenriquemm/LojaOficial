@@ -18,19 +18,54 @@ let filteredProducts = [];
 // Initialize filters when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     initializeFilters();
+});
+
+// Listen for products loaded event
+window.addEventListener('productsLoaded', (event) => {
+    console.log('🎉 Evento productsLoaded recebido');
     loadProductsForFilters();
 });
+
+// Fallback: Try to load after a delay
+setTimeout(() => {
+    if (allProducts.length === 0) {
+        console.log('⏱️ Tentando carregar produtos via fallback...');
+        loadProductsForFilters();
+    }
+}, 2000);
 
 // Load products and initialize filters
 async function loadProductsForFilters() {
     try {
-        // Get products from the main script
-        if (typeof getAllProducts === 'function') {
-            allProducts = getAllProducts();
-        } else {
-            // Fallback: wait for products to load
+        // Aguardar produtos serem carregados da API
+        let attempts = 0;
+        const maxAttempts = 20; // 10 segundos no máximo
+        
+        while (attempts < maxAttempts) {
+            // Tentar obter produtos de várias fontes
+            if (typeof getAllProducts === 'function') {
+                const fetchedProducts = getAllProducts();
+                if (fetchedProducts && fetchedProducts.length > 0) {
+                    allProducts = fetchedProducts;
+                    break;
+                }
+            }
+            
+            if (window.products && window.products.length > 0) {
+                allProducts = window.products;
+                break;
+            }
+            
+            // Aguardar 500ms antes de tentar novamente
             await new Promise(resolve => setTimeout(resolve, 500));
-            allProducts = window.products || [];
+            attempts++;
+        }
+        
+        console.log('📦 Produtos carregados para filtros:', allProducts.length);
+        
+        if (allProducts.length === 0) {
+            console.warn('⚠️ Nenhum produto encontrado para filtros');
+            return;
         }
         
         filteredProducts = [...allProducts];
@@ -161,8 +196,15 @@ function updateFilterArray(array, value, add) {
 
 // Build filter options dynamically
 function buildFilterOptions() {
+    console.log('🔨 Construindo opções de filtro...', {
+        totalProducts: allProducts.length,
+        sampleProduct: allProducts[0]
+    });
+    
     // Get unique categories
     const categories = [...new Set(allProducts.map(p => p.category))].filter(Boolean);
+    console.log('📁 Categorias encontradas:', categories);
+    
     const categoryContainer = document.getElementById('categoryFilters');
     
     if (categoryContainer) {
