@@ -95,7 +95,8 @@ async function loadProductsFromAPI() {
 // Subcategories by main category
 const subcategoriesByCategory = {
     'Cosmético Feminino': ['Perfumes', 'Cremes', 'Sabonetes', 'Body Splash', 'Esfoliantes', 'Outros Cuidados'],
-    'Cosmético Masculino': ['Perfumes', 'Cremes', 'Sabonetes', 'Body Splash', 'Esfoliantes', 'Outros Cuidados']
+    'Cosmético Masculino': ['Perfumes', 'Cremes', 'Sabonetes', 'Body Splash', 'Esfoliantes', 'Outros Cuidados'],
+    'Chocolates': ['Chocolate ao Leite', 'Chocolate Meio Amargo', 'Chocolate Branco', 'Trufas', 'Bombons', 'Kits Presente', 'Outros Chocolates']
 };
 
 // Update subcategory options based on selected category

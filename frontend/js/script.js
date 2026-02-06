@@ -915,3 +915,144 @@ window.updateQuantity = updateQuantity;
 window.filterProductsByCategory = filterProductsByCategory;
 window.getProductPath = getProductPath;
 window.formatPrice = formatPrice;
+// ===================================
+// HIERARCHICAL FILTER SYSTEM
+// ===================================
+
+// Define subcategories for each main category
+const categorySubcategories = {
+    'Cosmético Feminino': ['Perfumes', 'Cremes', 'Sabonetes', 'Body Splash', 'Esfoliantes', 'Outros Cuidados'],
+    'Cosmético Masculino': ['Perfumes', 'Cremes', 'Sabonetes', 'Body Splash', 'Esfoliantes', 'Outros Cuidados'],
+    'Chocolates': ['Chocolate ao Leite', 'Chocolate Meio Amargo', 'Chocolate Branco', 'Trufas', 'Bombons', 'Kits Presente', 'Outros Chocolates']
+};
+
+let currentMainCategory = 'todos';
+let currentSubcategory = null;
+
+// Filter by main category
+function filterByMainCategory(category) {
+    currentMainCategory = category;
+    currentSubcategory = null;
+    
+    // Update active button
+    document.querySelectorAll('.main-filters .filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.category === category) {
+            btn.classList.add('active');
+        }
+    });
+    
+    // Show/hide sub-filters
+    const subFilters = document.getElementById('subFilters');
+    const subFilterButtons = document.getElementById('subFilterButtons');
+    
+    if (category === 'todos') {
+        subFilters.style.display = 'none';
+        loadAllProducts();
+    } else {
+        // Show sub-filters
+        subFilters.style.display = 'block';
+        
+        // Populate sub-filter buttons
+        const subcategories = categorySubcategories[category] || [];
+        subFilterButtons.innerHTML = `
+            <button class="filter-btn active" onclick="filterBySubcategory(null)">Todos</button>
+            ${subcategories.map(sub => `
+                <button class="filter-btn" onclick="filterBySubcategory('${sub}')">${sub}</button>
+            `).join('')}
+        `;
+        
+        // Load products from this category
+        loadProductsByMainCategory(category);
+    }
+}
+
+// Filter by subcategory
+function filterBySubcategory(subcategory) {
+    currentSubcategory = subcategory;
+    
+    // Update active button
+    document.querySelectorAll('.sub-filters .filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    event.target.classList.add('active');
+    
+    // Filter products
+    if (subcategory) {
+        loadProductsBySubcategory(currentMainCategory, subcategory);
+    } else {
+        loadProductsByMainCategory(currentMainCategory);
+    }
+}
+
+// Load products by main category
+function loadProductsByMainCategory(category) {
+    const products = getAllProducts().filter(p => p.category === category);
+    displayFilteredProducts(products);
+}
+
+// Load products by subcategory
+function loadProductsBySubcategory(mainCategory, subcategory) {
+    const products = getAllProducts().filter(p => 
+        p.category === mainCategory && p.subcategory === subcategory
+    );
+    displayFilteredProducts(products);
+}
+
+// Display filtered products
+function displayFilteredProducts(products) {
+    const container = document.getElementById('allProducts');
+    if (!container) return;
+    
+    if (products.length === 0) {
+        container.innerHTML = '<p class="empty-message">Nenhum produto encontrado nesta categoria</p>';
+        return;
+    }
+    
+    container.innerHTML = products.map(product => `
+        <div class="product-card">
+            <a href="${getProductPath('produto.html')}?id=${product.id}" class="product-card-link">
+                ${product.image ? 
+                    `<img src="${product.image}" alt="${product.name}" class="product-img">` :
+                    `<div class="product-img-placeholder">
+                        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#ffbdbd" stroke-width="1.5">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                    </div>`
+                }
+                <div class="product-info">
+                    <h3 class="product-title">${product.name}</h3>
+                    <p class="product-description">${product.description}</p>
+                    <div class="product-footer">
+                        <div class="product-pricing">
+                            <span class="product-price">${formatPrice(product.price)}</span>
+                            ${product.oldPrice ? `<span class="product-old-price">${formatPrice(product.oldPrice)}</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <button class="add-to-cart-btn" onclick="event.stopPropagation(); addToCart('${product.id}')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+                Adicionar ao Carrinho
+            </button>
+        </div>
+    `).join('');
+}
+
+// Load all products (when "todos" is selected)
+function loadAllProducts() {
+    const products = getAllProducts();
+    displayFilteredProducts(products);
+}
+
+// Export new functions
+window.filterByMainCategory = filterByMainCategory;
+window.filterBySubcategory = filterBySubcategory;
+window.loadProductsByMainCategory = loadProductsByMainCategory;
