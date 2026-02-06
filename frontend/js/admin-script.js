@@ -75,21 +75,81 @@ var editingProductId = null;
 async function loadProductsFromAPI() {
     try {
         const apiUrl = window.API_URL;
+        console.log('Carregando produtos de:', apiUrl);
+        
         const response = await fetch(apiUrl);
-        if (response.ok) {
-            adminProducts = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(`Erro HTTP: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        // A API retorna { products: [], pagination: {} } ou { products: [], warning: "..." }
+        if (data.products && Array.isArray(data.products)) {
+            adminProducts = data.products;
+        } else if (Array.isArray(data)) {
+            // Compatibilidade com formato antigo (array direto)
+            adminProducts = data;
         } else {
-            console.error('Erro ao carregar produtos da API');
+            console.error('Formato de resposta inesperado:', data);
             adminProducts = [];
         }
-    } catch (error) {
-        console.error('Erro ao conectar com API:', error);
-        // Fallback para localStorage se API não estiver disponível
-        const stored = localStorage.getItem('adminProducts');
-        if (stored) {
-            adminProducts = JSON.parse(stored);
+        
+        // Mostrar aviso se MongoDB não estiver configurado
+        if (data.warning) {
+            console.warn('⚠️', data.warning);
+            showNotification(data.warning, 'warning');
         }
+        
+        console.log(`✅ ${adminProducts.length} produtos carregados`);
+        
+    } catch (error) {
+        console.error('❌ Erro ao conectar com API:', error);
+        adminProducts = [];
+        showNotification('Erro ao conectar com o servidor. Verifique se o backend está rodando.', 'error');
     }
+}
+
+// Show notification
+function showNotification(message, type = 'info') {
+    // Criar elemento de notificação se não existir
+    let notification = document.getElementById('admin-notification');
+    if (!notification) {
+        notification = document.createElement('div');
+        notification.id = 'admin-notification';
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10000;
+            max-width: 400px;
+            font-size: 14px;
+            animation: slideIn 0.3s ease;
+        `;
+        document.body.appendChild(notification);
+    }
+    
+    // Cores por tipo
+    const colors = {
+        error: '#ff4444',
+        warning: '#ffa500',
+        success: '#4CAF50',
+        info: '#2196F3'
+    };
+    
+    notification.style.borderLeft = `4px solid ${colors[type] || colors.info}`;
+    notification.textContent = message;
+    notification.style.display = 'block';
+    
+    // Remover após 5 segundos
+    setTimeout(() => {
+        notification.style.display = 'none';
+    }, 5000);
 }
 
 // Subcategories by main category
@@ -316,13 +376,20 @@ document.getElementById('productForm')?.addEventListener('submit', async (e) => 
             closeProductModal();
             loadProducts();
             updateDashboard();
-            alert('Produto salvo com sucesso!');
+            showNotification('Produto salvo com sucesso!', 'success');
         } else {
-            alert('Erro ao salvar produto!');
+            const errorData = await response.json().catch(() => ({}));
+            const errorMsg = errorData.message || errorData.error || 'Erro ao salvar produto';
+            showNotification(errorMsg, 'error');
+            
+            // Se for erro 503, mostrar instrução específica
+            if (response.status === 503) {
+                showNotification('MongoDB não configurado. Configure MONGODB_URI no Render.', 'warning');
+            }
         }
     } catch (error) {
         console.error('Erro ao salvar produto:', error);
-        alert('Erro ao salvar produto! Verifique a conexão com o servidor.');
+        showNotification('Erro ao conectar com o servidor. Verifique se o backend está rodando.', 'error');
     }
 });
 
