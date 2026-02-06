@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <script src="../js/config.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="Todos os produtos da loja Presentes Especiais">
     <title>Produtos - Presentes Especiais</title>
     <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/filters-styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -68,58 +69,137 @@
         </div>
     </section>
 
-    <!-- Filter Section -->
-    <section class="filter-section">
+    <!-- Modern Filters Section -->
+    <section class="products-section" style="padding-top: 40px;">
         <div class="container">
-            <!-- Main Category Filters -->
-            <div class="main-filters">
-                <h3 class="filter-section-title">Categorias</h3>
-                <div class="filter-buttons">
-                    <button class="filter-btn active" data-category="todos" onclick="filterByMainCategory('todos')">
-                        Todos os Produtos
-                    </button>
-                    <button class="filter-btn" data-category="Cosmético Feminino" onclick="filterByMainCategory('Cosmético Feminino')">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7z"></path>
-                        </svg>
-                        Cosmético Feminino
-                    </button>
-                    <button class="filter-btn" data-category="Cosmético Masculino" onclick="filterByMainCategory('Cosmético Masculino')">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="11" width="18" height="10" rx="2"></rect>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                        </svg>
-                        Cosmético Masculino
-                    </button>
-                    <button class="filter-btn" data-category="Chocolates" onclick="filterByMainCategory('Chocolates')">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                            <line x1="3" y1="9" x2="21" y2="9"></line>
-                            <line x1="9" y1="21" x2="9" y2="9"></line>
-                        </svg>
-                        Chocolates
-                    </button>
-                </div>
-            </div>
+            <!-- Filter Toggle Button (Mobile) -->
+            <button class="filter-toggle-btn" id="filterToggleBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="4" y1="6" x2="20" y2="6"></line>
+                    <line x1="4" y1="12" x2="20" y2="12"></line>
+                    <line x1="4" y1="18" x2="14" y2="18"></line>
+                </svg>
+                Filtros
+            </button>
 
-            <!-- Sub-Filters (Hidden by default) -->
-            <div class="sub-filters" id="subFilters" style="display: none;">
-                <h4 class="sub-filter-title">Filtrar por tipo:</h4>
-                <div class="filter-buttons" id="subFilterButtons">
-                    <!-- Sub-category buttons will be dynamically loaded here -->
+            <div class="filters-container">
+                <!-- Sidebar Filters -->
+                <aside class="filters-sidebar mobile-hidden" id="filtersSidebar">
+                    <div class="filters-header">
+                        <h2 class="filters-title">Filtros</h2>
+                        <button class="clear-filters-btn" id="clearAllFilters">Limpar tudo</button>
+                        <button class="close-filters-btn" id="closeFiltersBtn">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Price Filter -->
+                    <div class="filter-group">
+                        <h3 class="filter-group-title">
+                            <span>Preço</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </h3>
+                        <div class="filter-group-content">
+                            <div class="price-range-inputs">
+                                <div class="price-input-wrapper">
+                                    <label>Mínimo</label>
+                                    <input type="number" id="priceMin" placeholder="R$ 0" min="0">
+                                </div>
+                                <span class="price-range-separator">até</span>
+                                <div class="price-input-wrapper">
+                                    <label>Máximo</label>
+                                    <input type="number" id="priceMax" placeholder="R$ 1000" min="0">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Category Filter -->
+                    <div class="filter-group">
+                        <h3 class="filter-group-title">
+                            <span>Categorias</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </h3>
+                        <div class="filter-group-content">
+                            <div class="filter-options" id="categoryFilters">
+                                <!-- Dynamic category filters will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Subcategory Filter -->
+                    <div class="filter-group">
+                        <h3 class="filter-group-title">
+                            <span>Tipo de Produto</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </h3>
+                        <div class="filter-group-content">
+                            <div class="filter-options" id="subcategoryFilters">
+                                <!-- Dynamic subcategory filters will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Brand Filter -->
+                    <div class="filter-group">
+                        <h3 class="filter-group-title">
+                            <span>Marca</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </h3>
+                        <div class="filter-group-content">
+                            <div class="filter-search">
+                                <input type="text" placeholder="Buscar marca..." id="brandSearch">
+                            </div>
+                            <div class="filter-options" id="brandFilters">
+                                <!-- Dynamic brand filters will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Main Products Content -->
+                <div class="products-main-content">
+                    <!-- Active Filters Tags -->
+                    <div class="active-filters" id="activeFilters"></div>
+
+                    <!-- Products Header -->
+                    <div class="products-header">
+                        <div class="products-count" id="productsCount">0 produtos</div>
+                        <div class="products-sort">
+                            <label for="sortProducts">Ordernar por:</label>
+                            <select id="sortProducts">
+                                <option value="relevance">Mais relevantes</option>
+                                <option value="price-asc">Menor preço</option>
+                                <option value="price-desc">Maior preço</option>
+                                <option value="name-asc">A-Z</option>
+                                <option value="name-desc">Z-A</option>
+                                <option value="newest">Mais recentes</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Products Grid -->
+                    <div class="products-grid" id="allProducts">
+                        <!-- Products will be loaded dynamically -->
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Products Section -->
-    <section class="products-section">
-        <div class="container">
-            <div class="products-grid" id="allProducts">
-                <!-- Products will be loaded dynamically -->
-            </div>
-        </div>
-    </section>
+    <!-- Filters Overlay (Mobile) -->
+    <div class="filters-overlay" id="filtersOverlay"></div>
 
     <!-- Footer -->
     <footer class="footer">
@@ -193,15 +273,7 @@
     </div>
 
     <script src="../js/script.js"></script>
-    <script>
-        // Setup filter buttons
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
-    </script>
+    <script src="../js/filters.js"></script>
 </body>
 </html>
 

@@ -1,4 +1,19 @@
-/* FRETE */
+/* ===================================
+   PREVENT MOBILE INPUT ZOOM FIX
+   =================================== */
+input[type="text"],
+input[type="search"],
+input[type="number"],
+input[type="email"],
+input[type="tel"],
+textarea,
+select {
+    font-size: 16px !important;
+}
+
+/* ===================================
+   FRETE 
+   =================================== */
 .frete-box {
     background: #f8f8f8;
     border-radius: 8px;
