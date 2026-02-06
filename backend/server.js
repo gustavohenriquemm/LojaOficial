@@ -7,22 +7,25 @@ console.log(`📦 Node.js: ${process.version}`);
 console.log(`💻 Plataforma: ${process.platform}`);
 console.log(`🌍 NODE_ENV: ${process.env.NODE_ENV || 'development'}`);
 
+// Carregar variáveis de ambiente primeiro
+require('dotenv').config();
+
 // Inicialização do ambiente
 const fs = require('fs');
 const path = require('path');
 
-// const cors = require('cors'); // Removido: declaração duplicada
-
 console.log('🔧 Inicializando ambiente do backend...');
 
+// Conectar ao MongoDB
+const { connectDatabase } = require('./config/mongodb');
 
-// Inicialização única de diretórios e arquivos
+// Inicialização única de diretórios para orders (mantido para compatibilidade)
 const isProduction = process.env.NODE_ENV === 'production';
 const dataDir = isProduction && process.platform === 'linux'
   ? '/tmp/data'
   : path.join(__dirname, 'data');
 
-console.log(`💾 Diretório de dados: ${dataDir}`);
+console.log(`💾 Diretório de dados (orders): ${dataDir}`);
 try {
   if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
@@ -38,26 +41,13 @@ try {
   } else {
     console.log('✓ Arquivo orders.json já existe');
   }
-  // Inicializar products.json se não existir (sempre array vazio)
-  const productsPath = path.join(dataDir, 'products.json');
-  if (!fs.existsSync(productsPath)) {
-    // Só cria o arquivo vazio se não existir, não sobrescreve se já existe
-    fs.writeFileSync(productsPath, JSON.stringify([]));
-    console.log('✅ Arquivo products.json vazio criado');
-  } else {
-    console.log('✓ Arquivo products.json já existe');
-  }
-  console.log('✅ Inicialização concluída!\n');
+  console.log('✅ Inicialização de arquivos locais concluída!\n');
 } catch (error) {
   console.error('❌ Erro na inicialização:', error.message);
   console.error('Stack:', error.stack);
   // Continuar mesmo com erro na inicialização
   console.log('⚠️ Continuando sem inicialização completa...\n');
 }
-
-
-
-require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -217,72 +207,88 @@ app.use((err, req, res, next) => {
 
 const HOST = '0.0.0.0'; // Necessário para Render e Docker
 
-// Adicionar tratamento de erro no listen
-const server = app.listen(PORT, HOST, () => {
-  console.log('\n' + '='.repeat(50));
-  console.log('🚀 SERVIDOR BACKEND INICIADO');
-  console.log('='.repeat(50));
-  console.log(`📍 Host: ${HOST}:${PORT}`);
-  console.log(`🌍 Ambiente: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`💳 Mercado Pago: ${configured ? 'Configurado' : 'Não configurado'}`);
-  console.log('='.repeat(50) + '\n');
+// Conectar ao MongoDB antes de iniciar o servidor
+connectDatabase().then((connected) => {
+  if (!connected) {
+    console.warn('⚠️ MongoDB não conectado. Servidor iniciará sem persistência de produtos.');
+  }
+  
+  // Adicionar tratamento de erro no listen
+  const server = app.listen(PORT, HOST, () => {
+    console.log('\n' + '='.repeat(50));
+    console.log('🚀 SERVIDOR BACKEND INICIADO');
+    console.log('='.repeat(50));
+    console.log(`📍 Host: ${HOST}:${PORT}`);
+    console.log(`🌍 Ambiente: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`💳 Mercado Pago: ${configured ? 'Configurado' : 'Não configurado'}`);
+    console.log(`🗄️ MongoDB: ${connected ? 'Conectado' : 'Não conectado'}`);
+    console.log('='.repeat(50) + '\n');
 
-  // Auto-ping para manter o servidor ativo no Render (plano gratuito)
-  if (process.env.NODE_ENV === 'production') {
-    const https = require('https');
-    const http = require('http');
-    
-    // URL do próprio servidor no Render
-    const RENDER_URL = process.env.RENDER_EXTERNAL_URL || 
-                       process.env.BACKEND_URL || 
-                       'https://lojaoficial-3.onrender.com';
-    
-    console.log(`🔄 Sistema de auto-ping ativado para: ${RENDER_URL}`);
-    
-    // Função para fazer ping
-    const keepAlive = () => {
-      const url = `${RENDER_URL}/health`;
-      const protocol = url.startsWith('https') ? https : http;
+    // Auto-ping para manter o servidor ativo no Render (plano gratuito)
+    if (process.env.NODE_ENV === 'production') {
+      const https = require('https');
+      const http = require('http');
       
-      protocol.get(url, (res) => {
-        console.log(`✓ Ping bem-sucedido - Status: ${res.statusCode} - ${new Date().toISOString()}`);
-      }).on('error', (err) => {
-        console.error(`✗ Erro no ping: ${err.message}`);
-      });
-    };
-    
-    // Fazer ping a cada 14 minutos (840000ms) para manter o servidor acordado
-    // Render coloca servidores gratuitos em sleep após 15 minutos de inatividade
-    const PING_INTERVAL = 14 * 60 * 1000; // 14 minutos
-    setInterval(keepAlive, PING_INTERVAL);
-    
-    // Fazer o primeiro ping após 1 minuto
-    setTimeout(keepAlive, 60000);
-    
-    console.log(`⏰ Auto-ping configurado: a cada ${PING_INTERVAL / 60000} minutos`);
-  }
-});
+      // URL do próprio servidor no Render
+      const RENDER_URL = process.env.RENDER_EXTERNAL_URL || 
+                         process.env.BACKEND_URL || 
+                         'https://lojaoficial-3.onrender.com';
+      
+      console.log(`🔄 Sistema de auto-ping ativado para: ${RENDER_URL}`);
+      
+      // Função para fazer ping
+      const keepAlive = () => {
+        const url = `${RENDER_URL}/health`;
+        const protocol = url.startsWith('https') ? https : http;
+        
+        protocol.get(url, (res) => {
+          console.log(`✓ Ping bem-sucedido - Status: ${res.statusCode} - ${new Date().toISOString()}`);
+        }).on('error', (err) => {
+          console.error(`✗ Erro no ping: ${err.message}`);
+        });
+      };
+      
+      // Fazer ping a cada 14 minutos (840000ms) para manter o servidor acordado
+      // Render coloca servidores gratuitos em sleep após 15 minutos de inatividade
+      const PING_INTERVAL = 14 * 60 * 1000; // 14 minutos
+      setInterval(keepAlive, PING_INTERVAL);
+      
+      // Fazer o primeiro ping após 1 minuto
+      setTimeout(keepAlive, 60000);
+      
+      console.log(`⏰ Auto-ping configurado: a cada ${PING_INTERVAL / 60000} minutos`);
+    }
+  });
 
-// Tratamento de erro ao iniciar servidor
-server.on('error', (error) => {
-  if (error.code === 'EADDRINUSE') {
-    console.error(`❌ Porta ${PORT} já está em uso`);
-    console.error('💡 Tente usar outra porta ou encerre o processo que está usando esta porta');
-  } else {
-    console.error('❌ Erro ao iniciar servidor:', error.message);
-    console.error('Stack:', error.stack);
-  }
+  // Tratamento de erro ao iniciar servidor
+  server.on('error', (error) => {
+    if (error.code === 'EADDRINUSE') {
+      console.error(`❌ Porta ${PORT} já está em uso`);
+      console.error('💡 Tente usar outra porta ou encerre o processo que está usando esta porta');
+    } else {
+      console.error('❌ Erro ao iniciar servidor:', error.message);
+      console.error('Stack:', error.stack);
+    }
+    process.exit(1);
+  });
+}).catch((error) => {
+  console.error('❌ Erro crítico ao conectar MongoDB:', error);
+  console.log('⚠️ Servidor não será iniciado sem MongoDB.');
   process.exit(1);
 });
 
 // Tratamento de encerramento gracioso
-process.on('SIGTERM', () => {
+const { disconnectDatabase } = require('./config/mongodb');
+
+process.on('SIGTERM', async () => {
   console.log('⚠️ SIGTERM recebido. Encerrando servidor...');
+  await disconnectDatabase();
   process.exit(0);
 });
 
-process.on('SIGINT', () => {
+process.on('SIGINT', async () => {
   console.log('\n⚠️ SIGINT recebido. Encerrando servidor...');
+  await disconnectDatabase();
   process.exit(0);
 });
 
