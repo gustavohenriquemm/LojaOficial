@@ -288,7 +288,18 @@ async function loadProductsFromAPI() {
     try {
         const response = await fetch(API_URL);
         if (response.ok) {
-            products = await response.json();
+            const data = await response.json();
+            
+            // A API retorna { products: [], pagination: {} } ou array direto (compatibilidade)
+            if (data.products && Array.isArray(data.products)) {
+                products = data.products;
+            } else if (Array.isArray(data)) {
+                products = data;
+            } else {
+                console.error('Formato de resposta inesperado:', data);
+                products = [];
+            }
+            
             console.log('✅ Produtos carregados da API:', products.length);
             
             // Disparar evento customizado quando produtos são carregados

@@ -13,7 +13,19 @@ async function loadProductsFromAPI() {
         const apiUrl = window.API_URL || 'http://localhost:3000/api/products';
         const response = await fetch(apiUrl);
         if (!response.ok) throw new Error('Erro ao carregar produtos');
-        allProducts = await response.json();
+        
+        const data = await response.json();
+        
+        // A API retorna { products: [], pagination: {} } ou array direto (compatibilidade)
+        if (data.products && Array.isArray(data.products)) {
+            allProducts = data.products;
+        } else if (Array.isArray(data)) {
+            allProducts = data;
+        } else {
+            console.error('Formato de resposta inesperado:', data);
+            allProducts = [];
+        }
+        
         // Comparar como string para compatibilidade
         currentProduct = allProducts.find(p => String(p.id) === String(productId));
         displayProductDetail();
