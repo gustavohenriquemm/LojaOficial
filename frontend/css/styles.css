@@ -1171,9 +1171,31 @@ button {
         height: 300px;
     }
 
+    /* Categorias com scroll horizontal em tablets */
+    .categories .container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
     .categories-grid {
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        display: flex !important;
+        flex-wrap: nowrap !important;
         gap: 20px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        grid-template-columns: unset !important;
+    }
+
+    .categories-grid::-webkit-scrollbar {
+        display: none;
+    }
+
+    .category-card {
+        flex: 0 0 280px;
+        min-width: 280px;
+        max-width: 280px;
     }
 
     .products-grid {
@@ -1236,10 +1258,60 @@ button {
         padding: 50px 0;
     }
 
-    .categories-grid {
-        grid-template-columns: 1fr;
+    /* Categorias com scroll horizontal no mobile */
+    .categories {
+        overflow: hidden;
     }
 
+    .categories .container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .categories-grid {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        gap: 15px;
+        padding: 10px 0;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        grid-template-columns: unset !important;
+    }
+
+    .categories-grid::-webkit-scrollbar {
+        display: none;
+    }
+
+    .category-card {
+        flex: 0 0 250px;
+        min-width: 250px;
+        max-width: 250px;
+        padding: 30px 20px;
+    }
+
+    .category-icon {
+        width: 70px;
+        height: 70px;
+        margin-bottom: 20px;
+    }
+
+    .category-icon svg {
+        width: 40px;
+        height: 40px;
+    }
+
+    .category-title {
+        font-size: 1.1rem;
+    }
+
+    .category-description {
+        font-size: 0.9rem;
+        margin-bottom: 16px;
+    }
+
+    /* Produtos em grid vertical */
     .products-grid {
         grid-template-columns: 1fr;
     }
@@ -2420,5 +2492,32 @@ button {
 
     .related-products .product-price {
         font-size: 1rem;
+    }
+
+    /* Categorias ainda menores em telas pequenas */
+    .category-card {
+        flex: 0 0 220px;
+        min-width: 220px;
+        max-width: 220px;
+        padding: 25px 15px;
+    }
+
+    .category-icon {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 16px;
+    }
+
+    .category-icon svg {
+        width: 35px;
+        height: 35px;
+    }
+
+    .category-title {
+        font-size: 1rem;
+    }
+
+    .category-description {
+        font-size: 0.85rem;
     }
 }
