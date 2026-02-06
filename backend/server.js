@@ -211,6 +211,10 @@ const HOST = '0.0.0.0'; // Necessário para Render e Docker
 connectDatabase().then((connected) => {
   if (!connected) {
     console.warn('⚠️ MongoDB não conectado. Servidor iniciará sem persistência de produtos.');
+    console.warn('⚠️ Para configurar MongoDB:');
+    console.warn('   1. Crie um cluster gratuito em https://mongodb.com/cloud/atlas');
+    console.warn('   2. Adicione a variável MONGODB_URI no .env (local) ou Render (produção)');
+    console.warn('   3. Reinicie o servidor\n');
   }
   
   // Adicionar tratamento de erro no listen

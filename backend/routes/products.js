@@ -6,13 +6,13 @@ const express = require('express');
 const router = express.Router();
 const Product = require('../models/Product');
 
-// Middleware para validar conexão com banco
+// Middleware para verificar conexão com banco (não bloqueia se não configurado)
 const checkDbConnection = (req, res, next) => {
     const { isDbConnected } = require('../config/mongodb');
     if (!isDbConnected()) {
-        return res.status(503).json({ 
-            error: 'Banco de dados não disponível. Tente novamente em alguns instantes.' 
-        });
+        console.warn('⚠️ MongoDB não conectado. Operação pode falhar.');
+        // Adicionar flag na request indicando que DB não está disponível
+        req.dbUnavailable = true;
     }
     next();
 };
@@ -25,6 +25,15 @@ router.use(checkDbConnection);
 // ================================================
 router.get('/', async (req, res) => {
     try {
+        // Se MongoDB não está disponível, retornar array vazio
+        if (req.dbUnavailable) {
+            return res.json({
+                products: [],
+                pagination: { page: 1, limit: 100, total: 0, pages: 0 },
+                warning: 'MongoDB não configurado. Configure MONGODB_URI no .env'
+            });
+        }
+
         const { 
             category, 
             featured, 
@@ -107,6 +116,15 @@ router.get('/:id', async (req, res) => {
 // ================================================
 router.post('/', async (req, res) => {
     try {
+        // Se MongoDB não está disponível, retornar erro claro
+        if (req.dbUnavailable) {
+            return res.status(503).json({ 
+                error: 'MongoDB não conectado',
+                message: 'Configure a variável MONGODB_URI no ambiente de produção',
+                hint: 'Acesse o dashboard do Render e adicione a variável MONGODB_URI'
+            });
+        }
+
         const productData = req.body;
         
         // Validações básicas
