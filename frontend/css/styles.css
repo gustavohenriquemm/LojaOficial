@@ -611,9 +611,9 @@ button {
 }
 
 .brand-logo {
-    height: 70px;
+    height: 100px;
     width: auto;
-    max-width: 200px;
+    max-width: 280px;
     object-fit: contain;
     filter: grayscale(100%) opacity(0.6);
     transition: all 0.3s ease;
@@ -1254,8 +1254,8 @@ button {
     }
 
     .brand-logo {
-        height: 60px;
-        max-width: 180px;
+        height: 85px;
+        max-width: 240px;
     }
 
     /* Categorias com scroll horizontal em tablets */
@@ -1345,8 +1345,8 @@ button {
     }
 
     .brand-logo {
-        height: 55px;
-        max-width: 150px;
+        height: 75px;
+        max-width: 200px;
     }
 
     .btn {
