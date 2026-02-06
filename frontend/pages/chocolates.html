@@ -86,7 +86,7 @@
     <!-- Products Grid -->
     <section class="products-section">
         <div class="container">
-            <div class="products-grid" id="productsGrid">
+            <div class="products-grid" id="allProducts">
                 <!-- Products will be loaded here by JavaScript -->
             </div>
         </div>
@@ -133,6 +133,28 @@
             </div>
         </div>
     </footer>
+
+    <!-- Cart Modal -->
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-modal-content">
+            <div class="cart-modal-header">
+                <h2>Meu Carrinho</h2>
+                <button class="close-cart" id="closeCart">&times;</button>
+            </div>
+            
+            <div class="cart-items" id="cartItems">
+                <p class="empty-cart">Seu carrinho está vazio</p>
+            </div>
+            
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <span>Total:</span>
+                    <span class="total-price" id="totalPrice">R$ 0,00</span>
+                </div>
+                <a href="checkout.html" class="btn btn-primary btn-block">Finalizar Compra</a>
+            </div>
+        </div>
+    </div>
 
     <script src="../js/config.js"></script>
     <script src="../js/script.js"></script>

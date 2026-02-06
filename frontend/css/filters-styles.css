@@ -29,15 +29,14 @@ select {
 
 /* Filters Container */
 .filters-container {
-    display: flex;
-    gap: 24px;
+    display: block;
     margin-top: 24px;
     position: relative;
 }
 
-/* Filter Toggle Button (Mobile) */
+/* Filter Toggle Button - Always visible */
 .filter-toggle-btn {
-    display: none;
+    display: flex;
     align-items: center;
     gap: 8px;
     background: white;
@@ -62,22 +61,25 @@ select {
     height: 20px;
 }
 
-/* Sidebar Filters */
+/* Sidebar Filters - Always as overlay */
 .filters-sidebar {
-    width: 280px;
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 85%;
+    max-width: 380px;
+    height: 100vh;
     background: white;
-    border-radius: 12px;
     padding: 24px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-    position: sticky;
-    top: 100px;
-    max-height: calc(100vh - 120px);
+    box-shadow: 2px 0 20px rgba(0, 0, 0, 0.15);
+    z-index: 999;
     overflow-y: auto;
-    transition: all 0.3s ease;
+    transition: left 0.3s ease;
+    border-radius: 0;
 }
 
-.filters-sidebar.mobile-hidden {
-    display: block;
+.filters-sidebar.mobile-open {
+    left: 0;
 }
 
 /* Filters Header */
@@ -88,6 +90,12 @@ select {
     margin-bottom: 24px;
     padding-bottom: 16px;
     border-bottom: 2px solid #f0f0f0;
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 1;
+    margin: -24px -24px 24px -24px;
+    padding: 20px 24px 16px 24px;
 }
 
 .filters-title {
@@ -113,7 +121,7 @@ select {
 }
 
 .close-filters-btn {
-    display: none;
+    display: block;
     background: none;
     border: none;
     cursor: pointer;
@@ -436,9 +444,8 @@ select {
     color: var(--text-secondary);
 }
 
-/* Mobile Overlay */
+/* Filters Overlay - Always available */
 .filters-overlay {
-    display: none;
     position: fixed;
     top: 0;
     left: 0;
@@ -447,12 +454,13 @@ select {
     background: rgba(0, 0, 0, 0.5);
     z-index: 998;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .filters-overlay.active {
-    display: block;
     opacity: 1;
+    visibility: visible;
 }
 
 /* ===================================
@@ -460,11 +468,6 @@ select {
    =================================== */
 
 @media screen and (max-width: 1024px) {
-    .filters-sidebar {
-        width: 240px;
-        padding: 20px;
-    }
-
     .products-grid {
         grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
         gap: 20px;
@@ -472,43 +475,8 @@ select {
 }
 
 @media screen and (max-width: 768px) {
-    .filter-toggle-btn {
-        display: flex;
-    }
-
-    .filters-container {
-        flex-direction: column;
-    }
-
     .filters-sidebar {
-        position: fixed;
-        top: 0;
-        left: -100%;
-        width: 85%;
         max-width: 320px;
-        height: 100vh;
-        max-height: 100vh;
-        z-index: 999;
-        border-radius: 0;
-        transition: left 0.3s ease;
-        overflow-y: auto;
-    }
-
-    .filters-sidebar.mobile-open {
-        left: 0;
-    }
-
-    .close-filters-btn {
-        display: block;
-    }
-
-    .filters-header {
-        position: sticky;
-        top: 0;
-        background: white;
-        z-index: 1;
-        margin: -24px -24px 24px -24px;
-        padding: 20px 24px 16px 24px;
     }
 
     .products-grid {
