@@ -986,6 +986,16 @@ function filterBySubcategory(subcategory) {
     }
 }
 
+// Get all products
+function getAllProducts() {
+    return products;
+}
+
+// Load products by category (alias para compatibilidade)
+function loadProductsByCategory(category) {
+    loadProductsByMainCategory(category);
+}
+
 // Load products by main category
 function loadProductsByMainCategory(category) {
     const products = getAllProducts().filter(p => p.category === category);
@@ -1053,6 +1063,9 @@ function loadAllProducts() {
 }
 
 // Export new functions
+window.getAllProducts = getAllProducts;
+window.loadProductsByCategory = loadProductsByCategory;
 window.filterByMainCategory = filterByMainCategory;
 window.filterBySubcategory = filterBySubcategory;
 window.loadProductsByMainCategory = loadProductsByMainCategory;
+window.loadAllProducts = loadAllProducts;
