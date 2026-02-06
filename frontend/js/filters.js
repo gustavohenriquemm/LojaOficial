@@ -35,7 +35,7 @@ async function loadProductsForFilters() {
         
         filteredProducts = [...allProducts];
         buildFilterOptions();
-        displayFilteredProducts(filteredProducts);
+        renderFilteredProducts(filteredProducts);
         updateProductCount();
     } catch (error) {
         console.error('Error loading products for filters:', error);
@@ -294,7 +294,7 @@ function applyFilters() {
     applySorting();
     updateActiveFilters();
     updateProductCount();
-    displayFilteredProducts(filteredProducts);
+    renderFilteredProducts(filteredProducts);
 }
 
 // Apply sorting
@@ -320,11 +320,11 @@ function applySorting() {
             break;
     }
     
-    displayFilteredProducts(filteredProducts);
+    renderFilteredProducts(filteredProducts);
 }
 
 // Display filtered products
-function displayFilteredProducts(products) {
+function renderFilteredProducts(products) {
     const container = document.getElementById('allProducts');
     if (!container) return;
 
@@ -341,36 +341,31 @@ function displayFilteredProducts(products) {
         return;
     }
 
-    // Use the existing displayFilteredProducts function if available
-    if (typeof window.displayFilteredProducts === 'function') {
-        window.displayFilteredProducts(products);
-    } else {
-        // Fallback: basic product display
-        container.innerHTML = products.map(product => `
-            <div class="product-card">
-                <div class="product-image">
-                    <img src="${product.image || '/img/placeholder.jpg'}" alt="${product.name}" onerror="this.src='/img/placeholder.jpg'">
-                    ${product.oldPrice ? '<span class="product-badge">Oferta</span>' : ''}
-                </div>
-                <div class="product-info">
-                    <h3 class="product-name">${product.name}</h3>
-                    <p class="product-category">${product.category}</p>
-                    <div class="product-price">
-                        ${product.oldPrice ? `<span class="old-price">R$ ${product.oldPrice.toFixed(2)}</span>` : ''}
-                        <span class="price">R$ ${product.price.toFixed(2)}</span>
-                    </div>
-                    <button class="btn-add-cart" onclick="addToCart(${product.id})">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="9" cy="21" r="1"></circle>
-                            <circle cx="20" cy="21" r="1"></circle>
-                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                        </svg>
-                        Adicionar ao Carrinho
-                    </button>
-                </div>
+    // Render products directly
+    container.innerHTML = products.map(product => `
+        <div class="product-card">
+            <div class="product-image">
+                <img src="${product.image || '/img/placeholder.jpg'}" alt="${product.name}" onerror="this.src='/img/placeholder.jpg'">
+                ${product.oldPrice ? '<span class="product-badge">Oferta</span>' : ''}
             </div>
-        `).join('');
-    }
+            <div class="product-info">
+                <h3 class="product-name">${product.name}</h3>
+                <p class="product-category">${product.category}</p>
+                <div class="product-price">
+                    ${product.oldPrice ? `<span class="old-price">R$ ${product.oldPrice.toFixed(2)}</span>` : ''}
+                    <span class="price">R$ ${product.price.toFixed(2)}</span>
+                </div>
+                <button class="btn-add-cart" onclick="addToCart('${product.id}')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    Adicionar ao Carrinho
+                </button>
+            </div>
+        </div>
+    `).join('');
 }
 
 // Update active filters display
