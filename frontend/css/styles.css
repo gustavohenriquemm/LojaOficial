@@ -566,6 +566,74 @@ button {
 }
 
 /* ===================================
+   BRANDS CAROUSEL SECTION
+   =================================== */
+
+.brands-carousel-section {
+    padding: 40px 0;
+    background: #f9f9f9;
+    overflow: hidden;
+}
+
+.brands-title {
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.brands-carousel-wrapper {
+    overflow: hidden;
+    position: relative;
+}
+
+.brands-carousel {
+    display: flex;
+    align-items: center;
+    gap: 60px;
+    animation: scrollBrands 30s linear infinite;
+    width: fit-content;
+}
+
+.brands-carousel:hover {
+    animation-play-state: paused;
+}
+
+.brand-item {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+}
+
+.brand-logo {
+    height: 50px;
+    width: auto;
+    max-width: 150px;
+    object-fit: contain;
+    filter: grayscale(100%) opacity(0.6);
+    transition: all 0.3s ease;
+}
+
+.brand-logo:hover {
+    filter: grayscale(0%) opacity(1);
+    transform: scale(1.05);
+}
+
+@keyframes scrollBrands {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+/* ===================================
    CATEGORIES SECTION
    =================================== */
 
@@ -1171,6 +1239,25 @@ button {
         height: 300px;
     }
 
+    /* Brands carousel em tablets */
+    .brands-carousel-section {
+        padding: 30px 0;
+    }
+
+    .brands-title {
+        font-size: 1rem;
+        margin-bottom: 25px;
+    }
+
+    .brands-carousel {
+        gap: 50px;
+    }
+
+    .brand-logo {
+        height: 45px;
+        max-width: 130px;
+    }
+
     /* Categorias com scroll horizontal em tablets */
     .categories .container {
         overflow-x: auto;
@@ -1240,6 +1327,26 @@ button {
 
     .hero-buttons {
         flex-direction: column;
+    }
+
+    /* Brands carousel em mobile */
+    .brands-carousel-section {
+        padding: 25px 0;
+    }
+
+    .brands-title {
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+    }
+
+    .brands-carousel {
+        gap: 40px;
+        animation: scrollBrands 25s linear infinite;
+    }
+
+    .brand-logo {
+        height: 40px;
+        max-width: 110px;
     }
 
     .btn {
