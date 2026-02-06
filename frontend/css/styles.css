@@ -1715,13 +1715,32 @@ button {
         padding: 30px 0;
     }
 
+    .filters-section .container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
     .filter-buttons {
-        gap: 8px;
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 10px;
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding: 10px 0;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE/Edge */
+    }
+
+    .filter-buttons::-webkit-scrollbar {
+        display: none; /* Chrome/Safari/Opera */
     }
 
     .filter-btn {
-        padding: 8px 16px;
-        font-size: 0.85rem;
+        padding: 10px 20px;
+        font-size: 0.9rem;
+        white-space: nowrap;
+        flex-shrink: 0;
     }
 
     .category-detail {

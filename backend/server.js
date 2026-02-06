@@ -226,6 +226,41 @@ const server = app.listen(PORT, HOST, () => {
   console.log(`🌍 Ambiente: ${process.env.NODE_ENV || 'development'}`);
   console.log(`💳 Mercado Pago: ${configured ? 'Configurado' : 'Não configurado'}`);
   console.log('='.repeat(50) + '\n');
+
+  // Auto-ping para manter o servidor ativo no Render (plano gratuito)
+  if (process.env.NODE_ENV === 'production') {
+    const https = require('https');
+    const http = require('http');
+    
+    // URL do próprio servidor no Render
+    const RENDER_URL = process.env.RENDER_EXTERNAL_URL || 
+                       process.env.BACKEND_URL || 
+                       'https://lojaoficial-3.onrender.com';
+    
+    console.log(`🔄 Sistema de auto-ping ativado para: ${RENDER_URL}`);
+    
+    // Função para fazer ping
+    const keepAlive = () => {
+      const url = `${RENDER_URL}/health`;
+      const protocol = url.startsWith('https') ? https : http;
+      
+      protocol.get(url, (res) => {
+        console.log(`✓ Ping bem-sucedido - Status: ${res.statusCode} - ${new Date().toISOString()}`);
+      }).on('error', (err) => {
+        console.error(`✗ Erro no ping: ${err.message}`);
+      });
+    };
+    
+    // Fazer ping a cada 14 minutos (840000ms) para manter o servidor acordado
+    // Render coloca servidores gratuitos em sleep após 15 minutos de inatividade
+    const PING_INTERVAL = 14 * 60 * 1000; // 14 minutos
+    setInterval(keepAlive, PING_INTERVAL);
+    
+    // Fazer o primeiro ping após 1 minuto
+    setTimeout(keepAlive, 60000);
+    
+    console.log(`⏰ Auto-ping configurado: a cada ${PING_INTERVAL / 60000} minutos`);
+  }
 });
 
 // Tratamento de erro ao iniciar servidor
