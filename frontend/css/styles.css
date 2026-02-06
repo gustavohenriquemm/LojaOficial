@@ -2455,20 +2455,28 @@ button {
     
     .product-card {
         border-radius: 12px;
+        display: flex !important;
+        flex-direction: column !important;
+        height: 100%;
     }
     
     .product-image {
         height: 140px !important;
         padding: 8px;
+        flex-shrink: 0;
     }
     
     .product-info {
         padding: 10px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        flex: 1;
     }
     
     .product-category {
         font-size: 0.65rem !important;
         margin-bottom: 4px !important;
+        flex-shrink: 0;
     }
     
     .product-name {
@@ -2479,6 +2487,8 @@ button {
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
+        min-height: 2.2em;
+        flex-shrink: 0;
     }
     
     .product-description {
@@ -2489,6 +2499,8 @@ button {
         flex-direction: column;
         align-items: flex-start !important;
         gap: 8px !important;
+        margin-top: auto;
+        padding-top: 8px;
     }
     
     .product-price {

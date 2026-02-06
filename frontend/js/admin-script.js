@@ -154,8 +154,8 @@ function showNotification(message, type = 'info') {
 
 // Subcategories by main category
 const subcategoriesByCategory = {
-    'Cosmético Feminino': ['Perfumes', 'Cremes', 'Sabonetes', 'Body Splash', 'Esfoliantes', 'Outros Cuidados'],
-    'Cosmético Masculino': ['Perfumes', 'Cremes', 'Sabonetes', 'Body Splash', 'Esfoliantes', 'Outros Cuidados'],
+    'Cosmético Feminino': ['Perfumes', 'Antitranspirante', 'Cremes', 'Body Splash', 'Máscaras', 'Outros Cuidados'],
+    'Cosmético Masculino': ['Perfumes', 'Antitranspirante', 'Loção', 'Shampoo', 'Condicionador', 'Creme'],
     'Chocolates': ['Chocolate ao Leite', 'Chocolate Meio Amargo', 'Chocolate Branco', 'Trufas', 'Bombons', 'Kits Presente', 'Outros Chocolates']
 };
 
