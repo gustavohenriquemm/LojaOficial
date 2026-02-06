@@ -2276,6 +2276,11 @@ button {
     margin-top: 80px;
 }
 
+/* Ocultar descrição dos produtos apenas em produtos relacionados */
+.related-products .product-description {
+    display: none;
+}
+
 .product-card-link {
     display: block;
     height: 100%;
