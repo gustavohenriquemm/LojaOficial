@@ -142,8 +142,8 @@ function loadProducts() {
             <td><strong style="color: var(--primary-color)">R$ ${product.price.toFixed(2)}</strong></td>
             <td>
                 <div class="table-actions">
-                    <button class="action-btn action-btn-edit" onclick="editProduct(${product.id})">Editar</button>
-                    <button class="action-btn action-btn-delete" onclick="deleteProduct(${product.id})">Excluir</button>
+                    <button class="action-btn action-btn-edit" onclick="editProduct('${product.id}')">Editar</button>
+                    <button class="action-btn action-btn-delete" onclick="deleteProduct('${product.id}')">Excluir</button>
                 </div>
             </td>
         </tr>
@@ -244,7 +244,8 @@ function deleteProduct(id) {
         })
         .then(response => {
             if (response.ok) {
-                adminProducts = adminProducts.filter(p => p.id !== id);
+                // Converter para string para garantir comparação correta
+                adminProducts = adminProducts.filter(p => String(p.id) !== String(id));
                 loadProducts();
                 updateDashboard();
                 alert('Produto excluído com sucesso!');
